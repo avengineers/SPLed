@@ -1,0 +1,1 @@
+int dummyInterfaceC2(void);

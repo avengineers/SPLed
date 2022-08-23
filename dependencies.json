@@ -1,0 +1,13 @@
+{
+    "mandatory": {
+        "python": [
+        ],
+        "scoop": [
+        ]
+    },
+    "optional": {
+        "scoop": [
+            "extras/vscode"
+        ]
+    }
+}

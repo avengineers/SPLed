@@ -1,0 +1,34 @@
+{
+  "variant": {
+    "choices": {
+      "spl/alpha": {
+        "buildType": "spl_alpha",
+        "long": "select to build variant 'spl/alpha'",
+        "settings": {
+          "FLAVOR": "spl",
+          "SUBSYSTEM": "alpha"
+        },
+        "short": "spl/alpha"
+      },
+      "spl/beta": {
+        "buildType": "spl_beta",
+        "long": "select to build variant 'spl/beta'",
+        "settings": {
+          "FLAVOR": "spl",
+          "SUBSYSTEM": "beta"
+        },
+        "short": "spl/beta"
+      },
+      "spl/gamma": {
+        "buildType": "spl_gamma",
+        "long": "select to build variant 'spl/gamma'",
+        "settings": {
+          "FLAVOR": "spl",
+          "SUBSYSTEM": "gamma"
+        },
+        "short": "spl/gamma"
+      }
+    },
+    "default": "alpha"
+  }
+}

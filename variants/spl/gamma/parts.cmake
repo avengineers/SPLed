@@ -1,0 +1,1 @@
+add_component(src/main)
