@@ -9,7 +9,7 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 project(${VARIANT} C ASM)
 
 
-include(tools/spl/cmake/spl.cmake)
+include(build/spl-core/cmake/spl.cmake)
 
 spl_run_conan()
 

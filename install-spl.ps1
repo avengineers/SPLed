@@ -1,0 +1,1 @@
+iex "& { $(irm https://raw.githubusercontent.com/avengineers/SPL/develop/install.ps1) } v0.2.2"
