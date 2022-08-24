@@ -36,7 +36,7 @@ Function Invoke-CommandLine {
 
 # will configure the proxy if proxy variables were set in settings.json
 Function Setup-Proxy([String] $ProxyHost, [String] $NoProxy) {
-    $Env:HTTP_PROXY = "http://$ProxyHost"
+    $Env:HTTP_PROXY = "http://" + $ProxyHost.replace('http://', '')
     $Env:HTTPS_PROXY = $Env:HTTP_PROXY
     $Env:NO_PROXY = $NoProxy
     $webProxy = New-Object System.Net.WebProxy($Env:HTTP_PROXY, $true, ($Env:NO_PROXY).split(','))
@@ -64,9 +64,14 @@ Function ScoopInstallOptional ([string[]]$Packages) {
 }
 
 # installs a given set of PIP packages (single or multiple)
-Function PythonInstall ([string[]]$Packages) {
+Function PythonInstall ([string[]]$Packages, [string[]]$TrustedHosts) {
     if ($Packages) {
-        $pipInstaller = "python -m pip install --trusted-host artifactory.marquardt.de --trusted-host pypi.org --trusted-host files.pythonhosted.org"
+        $hosts = ""
+        Foreach ($trustedHost in $TrustedHosts) {
+            $hosts += " --trusted-host $trustedHost"
+        }
+
+        $pipInstaller = "python -m pip install $hosts"
         Invoke-CommandLine -CommandLine "$pipInstaller $Packages"
         ReloadEnvVars
         Invoke-CommandLine -CommandLine "$pipInstaller --upgrade pip"
@@ -87,8 +92,12 @@ Function Run-Setup-Scripts([string] $Location) {
 # installs required tools that are needed to use scoop and python as installers
 Function Install-Basic-Tools() {
     if (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        # Initial Scoop installation
-        invoke-expression -Command ". $PSScriptRoot\install-scoop.ps1"
+        if ((New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+            & $PSScriptRoot\install-scoop.ps1 -RunAsAdmin
+        } else {
+            invoke-expression -Command ". $PSScriptRoot\install-scoop.ps1"
+        }
+
         Invoke-CommandLine -CommandLine "scoop bucket rm main" -Silent $true -StopAtError $false
         Invoke-CommandLine -CommandLine "scoop bucket add main" -Silent $true
         ReloadEnvVars
@@ -105,10 +114,14 @@ Function Install-Basic-Tools() {
 
 # install all tools that are mandatory for building the project
 Function Install-Mandatory-Tools([PSCustomObject]$JsonDependencies) {
-    Invoke-CommandLine -CommandLine "scoop bucket add epes-scoop https://git.marquardt.de/scm/epes/scoop-bucket.git" -StopAtError $false -Silent $true
-    Invoke-CommandLine -CommandLine "scoop update"
+    Foreach ($repo in $JsonDependencies.mandatory.scoop_repos) {
+        $repo_and_name = $repo.Split("@")
+        Invoke-CommandLine -CommandLine "scoop bucket add $($repo_and_name[0]) $($repo_and_name[1])" -StopAtError $false -Silent $true
+        Invoke-CommandLine -CommandLine "scoop update"
+    }
+    
     ScoopInstall($JsonDependencies.mandatory.scoop)
-    PythonInstall($JsonDependencies.mandatory.python)
+    PythonInstall -Package $JsonDependencies.mandatory.python -TrustedHosts $JsonDependencies.mandatory.python_trusted_hosts
 }
 
 # install optional (GUI) tools that make life easier for developers 
@@ -116,7 +129,7 @@ Function Install-Optional-Tools([PSCustomObject]$JsonDependencies) {
     Invoke-CommandLine -CommandLine "scoop bucket add extras" -StopAtError $false
     Invoke-CommandLine -CommandLine "scoop update"
     ScoopInstallOptional($JsonDependencies.optional.scoop)
-    PythonInstall($jsonDependJsonDependenciesencies.optional.python)
+    PythonInstall -Package $jsonDependJsonDependenciesencies.optional.python
 }
 
 # start CMake with given targets
@@ -226,7 +239,7 @@ Function Run-Transformer([String] $Source, [String] $Variant, [bool] $Clean) {
         git pull
     }
     else {
-        git clone https://git.marquardt.de/scm/swsdrm/transformer.git .
+        git clone https://github.com/avengineers/SPLTransformer.git .
     }
     Invoke-CommandLine -CommandLine ".\build.ps1 --source $Source --target $pwd --variant $Variant"
     Pop-Location

@@ -4,7 +4,7 @@
 
 ## CI (Continuous Integration)
 
-* Find the latest CI results [here](https://github.com/avengineers/SPL/actions).
+* [![selftests](https://github.com/avengineers/spldemo/actions/workflows/test.yml/badge.svg)](https://github.com/avengineers/spldemo/actions/workflows/test.yml)
 * Find build binaries (built locally or remotely) [here](https://splbinaries.jfrog.io/ui/repos/tree/General/spl-generic-local)
 
 ## Preparation

@@ -66,7 +66,7 @@ macro(create_mocks fileName)
         cmake_path(GET FILE_TO_BE_MOCKED FILENAME FILE_BASE_NAME)
         cmake_path(REMOVE_EXTENSION FILE_BASE_NAME LAST_ONLY OUTPUT_VARIABLE FILE_BASE_NAME_WITHOUT_EXTENSION)
         file(RELATIVE_PATH component_path ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
-        if($Env{SPL_CMOCK_CONFIG_FILE})
+        if($ENV{SPL_CMOCK_CONFIG_FILE})
             SET(CMOCK_CONFIG_OPT -o${SPL_CMOCK_CONFIG_FILE})
         else()
             SET(CMOCK_CONFIG_OPT -o${PROJECT_SOURCE_DIR}/cmock-config.yml)
@@ -161,33 +161,37 @@ endmacro(spl_add_conan_install_settings)
 
 
 macro(spl_run_conan)
-    # This is the wrapper-code
-    include(${spl_install_dir}/conan.cmake)
-    # This replaces file conanfile.txt
-    conan_cmake_configure(
-        BUILD_REQUIRES
-        ${CONAN__BUILD_REQUIRES}
-        REQUIRES
-        ${CONAN__REQUIRES}
-        GENERATORS
-        cmake_paths
-        virtualrunenv
-    )
+    if(CONAN__BUILD_REQUIRES OR CONAN__REQUIRES)
+        # This is the wrapper-code
+        include(${spl_install_dir}/conan.cmake)
+        # This replaces file conanfile.txt
+        conan_cmake_configure(
+            BUILD_REQUIRES
+            ${CONAN__BUILD_REQUIRES}
+            REQUIRES
+            ${CONAN__REQUIRES}
+            GENERATORS
+            cmake_paths
+            virtualrunenv
+        )
 
-    conan_config_install(
-        ITEM $ENV{SPL_CONAN_CONFIG_URL}
-    )
+        if(ENV{SPL_CONAN_CONFIG_URL})
+            conan_config_install(
+                ITEM $ENV{SPL_CONAN_CONFIG_URL}
+            )
+        endif()
 
-    # This replaces the call of command "conan install" on the command line
-    conan_cmake_install(
-        PATH_OR_REFERENCE .
-        SETTINGS
-        ${CONAN_INSTALL_SETTINGS}
-    )
-    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+        # This replaces the call of command "conan install" on the command line
+        conan_cmake_install(
+            PATH_OR_REFERENCE .
+            SETTINGS
+            ${CONAN_INSTALL_SETTINGS}
+        )
+        include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
-    # This is the ninja hack to get paths of conan packages
-    set_ninja_wrapper_as_cmake_make()
+        # This is the ninja hack to get paths of conan packages
+        set_ninja_wrapper_as_cmake_make()
+    endif()
 endmacro(spl_run_conan)
 
 macro(run_pip PIP_INSTALL_REQUIREMENTS)

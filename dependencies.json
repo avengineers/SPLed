@@ -1,6 +1,10 @@
 {
     "mandatory": {
         "python": [
+            "pytest==7.1.2"
+        ],
+        "python_trusted_hosts": [
+            "pypi.org"
         ],
         "scoop": [
         ]

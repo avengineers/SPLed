@@ -54,10 +54,8 @@ param(
     )]
     [ValidateNotNullOrEmpty()]
     [string]$variant ## Configuration name (<platform>/<subsystem>, e.g., VW_PPE_Porsche_983/BMS_HV_PYRO)
-    , [Parameter(ParameterSetName = 'Install')]
-    [switch]$installMandatory ## install mandatory packages (e.g., CMake, Ninja, ...)
-    , [Parameter(ParameterSetName = 'Install')]
-    [switch]$installOptional ## install optional packages (e.g., VS Code)
+    , [switch]$installMandatory ## install mandatory packages (e.g., CMake, Ninja, ...)
+    , [switch]$installOptional ## install optional packages (e.g., VS Code)
 )
 
 
@@ -77,12 +75,13 @@ if ($installMandatory -or $installOptional) {
 }
 
 if ($installMandatory) {
-    Install-Mandatory-Tools -JsonDependencies $SPL_INSTALL_DEPENDENCY_JSON_FILE
+    Install-Mandatory-Tools -JsonDependencies $SPL_CORE_INSTALL_DEPENDENCY_JSON_CONTENT
+    Install-Mandatory-Tools -JsonDependencies $SPL_INSTALL_DEPENDENCY_JSON_CONTENT
     Run-Setup-Scripts -Location "$SPL_EXTENSIONS_SETUP_SCRIPTS_PATH\mandatory"
 }
 
 if ($installOptional) {
-    Install-Optional-Tools -JsonDependencies $SPL_INSTALL_DEPENDENCY_JSON_FILE
+    Install-Optional-Tools -JsonDependencies $SPL_INSTALL_DEPENDENCY_JSON_CONTENT
     Run-Setup-Scripts -Location "$SPL_EXTENSIONS_SETUP_SCRIPTS_PATH\optional"
 }
 

@@ -11,7 +11,6 @@ project(${VARIANT} C ASM)
 
 include(tools/spl/cmake/spl.cmake)
 
-
 spl_run_conan()
 
 

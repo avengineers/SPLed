@@ -49,6 +49,23 @@ Describe "scoop installation" {
   }
 }
 
+Describe "scoop mandatory installation" {
+  BeforeEach{
+    Mock -CommandName ScoopInstall -MockWith {}
+  }
+
+  It "shall add all buckets from dependencies.json" {
+    Mock -CommandName ScoopInstall -MockWith {}
+    Mock -CommandName PythonInstall -MockWith {}
+    Mock -CommandName Invoke-CommandLine -MockWith {}
+
+    $SPL_INSTALL_DEPENDENCY_JSON_FILE_CONTENT = Get-Content -Raw -Path "../../dependencies.json" | ConvertFrom-Json
+    Install-Mandatory-Tools($SPL_INSTALL_DEPENDENCY_JSON_FILE_CONTENT)
+
+    Should -Invoke -CommandName Invoke-CommandLine -Times 2
+  }
+}
+
 Describe "scoop optional installation" {
   BeforeEach{
     Mock -CommandName ScoopInstall -MockWith {}
@@ -107,14 +124,25 @@ Describe "python installation" {
   It "shall not call Invoke-CommandLine if no package is given" {
    
     [String[]]$package = @() # empty array
-    PythonInstall($package)
+    PythonInstall -Package $package
     Should -Invoke -CommandName Invoke-CommandLine -Times 0
   }
 
   It "shall call Invoke-CommandLine twice, once for installing packages and once for upgrading" {
     [String[]]$package = "PowerShell", "MinGW", "MSys"
-    PythonInstall($package)
+    PythonInstall -Package $package
     Should -Invoke -CommandName Invoke-CommandLine -Times 2
+  }
+}
+
+Describe "python installation advanced" {
+  It "shall add new trusted hosts to call" {
+    [String[]]$package = "PowerShell", "MinGW", "MSys"
+    [String[]]$hosts = "pypi.org", "files.pythonhosted.org"
+    $global:counter = 0
+    Mock -CommandName Invoke-CommandLine -MockWith {$global:counter++} -ParameterFilter { $CommandLine -eq "python -m pip install  --trusted-host pypi.org --trusted-host files.pythonhosted.org PowerShell MinGW MSys" }
+    PythonInstall -Packages $package -TrustedHosts $hosts
+    $global:counter | Should -Be 1
   }
 }
 
@@ -154,7 +182,7 @@ Describe "install basic tools" {
     
     Install-Basic-Tools
     Should -Invoke -CommandName ScoopInstall -Times 2
-    Should -Invoke -CommandName invoke-expression -Times 1
+    # Should -Invoke -CommandName invoke-expression -Times 1  # complicated to count with different handling for admin and non-admin
     Should -Invoke -CommandName Invoke-CommandLine -Times 3
   }
 

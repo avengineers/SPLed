@@ -15,8 +15,12 @@ Function Read-Environment-Variables() {
 Read-Environment-Variables
 
 if ($Env:SPL_INSTALL_DEPENDENCY_JSON_FILE) {
-    $SPL_INSTALL_DEPENDENCY_JSON_FILE = Get-Content -Raw -Path $Env:SPL_INSTALL_DEPENDENCY_JSON_FILE | ConvertFrom-Json
+    $SPL_INSTALL_DEPENDENCY_JSON_CONTENT = Get-Content -Raw -Path $Env:SPL_INSTALL_DEPENDENCY_JSON_FILE | ConvertFrom-Json
+} elseif (Test-Path -Path dependencies.json) {
+    $SPL_INSTALL_DEPENDENCY_JSON_CONTENT = Get-Content -Raw -Path dependencies.json | ConvertFrom-Json
 }
+
+$SPL_CORE_INSTALL_DEPENDENCY_JSON_CONTENT = Get-Content -Raw -Path $PSScriptRoot/../dependencies.json | ConvertFrom-Json
 
 $SPL_EXTENSIONS_SETUP_SCRIPTS_PATH = $Env:SPL_EXTENSION_ROOT_DIR + $Env:SPL_EXTENSION_SETUP_SCRIPT_SUBDIR
 
