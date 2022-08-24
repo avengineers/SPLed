@@ -1,4 +1,4 @@
-@echo on
+@echo off
 
 pushd %~dp0
 powershell -Command Set-ExecutionPolicy Bypass -scope CurrentUser -force || exit /b 1

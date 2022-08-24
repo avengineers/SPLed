@@ -1,5 +1,6 @@
 {
     "mandatory": {
+        "spl_core_version":"v0.2.2",
         "python": [
             "pytest==7.1.2"
         ],
