@@ -20,7 +20,7 @@ configure_file(${CMAKE_SOURCE_DIR}/variants/config.h.in ${GEN_DIR}/config.h @ONL
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
 # get external git dependencies
-checkout_git_submodules()
+spl_checkout_git_submodules()
 
 # TODO: refactor/remove; we want to explicitly add includes where required
 foreach(component_name ${COMPONENT_NAMES})
