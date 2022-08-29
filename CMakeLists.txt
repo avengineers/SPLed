@@ -8,6 +8,7 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 project(${VARIANT} C ASM)
 
+execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
 
 include(build/spl-core/cmake/spl.cmake)
 # spl_install_extensions(...)
