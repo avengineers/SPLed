@@ -6,7 +6,7 @@ set(BUILD_KIT prod CACHE STRING "Target Group to build.")
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
-project(${VARIANT} C ASM)
+project(${VARIANT} CXX C ASM)
 
 execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
 

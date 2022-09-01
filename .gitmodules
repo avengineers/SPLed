@@ -1,8 +1,0 @@
-[submodule "tools/CMock"]
-	path = tools/CMock
-	url = https://github.com/ThrowTheSwitch/CMock.git
-	branch = master
-[submodule "tools/Unity"]
-	path = tools/Unity
-	url = https://github.com/ThrowTheSwitch/Unity.git
-	branch = master
