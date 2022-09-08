@@ -5,7 +5,7 @@ extern "C" {
 #include "component.h"
 }
 
-#include "mockup.h"
+#include "mockup_src_app_component_var_a.h"
 
 TEST(component__var_a, test_dummyInterface)
 {

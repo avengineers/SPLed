@@ -8,6 +8,8 @@ int dummyInterface(void)
 
 int anotherDummyInterface(int in)
 {
+    some_other_func(in);
+
     if (in > 5)
     {
         return some_func(in);
