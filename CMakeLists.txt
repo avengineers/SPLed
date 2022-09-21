@@ -8,16 +8,17 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 project(${VARIANT} CXX C ASM)
 
-execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
+if(DEFINED ENV{SPLCORE_PATH})
+    message(WARNING "SPLCORE_PATH defined! Use fixed SPL-CORE version from: $ENV{SPLCORE_PATH}")
+    include($ENV{SPLCORE_PATH}/cmake/spl.cmake)
+else()
+    execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
+    include(build/spl-core/cmake/spl.cmake)
+endif()
 
-include(build/spl-core/cmake/spl.cmake)
 # spl_install_extensions(...)
 # run extensions
 
-# get variant specific feature configuration for build or test
-set(GEN_DIR ${CMAKE_SOURCE_DIR}/build/${VARIANT}/gen)
-include_directories(${GEN_DIR})
-configure_file(${CMAKE_SOURCE_DIR}/variants/config.h.in ${GEN_DIR}/config.h @ONLY)
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
 # get external git dependencies

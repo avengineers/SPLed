@@ -1,0 +1,15 @@
+mainmenu "SPL Demo"
+menu "First menu"
+    config USE_COMPONENT_A_INTERFACE
+        bool "this is the first feature"
+        default n
+    config USE_COMPONENT_B_INTERFACE
+        bool "this is the second feature"
+        default n
+    config DUMMY_INTERFACE_DEFINED
+        bool "this is the dummy feature"
+        default y if USE_COMPONENT_A_INTERFACE || USE_COMPONENT_B_INTERFACE
+    config PART_NUMBER
+        string "part number"
+        default "PN0013"
+endmenu
