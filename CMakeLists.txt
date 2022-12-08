@@ -15,8 +15,11 @@ else()
     include(modules/spl/cmake/spl.cmake)
 endif()
 
-# spl_install_extensions(...)
-# run extensions
+include(modules/spl-extension-example/src/cmake/index.cmake)
+spl_extension_example(
+    INPUTS in1 in2
+    OUTPUTS out3 out4
+)
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
