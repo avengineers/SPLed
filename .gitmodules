@@ -1,6 +1,6 @@
-[submodule ".\\modules\\spl"]
-	path = .\\modules\\spl
+[submodule "modules/spl"]
+	path = modules/spl
 	url = https://github.com/avengineers/SPL.git
-[submodule ".\\modules\\spl-extension-example"]
-	path = .\\modules\\spl-extension-example
+[submodule "modules/spl-extension-example"]
+	path = modules/spl-extension-example
 	url = https://github.com/avengineers/spl-extension-example.git
