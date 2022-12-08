@@ -1,0 +1,3 @@
+[submodule ".\\modules\\spl"]
+	path = .\\modules\\spl
+	url = https://github.com/avengineers/SPL.git

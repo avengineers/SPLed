@@ -1,9 +1,5 @@
 {
     "mandatory": {
-        "spl_core":{
-            "installer":"https://raw.githubusercontent.com/avengineers/SPL/develop/install.ps1",
-            "version":"v1.1.6"
-        },
         "python": [
             "pytest==7.1.2"
         ],

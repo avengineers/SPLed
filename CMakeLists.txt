@@ -12,17 +12,13 @@ if(DEFINED ENV{SPLCORE_PATH})
     message(WARNING "SPLCORE_PATH defined! Use fixed SPL-CORE version from: $ENV{SPLCORE_PATH}")
     include($ENV{SPLCORE_PATH}/cmake/spl.cmake)
 else()
-    execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
-    include(build/spl-core/cmake/spl.cmake)
+    include(modules/spl/cmake/spl.cmake)
 endif()
 
 # spl_install_extensions(...)
 # run extensions
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
-
-# get external git dependencies
-spl_checkout_git_submodules()
 
 # TODO: refactor/remove; we want to explicitly add includes where required
 foreach(component_name ${COMPONENT_NAMES})
