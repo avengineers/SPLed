@@ -25,10 +25,10 @@ class TestBuild(unittest.TestCase):
 
         exit_code = run_process([
             'build.bat',
-            '--build',
-            '--variants', variant,
-            '--target', target,
-            '--reconfigure'
+            '-build',
+            '-variants', variant,
+            '-target', target,
+            '-reconfigure'
         ])
 
         self.assertEqual(0, exit_code)
