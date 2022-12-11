@@ -5,9 +5,6 @@ name = "pypi"
 
 [packages]
 pytest = "*"
-kconfiglib = "*"
-hammocking = "*"
-gcovr = "*"
 
 [dev-packages]
 
