@@ -14,11 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: true 
       - name: install tools and run selftests
         run: |
-          .\build.ps1 -installMandatory
-          .\build.ps1 -build -target selftests
+          .\build.bat -installMandatory
+          .\build.bat -build -target selftests
+        env:
+          GITHUB_PATH: ~\scoop\apps\python310\current
         shell: powershell
       - uses: actions/upload-artifact@v2
         with:
