@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pytest = "*"
+pipenv = "*"
 spl = {editable = true, path = "./modules/spl"}
 
 [dev-packages]

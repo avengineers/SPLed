@@ -1,8 +1,0 @@
-{
-    "mandatory": {},
-    "optional": {
-        "scoop": [
-            "extras/vscode"
-        ]
-    }
-}
