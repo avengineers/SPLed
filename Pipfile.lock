@@ -106,6 +106,14 @@
             ],
             "version": "==0.3.6"
         },
+        "exceptiongroup": {
+            "hashes": [
+                "sha256:542adf9dea4055530d6e1279602fa5cb11dab2395fa650b8674eaec35fc4a828",
+                "sha256:bd14967b79cd9bdb54d97323216f8fdf533e278df937aa2a90089e7d6e06e5ec"
+            ],
+            "markers": "python_version < '3.11'",
+            "version": "==1.0.4"
+        },
         "fasteners": {
             "hashes": [
                 "sha256:1d4caf5f8db57b0e4107d94fd5a1d02510a450dced6ca77d1839064c1bacf20c",
@@ -132,10 +140,10 @@
         },
         "hammocking": {
             "hashes": [
-                "sha256:2f618026b16b7977633aace699cdc5705f4734f56f3d20f93808c13da682cc0d",
-                "sha256:411b49bd741ad1daa044f4058850eabda0efcc18b1422316b926fb74d249c046"
+                "sha256:c4d725e4dfe69d5d8066c01470fa412faaf5616dfcac39008017bf58cbdd02ad",
+                "sha256:cfe685c73aef0c4be22b6955dc678cfde628d062ac4e692dd762744df3f91f3b"
             ],
-            "version": "==0.2.4"
+            "version": "==0.2.5"
         },
         "idna": {
             "hashes": [
@@ -157,7 +165,7 @@
                 "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852",
                 "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"
             ],
-            "markers": "python_version >= '3'",
+            "markers": "python_version >= '3.7'",
             "version": "==3.1.2"
         },
         "jinja2-time": {
@@ -490,6 +498,14 @@
                 "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"
             ],
             "version": "==1.3"
+        },
+        "tomli": {
+            "hashes": [
+                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
+                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
+            ],
+            "markers": "python_version < '3.11'",
+            "version": "==2.0.1"
         },
         "tqdm": {
             "hashes": [
