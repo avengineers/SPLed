@@ -1,17 +1,11 @@
 [
   {
     "name": "prod",
-    "environmentVariables": {
-      "PIPENV_VENV_IN_PROJECT": "1"
-    },
     "environmentSetupScript": "${workspaceFolder}/.venv/Scripts/activate"
   },
   {
     "name": "test",
     "toolchainFile": "tools/toolchains/gcc/toolchain.cmake",
-    "environmentVariables": {
-      "PIPENV_VENV_IN_PROJECT": "1"
-    },
     "environmentSetupScript": "${workspaceFolder}/.venv/Scripts/activate"
   }
 ]
