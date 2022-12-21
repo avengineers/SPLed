@@ -17,10 +17,7 @@ jobs:
           submodules: true 
       - name: install tools and run selftests
         run: |
-          .\build.bat -installMandatory
-          .\build.bat -build -target selftests
-        env:
-          GITHUB_PATH: ~\scoop\apps\python310\current
+          .\test.ps1
         shell: powershell
       - uses: actions/upload-artifact@v2
         with:
