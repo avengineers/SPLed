@@ -1,10 +1,6 @@
 {
-    "python.testing.pytestEnabled": true,
-    "python.testing.pytestArgs": [
-        "test",
-        "--capture=tee-sys"
-    ],
     "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
     "python.formatting.provider": "autopep8",
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",

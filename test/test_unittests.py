@@ -51,5 +51,5 @@ class TestUnitTests(unittest.TestCase):
         self.assertEqual(0, exit_code)
 
         """Coverage report shall be created"""
-        self.assertTrue(os.path.isfile(
-            'build/{variant}/test/coverage/index.html'.format(variant=variant)))
+        expected_file = f"build/{variant}/test/coverage/index.html"
+        self.assertTrue(os.path.isfile(expected_file), f"File {expected_file} shall exist.")
