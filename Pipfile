@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pytest = "*"
+pytest-env = "*"
 pipenv = "*"
 spl = {editable = true, path = "./modules/spl"}
 

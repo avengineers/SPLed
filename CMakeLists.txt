@@ -8,12 +8,6 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 project(${VARIANT} CXX C ASM)
 
-execute_process(
-    COMMAND git submodule update --init --remote
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMAND_ERROR_IS_FATAL ANY
-)
-
 if(DEFINED ENV{SPLCORE_PATH})
     message(WARNING "SPLCORE_PATH defined! Using SPL Core from here: $ENV{SPLCORE_PATH}")
     include($ENV{SPLCORE_PATH}/cmake/spl.cmake)
