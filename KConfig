@@ -13,3 +13,7 @@ menu "First menu"
         string "part number"
         default "PN0013"
 endmenu
+
+menu "SPL Extension"
+    source "modules/spl-extension-example/KConfig"
+endmenu
