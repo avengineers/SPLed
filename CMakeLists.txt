@@ -17,7 +17,7 @@ endif()
 
 include(modules/spl-extension-example/src/cmake/index.cmake)
 spl_extension_example(
-    INPUTS in1 in2
+    INPUTS ${USE_COMPONENT_A_INTERFACE} ${PART_NUMBER}
     OUTPUTS out3 out4
 )
 
