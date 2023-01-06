@@ -1,0 +1,11 @@
+menu "extension-example"
+    config SPL_EXTENSION_EXAMPLE_ACTIVE
+        bool
+        prompt "SPL_EXTENSION_EXAMPLE_ACTIVE"
+        default n
+
+    config SPL_EXTENSION_EXAMPLE_INPUT_VARIABLE
+        string
+        prompt "SPL_EXTENSION_EXAMPLE_INPUT_VARIABLE"
+           
+endmenu
