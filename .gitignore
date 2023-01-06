@@ -1,0 +1,14 @@
+# What: Python: byte-compiled / optimized / DLL files
+# Why: automatically created by Python during script execution
+__pycache__/
+/.pytest_cache
+*.py[cod]
+*$py.class
+
+# eclipse files
+.project
+.cproject
+
+# Any log directory
+**/[Ll][Oo][Gg]/*
+*.bak
