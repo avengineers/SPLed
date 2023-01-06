@@ -1,0 +1,6 @@
+mainmenu "SPL Nano"
+menu "Component configuration"
+    config USE_COMPONENT_1
+        bool "this is component one"
+        default n
+endmenu

@@ -1,0 +1,18 @@
+{
+  "variant": {
+    "choices": {
+{%- for variant in cookiecutter.variants.values() -%}
+      "{{ variant["flavor"] }}/{{ variant["subsystem"] }}": {
+        "buildType": "{{ variant["flavor"] }}_{{ variant["subsystem"] }}",
+        "long": "select to build variant '{{ variant["flavor"] }}/{{ variant["subsystem"] }}'",
+        "settings": {
+          "FLAVOR": "{{ variant["flavor"] }}",
+          "SUBSYSTEM": "{{ variant["subsystem"] }}"
+        },
+        "short": "{{ variant["flavor"] }}/{{ variant["subsystem"] }}"
+      }{{ ", " if not loop.last else "" }}
+{%- endfor -%}
+    },
+    "default": "{{ cookiecutter.variants["0"]["flavor"] }}/{{ cookiecutter.variants["0"]["subsystem"] }}"
+  }
+}

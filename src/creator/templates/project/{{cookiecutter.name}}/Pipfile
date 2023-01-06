@@ -1,0 +1,11 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest = "*"
+pipenv = "*"
+spl = {editable = true, path = "./modules/spl"}
+
+[dev-packages]
