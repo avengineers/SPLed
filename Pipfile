@@ -4,7 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-spl = {editable = true, path = "."}
+conan = "*"
+cookiecutter = "*"
+gcovr = "*"
+hammocking = "*"
+kconfiglib = "*"
+pytest = "*"
+pipenv = "*"
 
 [dev-packages]
 

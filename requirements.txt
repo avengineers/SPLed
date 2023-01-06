@@ -1,0 +1,7 @@
+conan
+cookiecutter
+gcovr
+hammocking
+kconfiglib
+pytest
+pipenv
