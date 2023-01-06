@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f165c0f8da8a3d16930e21cf1e5d05209aaf505d45d6b679230b97bb28758ddd"
+            "sha256": "2ecbf49ab7942b9724d3ac46e1cddc1d77d99ab839dca9b1369035b41cdd1ea7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -90,7 +90,7 @@
             "hashes": [
                 "sha256:7fc3a8bf85b4e8be2d95b441bd78b623d7ab76364fb034f02480c77bd10f9a37"
             ],
-            "markers": "python_version >= '3.6'",
+            "index": "pypi",
             "version": "==1.56.0"
         },
         "cookiecutter": {
@@ -98,7 +98,7 @@
                 "sha256:9f3ab027cec4f70916e28f03470bdb41e637a3ad354b4d65c765d93aad160022",
                 "sha256:f3982be8d9c53dac1261864013fdec7f83afd2e42ede6f6dd069c5e149c540d5"
             ],
-            "markers": "python_version >= '3.7'",
+            "index": "pypi",
             "version": "==2.1.1"
         },
         "distlib": {
@@ -129,7 +129,7 @@
                 "sha256:16e2dbf67a4259cb17f520be3a251e9af605b94c1007b1419d8b55c5c6cf4c57",
                 "sha256:217195085ec94346291a87b7b1e6d9cfdeeee562b3e0f9a32b25c9530b3bce8f"
             ],
-            "markers": "python_version >= '3.7'",
+            "index": "pypi",
             "version": "==5.2"
         },
         "hammocking": {
@@ -137,6 +137,7 @@
                 "sha256:c4d725e4dfe69d5d8066c01470fa412faaf5616dfcac39008017bf58cbdd02ad",
                 "sha256:cfe685c73aef0c4be22b6955dc678cfde628d062ac4e692dd762744df3f91f3b"
             ],
+            "index": "pypi",
             "version": "==0.2.5"
         },
         "idna": {
@@ -174,7 +175,7 @@
                 "sha256:bed2cc2216f538eca4255a83a4588d8823563cdd50114f86cf1a2674e602c93c",
                 "sha256:edcd35a20e7e138a9a9e96149027f805f785e818d2eae400b6fa8b0c8845114a"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "index": "pypi",
             "version": "==14.1.0"
         },
         "libclang": {
@@ -489,10 +490,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
-        },
-        "spl": {
-            "editable": true,
-            "path": "./modules/spl"
         },
         "text-unidecode": {
             "hashes": [

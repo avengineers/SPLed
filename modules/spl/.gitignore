@@ -1,3 +1,6 @@
+# See modules/.gitignore for explanation
+!*
+
 .cmaketest
 build/
 
