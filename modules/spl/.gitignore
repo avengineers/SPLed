@@ -1,0 +1,16 @@
+.cmaketest
+build/
+
+# Python: byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pycharm project files
+.idea
+
+# Build/test artifacts
+.pytest_cache
+out
+*.egg-info/
+.eggs/

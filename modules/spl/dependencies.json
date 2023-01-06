@@ -1,0 +1,24 @@
+{
+  "mandatory": {
+    "python_trusted_hosts": [
+      "pypi.org"
+    ],
+    "python": [
+      "pipenv",
+      "setuptools"
+    ],
+    "scoop": [
+      "cmake",
+      "mingw-winlibs-llvm-ucrt",
+      "python311"
+    ],
+    "scoop_repos": [
+      "versions@https://github.com/ScoopInstaller/Versions"
+    ]
+  },
+  "optional": {
+    "scoop": [
+      "extras/vscode"
+    ]
+  }
+}

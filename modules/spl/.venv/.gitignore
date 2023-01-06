@@ -1,0 +1,4 @@
+# Ignore the whole venv created by pipenv
+# but have the directory inside git to force
+# pipenv creating the venv inside this directory.
+*
