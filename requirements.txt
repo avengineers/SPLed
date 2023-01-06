@@ -1,3 +1,4 @@
 pytest
 pytest-env
 pipenv
+-r modules/spl/requirements.txt
