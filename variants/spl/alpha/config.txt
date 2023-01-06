@@ -1,1 +1,21 @@
+
+#
+# First menu
+#
 CONFIG_USE_COMPONENT_A_INTERFACE=y
+# CONFIG_USE_COMPONENT_B_INTERFACE is not set
+CONFIG_DUMMY_INTERFACE_DEFINED=y
+CONFIG_PART_NUMBER="PN0013"
+# end of First menu
+
+#
+# SPL Extension
+#
+
+#
+# extension-example
+#
+CONFIG_SPL_EXTENSION_EXAMPLE_ACTIVE=y
+CONFIG_SPL_EXTENSION_EXAMPLE_INPUT_VARIABLE="in_1"
+# end of extension-example
+# end of SPL Extension

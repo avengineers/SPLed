@@ -1,6 +1,6 @@
 @echo off
 
 pushd %~dp0
-call build.bat --install --installOptional || exit /b 1
+powershell -ExecutionPolicy Bypass -File build.ps1 -install -installOptional || exit /b 1
 popd
 pause

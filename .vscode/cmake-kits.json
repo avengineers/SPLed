@@ -1,9 +1,11 @@
 [
   {
-    "name": "prod"
+    "name": "prod",
+    "environmentSetupScript": "${workspaceFolder}/.venv/Scripts/activate"
   },
   {
     "name": "test",
-    "toolchainFile": "tools/toolchains/gcc/toolchain.cmake"
+    "toolchainFile": "tools/toolchains/gcc/toolchain.cmake",
+    "environmentSetupScript": "${workspaceFolder}/.venv/Scripts/activate"
   }
 ]
