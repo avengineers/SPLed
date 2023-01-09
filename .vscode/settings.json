@@ -1,16 +1,6 @@
 {
     "python.testing.pytestEnabled": true,
-    "python.testing.pytestArgs": [
-        "--capture=tee-sys"
-    ],
     "python.testing.unittestEnabled": false,
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./test",
-        "-p",
-        "test_*.py"
-    ],
     "python.formatting.provider": "autopep8",
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",
@@ -28,7 +18,7 @@
     "cmake.environment": {},
     "cmake.buildToolArgs": [],
     "git.ignoreLimitWarning": true,
-    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.errorSquiggles": "enabled",
     "C_Cpp.default.cStandard": "gnu17",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "C_Cpp.formatting": "vcFormat",
