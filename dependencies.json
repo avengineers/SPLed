@@ -2,20 +2,7 @@
     "mandatory": {
         "spl_core":{
             "installer":"https://raw.githubusercontent.com/avengineers/SPL/develop/install.ps1",
-            "version":"v1.1.6"
-        },
-        "python": [
-            "pytest==7.1.2"
-        ],
-        "python_trusted_hosts": [
-            "pypi.org"
-        ],
-        "scoop": [
-        ]
-    },
-    "optional": {
-        "scoop": [
-            "extras/vscode"
-        ]
+            "version":"v1.6.0"
+        }
     }
 }
