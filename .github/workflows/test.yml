@@ -17,8 +17,7 @@ jobs:
           submodules: true
       - name: install tools and run selftests
         run: |
-          .\install-spl.ps1
-          .\build\spl-core\powershell\spl.ps1 -build -target selftests -installMandatory
+          .\build.bat -build -target selftests -installMandatory
         shell: powershell
       - uses: actions/upload-artifact@v2
         with:
