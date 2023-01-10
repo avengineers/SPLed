@@ -7,7 +7,7 @@ manifest:
     - name: spl
       path: modules/spl
       remote: avengineers
-      revision: 0d8972082187957c01488c5985ca20561e869a8f
+      revision: e3007ac2667c21e9eb3ee61662ceb4a7a3f136c7
     - name: spl-extension-example
       path: modules/spl-extension-example
       remote: avengineers
