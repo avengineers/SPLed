@@ -27,5 +27,6 @@
         "*.c": "c",
         "Jenkinsfile": "groovy",
         "*.py": "python"
-    }
+    },
+    "git.repositoryScanMaxDepth": 3
 }

@@ -7,7 +7,7 @@ name = "pypi"
 pytest = "*"
 pytest-env = "*"
 pipenv = "*"
-spl = {editable = true, path = "./modules/spl"}
+west = "*"
 
 [dev-packages]
 

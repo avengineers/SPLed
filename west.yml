@@ -1,0 +1,14 @@
+manifest:
+  remotes:
+    - name: avengineers
+      url-base: https://github.com/avengineers
+
+  projects:
+    - name: spl
+      path: modules/spl
+      remote: avengineers
+      revision: 0d8972082187957c01488c5985ca20561e869a8f
+    - name: spl-extension-example
+      path: modules/spl-extension-example
+      remote: avengineers
+      revision: d74e6b64fd8967238be84570863d7522b80337d4
