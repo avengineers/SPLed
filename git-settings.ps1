@@ -1,32 +1,33 @@
 $ErrorActionPreference = "Stop"
-$markerPath = '.git/git-settings.marker'
 
-if (-not (Test-Path -Path $markerPath)) {
-    Write-Host ""
-    Write-Host -ForegroundColor Black -BackgroundColor Yellow "Setting up git ..."
+Write-Host ""
+Write-Host -ForegroundColor Black -BackgroundColor Yellow "Setting up git ..."
 
-    git config pull.rebase true
-    Write-Host "git config pull.rebase was set to 'true'"
+git config pull.rebase true
+Write-Host "git config pull.rebase was set to 'true'"
 
-    Write-Host "Done."
-    New-Item -Path "$markerPath" -ItemType File -Force
-
-    $gitignorecontent = @"
+$gitignorecontent = @'
 # Ignore everything
 *
-"@
+'@
 
-    Set-Content "${PSScriptRoot}/modules/.gitignore" $gitignorecontent
+New-Item -ItemType Directory -Path "${PSScriptRoot}/modules" -Force
+Set-Content "${PSScriptRoot}/modules/.gitignore" $gitignorecontent -Force
 
-    $postCheckoutContent = @"
+$postCheckoutContent = @'
 #!/bin/sh
 
-python -m pipenv run west update
-"@
- 
-    Set-Content "${PSScriptRoot}/.git/hooks/post-checkout" $postCheckoutContent
- 
-}
-else {
-    Write-Host -ForegroundColor Black -BackgroundColor Yellow "Skipping git settings setup; delete $markerPath to run it again."
-}
+set -e
+
+west_cmd="python -m pipenv run west"
+
+if command -v $west_cmd &> /dev/null && [ -f .west/config ]
+then
+   export PIPENV_VERBOSITY=-1
+   $west_cmd update
+fi
+'@
+
+Set-Content "${PSScriptRoot}/.git/hooks/post-checkout" $postCheckoutContent -Force
+
+Write-Host "Done."
