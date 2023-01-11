@@ -28,5 +28,6 @@
         "Jenkinsfile": "groovy",
         "*.py": "python"
     },
-    "git.repositoryScanMaxDepth": 3
+    "git.repositoryScanMaxDepth": 3,
+    "git-graph.maxDepthOfRepoSearch": 3
 }

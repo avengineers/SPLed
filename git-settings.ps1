@@ -14,11 +14,6 @@ if (-not (Test-Path -Path $markerPath)) {
     $gitignorecontent = @"
 # Ignore everything
 *
-# But descend into directories
-!*/
-# !*/ by itself will only allow descent into the full directory tree; it won’t actually allow anything into the repo; so include .gitignore of subdirectories
-# it is important! that <subdirectory>/.gitignore files contain "!*" as first line to allow adding new files in subdirectories
-!*/**/.gitignore
 "@
 
     Set-Content "${PSScriptRoot}/modules/.gitignore" $gitignorecontent
