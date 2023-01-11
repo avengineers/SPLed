@@ -21,7 +21,16 @@ if (-not (Test-Path -Path $markerPath)) {
 !*/**/.gitignore
 "@
 
- Set-Content "${PSScriptRoot}/modules/.gitignore" $gitignorecontent
+    Set-Content "${PSScriptRoot}/modules/.gitignore" $gitignorecontent
+
+    $postCheckoutContent = @"
+#!/bin/sh
+
+python -m pipenv run west update
+"@
+ 
+    Set-Content "${PSScriptRoot}/.git/post-checkout" $postCheckoutContent
+ 
 }
 else {
     Write-Host -ForegroundColor Black -BackgroundColor Yellow "Skipping git settings setup; delete $markerPath to run it again."

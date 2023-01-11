@@ -8,6 +8,11 @@ pytest = "*"
 pytest-env = "*"
 pipenv = "*"
 west = "*"
+conan = "*"
+cookiecutter = "*"
+gcovr = "*"
+hammocking = "*"
+kconfiglib = "*"
 
 [dev-packages]
 
