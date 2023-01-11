@@ -24,7 +24,7 @@ if (-not (Test-Path -Path $markerPath)) {
 python -m pipenv run west update
 "@
  
-    Set-Content "${PSScriptRoot}/.git/post-checkout" $postCheckoutContent
+    Set-Content "${PSScriptRoot}/.git/hooks/post-checkout" $postCheckoutContent
  
 }
 else {
