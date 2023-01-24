@@ -10,3 +10,9 @@ __pycache__/
 /.pytest_cache
 *.py[cod]
 *$py.class
+
+# Pipfile to be generated out of requirements.txt
+/Pipfile
+
+# bootstrap for spl builds
+/.bootstrap/

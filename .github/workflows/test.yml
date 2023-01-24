@@ -8,13 +8,16 @@ on:
 
   workflow_dispatch:
 
+env:
+  INVERT_PATH_VARIABLE: true
+
 jobs:
   test:
     runs-on: windows-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
       - name: install tools and run selftests
