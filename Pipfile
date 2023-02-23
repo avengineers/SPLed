@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+autopep8 = "*"
+conan = "*"
+cookiecutter = "*"
+gcovr = "*"
+hammocking = "*"
+kconfiglib = "*"
+pytest = "*"
+pipenv = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

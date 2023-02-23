@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  INVERT_PATH_VARIABLE: true
+  USER_PATH_FIRST: true
 
 jobs:
   test:
@@ -22,7 +22,8 @@ jobs:
           submodules: true
       - name: install tools and run selftests
         run: |
-          .\build.bat -build -target selftests -installMandatory
+          .\build.ps1 -install
+          .\build.ps1 -build -target selftests
         shell: powershell
       - uses: actions/upload-artifact@v2
         with:

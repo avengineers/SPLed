@@ -9,7 +9,7 @@ SPLDemo is a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software
 
 ## Preparation
 
-You can install required and optional tools and install some VS Code extensions. The installer uses Scoop/PowerShell, so it will only run on Windows. The installation is done by executing `install-mandatory.bat`. In case you are sitting behind a proxy server, make sure to add:
+You can install required tools and install some VS Code extensions. The installer uses Scoop/PowerShell, so it will only run on Windows. The installation is done by executing `install-mandatory.bat`. In case you are sitting behind a proxy server, make sure to add:
 
 ```
 HTTP_PROXY
