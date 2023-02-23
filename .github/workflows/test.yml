@@ -8,18 +8,22 @@ on:
 
   workflow_dispatch:
 
+env:
+  USER_PATH_FIRST: true
+
 jobs:
   test:
     runs-on: windows-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: true
       - name: install tools and run selftests
         run: |
-          .\build.bat -build -target selftests -installMandatory
+          .\build.ps1 -install
+          .\build.ps1 -build -target selftests
         shell: powershell
       - uses: actions/upload-artifact@v2
         with:

@@ -12,7 +12,6 @@ if(DEFINED ENV{SPLCORE_PATH})
     message(WARNING "SPLCORE_PATH defined! Use fixed SPL-CORE version from: $ENV{SPLCORE_PATH}")
     include($ENV{SPLCORE_PATH}/cmake/spl.cmake)
 else()
-    execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/install-spl.ps1)
     include(build/spl-core/cmake/spl.cmake)
 endif()
 

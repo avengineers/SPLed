@@ -1,0 +1,14 @@
+{
+    "buckets": [
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions"
+        }
+    ],
+    "apps": [
+        {
+            "Source": "versions",
+            "Name": "python310"
+        }
+    ]
+}

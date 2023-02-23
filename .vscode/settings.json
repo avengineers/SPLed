@@ -27,5 +27,13 @@
         "*.c": "c",
         "Jenkinsfile": "groovy",
         "*.py": "python"
-    }
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.*": true
+    },
+    "git.repositoryScanMaxDepth": 3,
+    "git-graph.maxDepthOfRepoSearch": 3
 }
