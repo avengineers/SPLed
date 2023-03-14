@@ -3,12 +3,24 @@
         {
             "Name": "versions",
             "Source": "https://github.com/ScoopInstaller/Versions"
+        },
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main"
+        },
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras"
         }
     ],
     "apps": [
         {
             "Source": "versions",
-            "Name": "python310"
+            "Name": "python311"
+        },
+        {
+            "Source": "versions",
+            "Name": "mingw-winlibs-llvm-ucrt"
         }
     ]
 }

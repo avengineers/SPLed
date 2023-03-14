@@ -1,0 +1,105 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Get mandatory tools",
+            "detail": "Installation of mandatory tools",
+            "type": "shell",
+            "command": ".\\build.ps1 -install",
+            "problemMatcher": []
+        },
+        {
+            "label": "Update all tools",
+            "detail": "Update of all installed scoop packages",
+            "type": "shell",
+            "command": ".\\build.ps1 -command 'scoop update --all'",
+            "problemMatcher": []
+        },
+        {
+            "label": "Environment",
+            "detail": "Print all environment variables for debugging purposes",
+            "type": "shell",
+            "command": "dir env:",
+            "problemMatcher": []
+        },
+        {
+            "type": "cmake",
+            "label": "Build with CMake",
+            "detail": "Build target 'all' of selected variant",
+            "command": "build",
+            "targets": [
+                "all"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "owner": "c/cpp",
+                    "fileLocation": [
+                        "absolute"
+                    ],
+                    "pattern": {
+                        "regexp": "^ctc (I|W|E)(\\d+): \\[\"(.*)\" (\\d+)/(\\d+)\\] (.*)",
+                        "file": 3,
+                        "line": 4,
+                        "column": 5,
+                        "severity": 1,
+                        "message": 6
+                    }
+                }
+            ]
+        },
+        {
+            "type": "cmake",
+            "label": "Clean with CMake",
+            "command": "clean",
+            "problemMatcher": [],
+            "detail": "Clean build artifacts of selected variant"
+        },
+        {
+            "type": "cmake",
+            "label": "Configure with CMake",
+            "command": "configure",
+            "problemMatcher": [],
+            "detail": "Configure selected variant"
+        },
+        {
+            "label": "Configure spl/alpha",
+            "detail": "Feature configuration using KConfig of variant spl/alpha",
+            "type": "shell",
+            "command": "pipenv run guiconfig",
+            "options": {
+                "env": {
+                    "KCONFIG_CONFIG": "variants/spl/alpha/config.txt"
+                }
+            },
+            "problemMatcher": []
+        }
+        {
+            "label": "Configure spl/beta",
+            "detail": "Feature configuration using KConfig of variant spl/beta",
+            "type": "shell",
+            "command": "pipenv run guiconfig",
+            "options": {
+                "env": {
+                    "KCONFIG_CONFIG": "variants/spl/beta/config.txt"
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Configure spl/gamma",
+            "detail": "Feature configuration using KConfig of variant spl/gamma",
+            "type": "shell",
+            "command": "pipenv run guiconfig",
+            "options": {
+                "env": {
+                    "KCONFIG_CONFIG": "variants/spl/gamma/config.txt"
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}
