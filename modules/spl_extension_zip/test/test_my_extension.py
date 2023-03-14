@@ -1,4 +1,3 @@
-import argparse
 from pathlib import Path
 from unittest.mock import Mock
 from spl_extension_zip.src.my_extension import (
@@ -32,19 +31,19 @@ def test_parser_build_kit_argument():
 def test_parser_has_run_argument():
     parser = create_parser()
     args = parser.parse_args(["--run"])
-    assert args.run == True
+    assert args.run
 
 
 def test_parser_has_generate_argument():
     parser = create_parser()
     args = parser.parse_args(["--generate"])
-    assert args.generate == True
+    assert args.generate
 
 
 def test_generate_cmake_file(tmp_path: Path):
     my_file = tmp_path / "new.cmake"
     spl_config = Mock()
-    spl_config.linker_output_file_basename = "my_main"
+    spl_config.linker_output_file = "my_main.exe"
     BinaryPacker(Mock(), spl_config)._generate(my_file)
     assert my_file.exists()
     assert "OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/my_main.zip" in my_file.read_text()

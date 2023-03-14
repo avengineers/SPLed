@@ -17,8 +17,10 @@ testfixtures = "*"
 junitparser = "*"
 py7zr = "*"
 mashumaro = "*"
+black = "*"
+flake8 = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"

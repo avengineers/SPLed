@@ -1,7 +1,17 @@
 {
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "python.formatting.provider": "none",
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "240"
+    ],
+    "python.formatting.blackPath": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=W293"
+    ],
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",
     "cmake.configureSettings": {
