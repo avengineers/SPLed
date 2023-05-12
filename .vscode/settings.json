@@ -1,7 +1,7 @@
 {
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "python.formatting.provider": "autopep8",
+    "python.formatting.provider": "none",
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",
     "cmake.configureSettings": {
@@ -31,9 +31,14 @@
     "files.exclude": {
         "**/.git": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "**/.*": true
+        "**/Thumbs.db": true
     },
     "git.repositoryScanMaxDepth": 3,
-    "git-graph.maxDepthOfRepoSearch": 3
+    "git-graph.maxDepthOfRepoSearch": 3,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.analysis.extraPaths": [
+        "./modules/spl-extension-zip/src"
+    ]
 }

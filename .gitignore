@@ -11,5 +11,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# bootstrap for spl builds
-/.bootstrap/
+# Any log directory
+**/[Ll][Oo][Gg]/*
+
+# Any backup file of text editors
+*.bak
+
+# Backup files of KConfig
+*.old
+
+# Generated IDEA project files
+.idea
+
+# bootstrap files are downloaded during installation
+/.bootstrap
