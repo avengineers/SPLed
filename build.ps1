@@ -36,7 +36,7 @@ $ErrorActionPreference = "Stop"
 Push-Location $PSScriptRoot
 Write-Output "Running in ${pwd}"
 
-Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/avengineers/SPL/develop/install.ps1) } develop -skipInstall"
+Invoke-Expression "& { $(Invoke-RestMethod https://raw.githubusercontent.com/avengineers/SPL/develop/install.ps1) } v1.9.0 -skipInstall"
 
 if ($install) {
     if (-Not (Test-Path -Path '.bootstrap')) {

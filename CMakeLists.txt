@@ -8,15 +8,16 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 project(${VARIANT} CXX C ASM)
 
-if(DEFINED ENV{SPLCORE_PATH})
-    message(WARNING "SPLCORE_PATH defined! Use fixed SPL-CORE version from: $ENV{SPLCORE_PATH}")
-    include($ENV{SPLCORE_PATH}/cmake/spl.cmake)
-else()
-    include(build/spl-core/cmake/spl.cmake)
-endif()
+# This step will also triger the Kconfig generation
+include(build/spl-core/cmake/spl.cmake)
 
-# spl_install_extensions(...)
-# run extensions
+# TODO: check the configuration for the required tools and install them
+# this can also be done with a Python module/extension
+# this extension can generate a file to track the installed tools
+# The KConfig file should retrigger a cmake configure.
+
+# TODO: trigger the extensions cmake generation
+include(modules/spl_extension_zip/index.cmake)
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 

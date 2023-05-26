@@ -32,7 +32,7 @@ class TestBuild(unittest.TestCase):
         ])
 
         self.assertEqual(0, exit_code)
-        self.expect_binary(variant, file_name="main.exe")
+        self.expect_binary(variant, file_name="my_main.exe")
 
     def expect_binary(self, variant, bin_type='elf', suffix='', file_name=''):
         """Hex file of given configuration shall exist."""

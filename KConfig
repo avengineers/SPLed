@@ -1,5 +1,24 @@
 mainmenu "SPL Demo"
-menu "First menu"
+
+menu "SPL Extensions"
+    source "modules/spl_extension_zip/Kconfig"
+endmenu
+
+menu "Linking"
+    config LINK_OUT_FILE_BASENAME
+        string "linker output file basename"
+        default "my_main"
+    
+    config LINK_OUT_FILE_EXTENSIONS
+        string "linker output file extensions as comma separated list"
+        default "map,exe"
+
+    config LINK_FILE_BASENAME
+        string "linker output file basename"
+        default "my_main"
+endmenu
+
+menu "Feature Model"
     config USE_COMPONENT_A_INTERFACE
         bool "this is the first feature"
         default n

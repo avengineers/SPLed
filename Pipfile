@@ -4,14 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-autopep8 = "*"
-conan = "*"
+conan = {version="==1.59.0"}
 cookiecutter = "*"
 gcovr = "*"
 hammocking = "*"
 kconfiglib = "*"
+jinja2 = "*"
 pytest = "*"
+pytest-env = "*"
 pipenv = "*"
+testfixtures = "*"
+junitparser = "*"
+py7zr = "*"
+mashumaro = "*"
 
 [dev-packages]
 
