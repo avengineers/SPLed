@@ -8,14 +8,25 @@ Requirements:
     - shall be able to run from the command line
 """
 
+import sys
+from pathlib import Path
+
+# TODO: this is a hack to be able to import the modules from the root folder
+sys.path.append(Path(__file__).parent.as_posix())
+
 from dataclasses import dataclass, field
 import json
-from pathlib import Path
-from typing import Any, Dict, List
+from typing import List
 import zipfile
 import argparse
 from abc import ABC, abstractmethod
 from mashumaro.mixins.json import DataClassJSONMixin
+from generators.cmake_file import (
+    CMakeComment,
+    CMakeCustomCommand,
+    CMakeCustomTarget,
+    CMakeFile,
+)
 
 
 @dataclass
@@ -106,23 +117,6 @@ class SplExtensionsConfig(DataClassJSONMixin):
         return cls.from_dict(json.loads(file_path.read_text())["features"])
 
 
-my_extention_cmake_file = """
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/<LINK_OUT_BASENAME>.zip
-    COMMAND python ${PROJECT_SOURCE_DIR}/modules/spl_extension_zip/src/my_extension.py --run --project_root_dir ${CMAKE_SOURCE_DIR} --variant ${VARIANT} --build_kit ${BUILD_KIT}
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/<LINK_OUT_BASENAME>.exe ${PROJECT_SOURCE_DIR}/modules/spl_extension_zip/src/my_extension.py
-    COMMENT "Generating <LINK_OUT_BASENAME>.zip"
-    VERBATIM
-)
-
-add_custom_target(
-    artifact ALL
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/<LINK_OUT_BASENAME>.zip
-)
-
-"""
-
-
 class BinaryPacker(Extension):
     def __init__(self, spl_paths: SplPaths, spl_config: SplExtensionsConfig):
         self.spl_paths = spl_paths
@@ -137,11 +131,30 @@ class BinaryPacker(Extension):
         self._generate(self.generated_cmake_file)
 
     def _generate(self, generated_cmake_file: Path) -> None:
-        generated_cmake_file.write_text(
-            my_extention_cmake_file.replace(
-                "<LINK_OUT_BASENAME>", self.spl_config.linker_output_file_basename
+        cmake_file = CMakeFile(generated_cmake_file)
+        cmake_file.add_element(CMakeComment("My Extension generated file"))
+        linker_output_file_basename = self.spl_config.linker_output_file_basename
+        cmake_file.add_element(
+            CMakeCustomCommand(
+                output=f"${{CMAKE_CURRENT_BINARY_DIR}}/{linker_output_file_basename}.zip",
+                command="python ${PROJECT_SOURCE_DIR}/modules/spl_extension_zip/src/my_extension.py --run --project_root_dir ${CMAKE_SOURCE_DIR} --variant ${VARIANT} --build_kit ${BUILD_KIT}",
+                depends=[
+                    f"${{CMAKE_CURRENT_BINARY_DIR}}/{linker_output_file_basename}.exe",
+                    "${PROJECT_SOURCE_DIR}/modules/spl_extension_zip/src/my_extension.py",
+                ],
+                comment=f"Generating {linker_output_file_basename}.zip",
             )
         )
+        cmake_file.add_element(
+            CMakeCustomTarget(
+                "artifact",
+                depends=[
+                    f"${{CMAKE_CURRENT_BINARY_DIR}}/{linker_output_file_basename}.zip"
+                ],
+                all=True,
+            )
+        )
+        cmake_file.to_file()
 
     def run(self):
         """Archive the linker generated binary and the readme.txt file into a zip file"""

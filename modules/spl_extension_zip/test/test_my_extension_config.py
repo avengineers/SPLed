@@ -1,5 +1,5 @@
 import json
-from modules.spl_extension_zip.src.my_extension import SplExtensionsConfig
+from spl_extension_zip.src.my_extension import SplExtensionsConfig
 
 
 def test_config_linker_basename():
@@ -27,4 +27,3 @@ def test_config_linker_extensions():
     assert SplExtensionsConfig.from_json(
         json.dumps({"LINK_OUT_FILE_EXTENSIONS": "exe,dll"})
     ).linker_output_file_extensions == ["exe", "dll"]
-

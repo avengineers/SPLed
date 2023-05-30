@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 from unittest.mock import Mock
-from modules.spl_extension_zip.src.my_extension import (
+from spl_extension_zip.src.my_extension import (
     BinaryPacker,
     SplPaths,
     Variant,
