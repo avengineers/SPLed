@@ -97,3 +97,19 @@ def test_cmake_environment_variable():
         f"{env_var}"
         == 'set(ENV{PATH} "${PATH};${PROJECT_SOURCE_DIR}/modules/spl_extension_zip/src")'
     )
+
+
+def test_cmake_get_elements_of_type():
+    my_cmake_file = CMakeFile(Path("my_cmake_file.txt"))
+    my_cmake_file.add_element(CMakeComment("This is a comment"))
+    my_cmake_file.add_element(
+        CMakeCustomCommand("build/my_output.txt", "dummy_command")
+    )
+    my_cmake_file.add_element(
+        CMakeCustomCommand("build/my_output.txt", "dummy_command")
+    )
+    assert my_cmake_file.get_elements_of_type(CMakeComment) == [
+        CMakeComment("This is a comment")
+    ]
+    assert len(my_cmake_file.get_elements_of_type(CMakeCustomCommand)) == 2
+    assert my_cmake_file.get_elements_of_type(CMakeEnvironmentVariable) == []

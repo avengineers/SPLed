@@ -57,6 +57,103 @@ Function Invoke-CommandLine {
     }
 }
 
+# the function will take a location/path to a directory that contains powershell.ps1 files and run all of them
+Function Invoke-Setup-Scripts-Location([string] $Location) {
+    if (Test-Path -Path $Location) {
+        Get-ChildItem $Location | ForEach-Object {
+            Write-Information -Tags "Info:" -MessageData ("Run: " + $_.FullName)
+            . $_.FullName
+        }
+    }
+}
+
+# start CMake with given targets
+Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filter, [String] $NinjaArgs, [bool] $Clean, [bool] $Reconfigure) {
+    if ("selftests" -eq $Target) {
+        $buildFolder = "build"
+        # fresh and clean build
+        if ($Clean) {
+            if (Test-Path -Path $buildFolder) {
+                Remove-Item $buildFolder -Force -Recurse
+            }
+        }
+
+        # Run test cases to be found in folder test/
+        # consider Filter if given
+        $filterCmd = ''
+        if ($Filter) {
+            $filterCmd = "-k '$Filter'"
+        }
+
+        Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test --capture=tee-sys --junitxml=test/output/test-report.xml -o junit_logging=all $filterCmd"
+    }
+    else {
+        if ((-Not $Variants) -or ($Variants -eq 'all')) {
+            $dirs = Get-Childitem -Include config.cmake -Path variants -Recurse | Resolve-Path -Relative
+            $variantsList = @()
+            Foreach ($dir in $dirs) {
+                $variant = (get-item $dir).Directory.Parent.BaseName + "/" + (get-item $dir).Directory.BaseName
+                $variantsList += $variant
+            }
+            $variantsSelected = @()
+            if (-Not $Variants) {
+                # variant selection if not specified
+                Write-Information -Tags "Info:" -MessageData "no '--variant <variant>' was given, please select from list:"
+                Foreach ($variant in $variantsList) {
+                    Write-Information -Tags "Info:" -MessageData ("(" + [array]::IndexOf($variantsList, $variant) + ") " + $variant)
+                }
+                $variantsSelected += $variantsList[[int](Read-Host "Please enter selected variant number")]
+                Write-Information -Tags "Info:" -MessageData "Selected variant is: $variantsSelected"
+            }
+            else {
+                $variantsSelected = $variantsList
+            }
+        }
+        else {
+            $variantsSelected = $Variants.Replace('\', '/').Replace('./variant/', '').Replace('./variants/', '').Split(',')
+        }
+
+        Foreach ($variant in $variantsSelected) {
+            $buildKit = "prod"
+            if ($Target.Contains("unittests")) {
+                $buildKit = "test"
+            }
+            $buildFolder = "build/$variant/$buildKit"
+            # fresh and clean build
+            if ($Clean) {
+                if (Test-Path -Path $buildFolder) {
+                    Remove-Item $buildFolder -Force -Recurse
+                }
+            }
+
+            # delete CMake cache and reconfigure
+            if ($Reconfigure) {
+                if (Test-Path -Path "$buildFolder/CMakeCache.txt") {
+                    Remove-Item "$buildFolder/CMakeCache.txt" -Force
+                }
+                if (Test-Path -Path "$buildFolder/CMakeFiles") {
+                    Remove-Item "$buildFolder/CMakeFiles" -Force -Recurse
+                }
+            }
+
+            # CMake configure and generate
+            $variantDetails = $variant.Split('/')
+            $platform = $variantDetails[0]
+            $subsystem = $variantDetails[1]
+            $additionalConfig = "-DBUILD_KIT=`"$buildKit`""
+            if ($buildKit -eq "test") {
+                $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE=`"tools/toolchains/gcc/toolchain.cmake`""
+            }
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DFLAVOR=`"$platform`" -DSUBSYSTEM=`"$subsystem`" $additionalConfig"
+
+            # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $Target -- -t cleandead"
+            # CMake build
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $Target -- $NinjaArgs"
+        }
+    }
+}
+
 ## start of script
 # Always set the $InformationPreference variable to "Continue" globally, this way it gets printed on execution and continues execution afterwards.
 $InformationPreference = "Continue"
@@ -76,9 +173,6 @@ try {
         Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/develop/bootstrap.ps1" -OutFile "$PSScriptRoot\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". $PSScriptRoot\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
-
-        # Fetch spl-core bootstrap
-        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/spl-core/41-cmake-module/powershell/spl-bootstrap.ps1" -OutFile "$PSScriptRoot\.bootstrap\spl-bootstrap.ps1"
     }
     else {
         if ($clean) {
@@ -89,7 +183,6 @@ try {
             }
         }
         # Call CMake
-        . "$PSScriptRoot\.bootstrap\spl-bootstrap.ps1"
         Invoke-CMake-Build -Target $target -Variants $variants -Filter $filter -NinjaArgs $ninjaArgs -Clean $clean -Reconfigure $reconfigure
     }
 }
