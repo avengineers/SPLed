@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
 import textwrap
-from typing import List
+from typing import List, Type, TypeVar
 from generators.generated_file import GeneratedFile
 
 CMAKE_TAB = "    "
@@ -109,6 +109,9 @@ class CMakeCustomTarget(CMakeElement):
         return "\n".join(content)
 
 
+T = TypeVar("T")
+
+
 class CMakeFile(GeneratedFile):
     def __init__(self, path: Path) -> None:
         super().__init__(path)
@@ -116,6 +119,11 @@ class CMakeFile(GeneratedFile):
 
     def add_element(self, element: CMakeElement) -> None:
         self.elements.append(element)
+
+    def get_elements_of_type(self, element_type: Type[T]) -> List[T]:
+        return [
+            element for element in self.elements if isinstance(element, element_type)
+        ]
 
     def to_string(self) -> str:
         return "\n".join(str(element) for element in self.elements)
