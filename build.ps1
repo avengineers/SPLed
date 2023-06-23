@@ -30,6 +30,7 @@ param(
     [switch]$reconfigure
 )
 
+# Call a command and handle exit code
 Function Invoke-CommandLine {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Justification = 'Usually this statement must be avoided (https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/avoid-using-invoke-expression?view=powershell-7.3), here it is OK as it does not execute unknown code.')]
     param (
@@ -57,14 +58,19 @@ Function Invoke-CommandLine {
     }
 }
 
-# the function will take a location/path to a directory that contains powershell.ps1 files and run all of them
-Function Invoke-Setup-Scripts-Location([string] $Location) {
-    if (Test-Path -Path $Location) {
-        Get-ChildItem $Location | ForEach-Object {
-            Write-Information -Tags "Info:" -MessageData ("Run: " + $_.FullName)
-            . $_.FullName
-        }
+# Update/Reload current environment variable PATH with settings from registry
+Function Initialize-EnvPath {
+    # workaround for system-wide installations
+    if ($Env:USER_PATH_FIRST) {
+        $Env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
     }
+    else {
+        $Env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    }
+}
+
+function Test-RunningInCIorTestEnvironment {
+    return [Boolean]($Env:JENKINS_URL -or $Env:PYTEST_CURRENT_TEST -or $Env:GITHUB_ACTIONS)
 }
 
 # start CMake with given targets
@@ -170,8 +176,8 @@ try {
             New-Item -ItemType Directory '.bootstrap'
         }
         # Installation of Scoop, Python and pipenv via bootstrap
-        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/develop/bootstrap.ps1" -OutFile "$PSScriptRoot\.bootstrap\bootstrap.ps1"
-        Invoke-CommandLine ". $PSScriptRoot\.bootstrap\bootstrap.ps1" -Silent $true
+        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/develop/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
+        Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }
     else {
@@ -182,13 +188,16 @@ try {
                 Remove-Item $buildDir -Force -Recurse
             }
         }
+        if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
+            Initialize-EnvPath
+        }
         # Call CMake
         Invoke-CMake-Build -Target $target -Variants $variants -Filter $filter -NinjaArgs $ninjaArgs -Clean $clean -Reconfigure $reconfigure
     }
 }
 finally {
     Pop-Location
-    if ((-Not $Env:JENKINS_URL) -and (-Not $Env:PYTEST_CURRENT_TEST) -and (-Not $Env:GITHUB_ACTIONS)) {
+    if (-Not (Test-RunningInCIorTestEnvironment)) {
         Read-Host -Prompt "Press Enter to continue ..."
     }
 }
