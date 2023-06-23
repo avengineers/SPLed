@@ -20,7 +20,5 @@ mashumaro = "*"
 black = "*"
 flake8 = "*"
 
-[dev-packages]
-
 [requires]
 python_version = "3.11"

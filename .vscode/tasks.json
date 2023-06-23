@@ -66,40 +66,35 @@
             "detail": "Configure selected variant"
         },
         {
-            "label": "Configure spl/alpha",
-            "detail": "Feature configuration using KConfig of variant spl/alpha",
+            "label": "Configure variant",
+            "detail": "Feature configuration using KConfig",
             "type": "shell",
             "command": "pipenv run guiconfig",
             "options": {
                 "env": {
-                    "KCONFIG_CONFIG": "variants/spl/alpha/config.txt"
+                    "KCONFIG_CONFIG": "variants/${input:variant}/config.txt"
                 }
             },
             "problemMatcher": []
         }
+    ],
+    "inputs": [
         {
-            "label": "Configure spl/beta",
-            "detail": "Feature configuration using KConfig of variant spl/beta",
-            "type": "shell",
-            "command": "pipenv run guiconfig",
-            "options": {
-                "env": {
-                    "KCONFIG_CONFIG": "variants/spl/beta/config.txt"
-                }
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Configure spl/gamma",
-            "detail": "Feature configuration using KConfig of variant spl/gamma",
-            "type": "shell",
-            "command": "pipenv run guiconfig",
-            "options": {
-                "env": {
-                    "KCONFIG_CONFIG": "variants/spl/gamma/config.txt"
-                }
-            },
-            "problemMatcher": []
+            "type": "pickString",
+            "id": "variant",
+            "description": "Which variant do you want to select?",
+            "options": [
+                "VW_PPE_Porsche_983/BMS_HV_ISO_C_SAMPLE",
+                "VW_PPE_Porsche_983/BMS_HV_PYRO_C_SAMPLE",
+                "VW_PPE_Audi_MLBw/BMS_HV_C_SAMPLE",
+                "VW_PPE_Audi_MLBw/BMS_HV_C_SAMPLE_DEV",
+                "Scania/BMS_BJB",
+                "Scania/BMS_BJB_B_SAMPLE",
+                "Scania/BMS_HCP",
+                "Renault/BMS_HV_B1_SAMPLE",
+                "Marquardt/HvBoard",
+                "Renault/BMS_HV_B0_SAMPLE",
+            ]
         }
     ]
 }

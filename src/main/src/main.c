@@ -5,10 +5,10 @@
 extern int dummyInterface(void);
 #endif
 
-int main(void){
-    #if (CONFIG_DUMMY_INTERFACE_DEFINED)
+int main(void) {
+#if (CONFIG_DUMMY_INTERFACE_DEFINED)
     return dummyInterface();
-    #else
+#else
     return 0;
-    #endif
+#endif
 }

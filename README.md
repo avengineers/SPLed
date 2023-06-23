@@ -11,13 +11,3 @@ SPLDemo is a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software
 
 You can install required tools and install some VS Code extensions. The installer uses Scoop/PowerShell, so it will only run on Windows. The installation is done by executing `install-mandatory.bat`. In case you are sitting behind a proxy server, make sure to add:
 
-```
-HTTP_PROXY
-NO_PROXY
-```
-
-values to the `.env` file.
-
-## Usage
-
-Please read the SPL readme at: https://github.com/avengineers/SPL. The avengineers/SPL functionality is the core of this repository. SPLDemo is only demonstrating its usage in a tiny project.
