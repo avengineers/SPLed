@@ -23,5 +23,8 @@ __pycache__/
 # Generated IDEA project files
 .idea
 
+# Any log file created
+*.log
+
 # bootstrap files are downloaded during installation
 /.bootstrap

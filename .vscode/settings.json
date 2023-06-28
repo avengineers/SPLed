@@ -15,7 +15,8 @@
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",
     "cmake.configureSettings": {
-        "BUILD_KIT": "${buildKit}"
+        "BUILD_KIT": "${buildKit}",
+        "CMAKE_MESSAGE_LOG_LEVEL": "STATUS"
     },
     "cmake.generator": "Ninja",
     "cmake.debugConfig": {
@@ -38,17 +39,6 @@
         "Jenkinsfile": "groovy",
         "*.py": "python"
     },
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true
-    },
     "git.repositoryScanMaxDepth": 3,
     "git-graph.maxDepthOfRepoSearch": 3,
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
-    "python.analysis.extraPaths": [
-        "./modules/spl-extension-zip/src"
-    ]
 }

@@ -84,16 +84,9 @@
             "id": "variant",
             "description": "Which variant do you want to select?",
             "options": [
-                "VW_PPE_Porsche_983/BMS_HV_ISO_C_SAMPLE",
-                "VW_PPE_Porsche_983/BMS_HV_PYRO_C_SAMPLE",
-                "VW_PPE_Audi_MLBw/BMS_HV_C_SAMPLE",
-                "VW_PPE_Audi_MLBw/BMS_HV_C_SAMPLE_DEV",
-                "Scania/BMS_BJB",
-                "Scania/BMS_BJB_B_SAMPLE",
-                "Scania/BMS_HCP",
-                "Renault/BMS_HV_B1_SAMPLE",
-                "Marquardt/HvBoard",
-                "Renault/BMS_HV_B0_SAMPLE",
+                "spl/alpha",
+                "spl/beta",
+                "spl/gamma",
             ]
         }
     ]
