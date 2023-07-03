@@ -176,7 +176,7 @@ try {
             New-Item -ItemType Directory '.bootstrap'
         }
         # Installation of Scoop, Python and pipenv via bootstrap
-        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/develop/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
+        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.0.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }
