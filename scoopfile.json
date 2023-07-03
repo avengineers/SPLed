@@ -1,19 +1,35 @@
 {
     "buckets": [
         {
-            "Name": "versions",
-            "Source": "https://github.com/ScoopInstaller/Versions"
-        },
-        {
             "Name": "main",
             "Source": "https://github.com/ScoopInstaller/Main"
         },
         {
             "Name": "extras",
             "Source": "https://github.com/ScoopInstaller/Extras"
+        },
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions"
         }
     ],
     "apps": [
+        {
+            "Source": "main",
+            "Name": "lessmsi"
+        },
+        {
+            "Source": "main",
+            "Name": "7zip"
+        },
+        {
+            "Source": "main",
+            "Name": "innounp"
+        },
+        {
+            "Source": "main",
+            "Name": "dark"
+        },
         {
             "Source": "versions",
             "Name": "python311"
