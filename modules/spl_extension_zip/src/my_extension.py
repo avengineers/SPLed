@@ -58,7 +58,7 @@ class KConfigArtifacts:
 
     @property
     def kconfig_json(self) -> Path:
-        return self.spl_paths.build_dir.joinpath("include/generated/autoconf.json")
+        return self.spl_paths.build_dir.joinpath("kconfig/autoconf.json")
 
 
 class LinkerArtifacts:
