@@ -8,13 +8,13 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 project(${VARIANT} CXX C ASM)
 
-# Fetch all extensions into modules directory
+# Fetch all external dependencies as modules into modules directory
 set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/build/modules CACHE INTERNAL "")
 include(FetchContent)
 FetchContent_Declare(
     spl-core
     GIT_REPOSITORY https://github.com/avengineers/spl-core.git
-    GIT_TAG v2.1.0
+    GIT_TAG v2.9.0
 )
 FetchContent_MakeAvailable(spl-core)
 
