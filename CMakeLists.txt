@@ -29,8 +29,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(spl-core)
 
 # Include spl-core
-# TODO: move this to spl-core
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(${spl-core_SOURCE_DIR}/cmake/spl.cmake)
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)

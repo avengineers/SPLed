@@ -62,6 +62,9 @@ extensions = ["sphinx_rtd_size"]
 
 sphinx_rtd_size_width = "90%"
 
+### mermaid config - @see https://pypi.org/project/sphinxcontrib-mermaid/
+extensions.append("sphinxcontrib.mermaid")
+
 ### plantuml config ###########################################################
 extensions.append("sphinxcontrib.plantuml")
 conf_location = os.path.realpath(os.path.dirname(__file__))
