@@ -36,7 +36,8 @@
         },
         {
             "Source": "versions",
-            "Name": "mingw-winlibs-llvm-ucrt"
+            "Name": "mingw-winlibs-llvm-ucrt",
+            "Version": "12.3.0-16.0.4-11.0.0-r1"
         }
     ]
 }

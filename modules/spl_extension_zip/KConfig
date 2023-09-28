@@ -1,8 +1,0 @@
-menu "ZIP extension"
-    config ZIP_FEATURE
-        bool "this is the zip feature"
-        default y
-    config ZIP_TOOL_VERSION
-        string "zip tool version"
-        default "1.0.2"
-endmenu

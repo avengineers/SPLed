@@ -1,43 +1,16 @@
 {
   "variant": {
     "choices": {
-      "spl/alpha": {
-        "buildType": "spl_alpha",
-        "long": "select to build variant 'spl/alpha'",
+      "CustA/Disco": {
+        "buildType": "CustA_Disco",
+        "long": "select to build variant 'CustA/Disco'",
         "settings": {
-          "FLAVOR": "spl",
-          "SUBSYSTEM": "alpha"
+          "FLAVOR": "CustA",
+          "SUBSYSTEM": "Disco"
         },
-        "short": "spl/alpha"
-      },
-      "spl/beta": {
-        "buildType": "spl_beta",
-        "long": "select to build variant 'spl/beta'",
-        "settings": {
-          "FLAVOR": "spl",
-          "SUBSYSTEM": "beta"
-        },
-        "short": "spl/beta"
-      },
-      "spl/gamma": {
-        "buildType": "spl_gamma",
-        "long": "select to build variant 'spl/gamma'",
-        "settings": {
-          "FLAVOR": "spl",
-          "SUBSYSTEM": "gamma"
-        },
-        "short": "spl/gamma"
-      },
-      "spl/disco": {
-        "buildType": "spl_disco",
-        "long": "select to build variant 'spl/disco'",
-        "settings": {
-          "FLAVOR": "spl",
-          "SUBSYSTEM": "disco"
-        },
-        "short": "spl/disco"
+        "short": "CustA/Disco"
       }
     },
-    "default": "disco"
+    "default": "CustA/Disco"
   }
 }

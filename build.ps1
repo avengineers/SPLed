@@ -85,12 +85,15 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
         }
 
         # Run test cases to be found in folder test/
-        # consider Filter if given
         $filterCmd = ''
-        if ($Filter) {
+        # Consider environment variable BRANCH_NAME (e.g. on Jenkins) to filter tests in release branch builds
+        if ($Env:BRANCH_NAME -and ($Env:BRANCH_NAME -match 'release/([^/]+/[^/]+)(.*)')) {
+            $filterCmd = "-k " + $Matches[1]
+        }
+        # otherwise consider command line option '-filter' if given
+        elseif ($Filter) {
             $filterCmd = "-k '$Filter'"
         }
-
         Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test --capture=tee-sys --junitxml=test/output/test-report.xml -o junit_logging=all $filterCmd"
     }
     else {
@@ -164,7 +167,7 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
 # Always set the $InformationPreference variable to "Continue" globally, this way it gets printed on execution and continues execution afterwards.
 $InformationPreference = "Continue"
 
-# Stop on first PS error
+# Stop on first error
 $ErrorActionPreference = "Stop"
 
 Push-Location $PSScriptRoot
@@ -175,8 +178,9 @@ try {
         if (-Not (Test-Path -Path '.bootstrap')) {
             New-Item -ItemType Directory '.bootstrap'
         }
+
         # Installation of Scoop, Python and pipenv via bootstrap
-        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.0.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
+        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.1.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }

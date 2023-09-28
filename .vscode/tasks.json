@@ -84,9 +84,7 @@
             "id": "variant",
             "description": "Which variant do you want to select?",
             "options": [
-                "spl/alpha",
-                "spl/beta",
-                "spl/gamma",
+                "CustA/Disco",
             ]
         }
     ]
