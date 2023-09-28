@@ -1,0 +1,7 @@
+
+#
+# Linking
+#
+CONFIG_LINKER_OUTPUT_FILE="spled.exe"
+CONFIG_LINKER_BYPRODUCTS_EXTENSIONS="map"
+# end of Linking

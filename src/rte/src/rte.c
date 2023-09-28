@@ -1,10 +1,13 @@
 #include "rte.h"
 #include <windows.h>
 
-// Internal variable to hold the power state
 static PowerState currentPowerState = POWER_STATE_OFF;
 static boolean powerKeyPressed = FALSE;
-static int lightValue = 0;
+static RGBColor lightValue = {
+    .red = 0,
+    .green = 0,
+    .blue = 0
+};
 
 void RteSetPowerState(PowerState state) {
     currentPowerState = state;
@@ -22,12 +25,12 @@ boolean RteGetPowerKeyPressed() {
     return powerKeyPressed;
 }
 
-void RteSetLightValue(int value) {
+void RteSetLightValue(RGBColor value) {
     lightValue = value;
 }
 
-int RteGetLightValue(void) {
-    return lightValue;
+void RteGetLightValue(RGBColor* value) {
+    *value = lightValue;
 }
 
 boolean RteIsKeyPressed(int key) {
