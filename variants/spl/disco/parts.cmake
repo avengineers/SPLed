@@ -1,0 +1,7 @@
+spl_add_component(src/main)
+spl_add_component(src/rte)
+spl_add_component(src/spled)
+spl_add_component(src/power_signal_processing)
+spl_add_component(src/light_controller)
+spl_add_component(src/keyboard_interface)
+spl_add_component(src/console_interface)
