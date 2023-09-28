@@ -27,8 +27,17 @@
           "SUBSYSTEM": "gamma"
         },
         "short": "spl/gamma"
+      },
+      "spl/disco": {
+        "buildType": "spl_disco",
+        "long": "select to build variant 'spl/disco'",
+        "settings": {
+          "FLAVOR": "spl",
+          "SUBSYSTEM": "disco"
+        },
+        "short": "spl/disco"
       }
     },
-    "default": "alpha"
+    "default": "disco"
   }
 }

@@ -1,14 +1,12 @@
 #include "autoconf.h"
-
-#if CONFIG_DUMMY_INTERFACE_DEFINED
-#include "component.h"
-extern int dummyInterface(void);
-#endif
+#include "spled.h"
 
 int main(void) {
-#if (CONFIG_DUMMY_INTERFACE_DEFINED)
-    return dummyInterface();
-#else
+
+    while (1)
+    {
+        spled();
+    }
+    
     return 0;
-#endif
 }
