@@ -1,40 +1,79 @@
 /**
  * @file keyboard_interface.c
- * @brief Module to interface with keyboard and detect specific key presses.
+ * @brief Module to interface with keyboard and debounce specific key presses/releases.
  */
 
 #include "keyboard_interface.h"
 #include "rte.h"
-static boolean previousState = FALSE; /**< Previous state of the TARGET_KEY. */
 
-/*!
- * @rst
- *
- * .. impl:: Keyboard Interface
- *    :id: SWIMPL_KI-001
- *    :implements: SWDD_KI-001, SWDD_KI-002, SWDD_KI-003
- * @endrst
- *
- * @brief Interface with the keyboard and detect state changes of the TARGET_KEY.
- *
- * This function should be called periodically to detect state changes of the TARGET_KEY.
- * If the TARGET_KEY was just pressed, RteSetPowerKeyPressed will be called with TRUE.
- * If the TARGET_KEY was just released, RteSetPowerKeyPressed will be called with FALSE.
- *
- * Note: The frequency of calling this function will determine system's responsiveness to key presses.
-*/
+/**
+ * @enum KeyState
+ * @brief States for the debouncing state machine.
+ */
+typedef enum {
+    INIT,     /**< Initial state, waiting for debounce timers. */
+    PRESSED,  /**< Key has been debounced as pressed. */
+    RELEASED  /**< Key has been debounced as released. */
+} KeyState;
+
+static KeyState currentState = INIT; /**< Current state of the debouncing state machine. */
+static unsigned int pressCounter = 0; /**< Counter for key presses. */
+static unsigned int releaseCounter = 0; /**< Counter for key releases. */
+
+/**
+ * @brief Debounces key presses and releases.
+ * 
+ * This function utilizes a state machine to debounce key presses and releases.
+ * It must be called periodically to process the debouncing. The behavior is controlled
+ * by two configuration parameters: CFG_DEBOUNCE_PRESS and CFG_DEBOUNCE_RELEASE which determine 
+ * how many consecutive calls with the key pressed/released are required to acknowledge the 
+ * state transition.
+ */
 void keyboardInterface() {
-    boolean currentState = RteIsKeyPressed(TARGET_KEY);
+    boolean powerKeyPressed = FALSE;
+    boolean keyStatus = RteIsKeyPressed(TARGET_KEY);
 
-    if (currentState && !previousState) {
-        // The key was just pressed
-        RteSetPowerKeyPressed(TRUE);
-    }
-    else if (!currentState && previousState) {
-        // The key was just released
-        RteSetPowerKeyPressed(FALSE);
+    // Update the counters
+    if (keyStatus) {
+        pressCounter++;
+        releaseCounter = 0; // reset release counter if key is pressed
+    } else {
+        releaseCounter++;
+        pressCounter = 0;  // reset press counter if key is released
     }
 
-    // Update the previous state
-    previousState = currentState;
+
+    switch (currentState) {
+        case INIT:
+            if (pressCounter >= CFG_DEBOUNCE_PRESS) {
+                powerKeyPressed = TRUE;
+                currentState = PRESSED;
+                releaseCounter = 0; // reset the counter after transition
+                pressCounter = 0; // reset the counter after transition
+            } else if (releaseCounter >= CFG_DEBOUNCE_RELEASE) {
+                currentState = RELEASED;
+                releaseCounter = 0; // reset the counter after transition
+                pressCounter = 0; // reset the counter after transition
+            }
+            break;
+
+        case PRESSED:
+            if (releaseCounter >= CFG_DEBOUNCE_RELEASE) {
+                currentState = RELEASED;
+                releaseCounter = 0; // reset the counter after transition
+            }
+            pressCounter = 0; // reset the counter after transition
+            break;
+
+        case RELEASED:
+            if (pressCounter >= CFG_DEBOUNCE_PRESS) {
+                powerKeyPressed = TRUE;
+                currentState = PRESSED;
+                pressCounter = 0; // reset the counter after transition
+            }
+            releaseCounter = 0; // reset the counter after transition
+            break;
+    }
+
+    RteSetPowerKeyPressed(powerKeyPressed);
 }
