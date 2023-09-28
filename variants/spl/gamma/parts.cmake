@@ -1,1 +1,0 @@
-spl_add_component(src/main)

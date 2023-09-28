@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-conan = {version="==1.59.0"}
 cookiecutter = "*"
 gcovr = "*"
 hammocking = "*"
@@ -15,10 +14,20 @@ pytest-env = "*"
 pipenv = "*"
 testfixtures = "*"
 junitparser = "*"
-py7zr = "*"
 mashumaro = "*"
+loguru = "*"
 black = "*"
 flake8 = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinxcontrib-mermaid = "*"
+sphinx-needs = "*"
+sphinxcontrib-plantuml = "*"
+sphinx-test-reports = "*"
+doxysphinx = "*"
+sphinx-rtd-size = "*"
+sphinxcontrib-datatemplates = "*"
+pyelftools = "*"
 
 [requires]
 python_version = "3.11"

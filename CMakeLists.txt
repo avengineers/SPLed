@@ -1,25 +1,38 @@
 # cmake project definition
-cmake_minimum_required(VERSION 3.22.0)
+cmake_minimum_required(VERSION 3.24.0)
+cmake_policy(VERSION 3.24)
 
+# configure the current variant to be build
 set(VARIANT ${FLAVOR}/${SUBSYSTEM} CACHE STRING "Variant to build.")
 set(BUILD_KIT prod CACHE STRING "Target Group to build.")
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
-project(${VARIANT} CXX C ASM)
+if(BUILD_KIT STREQUAL prod)
+    project(${VARIANT} C ASM)
+else()
+    project(${VARIANT} C ASM CXX)
+    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic=)
+endif()
 
-# Fetch all external dependencies as modules into modules directory
+# Fetch all external dependencies into modules directory
 set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/build/modules CACHE INTERNAL "")
+set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
+
+# Fetch spl-core
 FetchContent_Declare(
     spl-core
     GIT_REPOSITORY https://github.com/avengineers/spl-core.git
-    GIT_TAG v2.9.0
+    GIT_TAG v3.0.0
 )
 FetchContent_MakeAvailable(spl-core)
 
+# Include spl-core
+# TODO: move this to spl-core
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(${spl-core_SOURCE_DIR}/cmake/spl.cmake)
-include(modules/spl_extension_zip/index.cmake)
+
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
 # TODO: refactor/remove; we want to explicitly add includes where required

@@ -1,9 +1,17 @@
 {
         "recommendations": [
-            "ms-vscode.cmake-tools",
-            "ms-vscode.cpptools-extension-pack",
-            "donjayamanne.python-extension-pack",
             "mhutchie.git-graph",
-            "avengineers.show-link-list"
+            "ms-vscode.cmake-tools",
+            "twxs.cmake",
+            "ms-vscode.cpptools",
+            "ms-vscode.cpptools-themes",
+            "visualstudioexptteam.intellicode-api-usage-examples",
+            "visualstudioexptteam.vscodeintellicode",
+            "haugerbr.project-tasks",
+            "avengineers.show-link-list",
+            "ms-python.vscode-pylance",
+            "ms-python.python",
+            "donjayamanne.python-environment-manager",
+            "felipecaputo.git-project-manager"
         ]
 }

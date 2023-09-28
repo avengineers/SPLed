@@ -17,14 +17,17 @@ __pycache__/
 # Any backup file of text editors
 *.bak
 
+# Any log file
+*.log
+
 # Backup files of KConfig
 *.old
 
 # Generated IDEA project files
 .idea
 
-# Any log file created
-*.log
-
 # bootstrap files are downloaded during installation
 /.bootstrap
+
+# Drawio Backup Files
+*.drawio.bkp

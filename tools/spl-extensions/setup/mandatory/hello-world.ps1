@@ -1,1 +1,0 @@
-Write-Information -Tags "Info:" -MessageData "This is an splExtension example at $PSScriptRoot" -InformationAction Continue
