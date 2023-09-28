@@ -13,6 +13,6 @@ void spled(void) {
     powerSignalProcessing();
     lightController();
     consoleInterface();
-    // simple main loop of  10 milliseconds
+    // simple main loop of 10 milliseconds
     usleep(10000);
 }
