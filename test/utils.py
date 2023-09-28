@@ -123,7 +123,8 @@ def build_and_expect_default(variant: str, prepackaging_artifacts_basenames: Lis
 
     assert 0 == result.returncode
     for file_type in ["exe"]:
-        expect_binary(variant, file_name=f"my_main.{file_type}")
+        # TODO: excuse me what? Why is the executable name hardcoded here?
+        expect_binary(variant, file_name=f"spled.{file_type}")
     for file_type in ["hex", "bin", "crc"]:
         for artifact_basename in prepackaging_artifacts_basenames:
             expect_binary(variant, file_name=f"{artifact_basename}.{file_type}")
