@@ -1,4 +1,5 @@
 #include "rte.h"
+#include <windows.h>
 
 // Internal variable to hold the power state
 static PowerState currentPowerState = POWER_STATE_OFF;
@@ -27,4 +28,8 @@ void RteSetLightValue(int value) {
 
 int RteGetLightValue(void) {
     return lightValue;
+}
+
+boolean RteIsKeyPressed(int key) {
+    return (GetAsyncKeyState(key) & 0x8000) != 0;
 }
