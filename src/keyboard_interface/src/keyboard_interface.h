@@ -1,7 +1,9 @@
 #ifndef __keyboard_interface_h__
 #define __keyboard_interface_h__
 
-#include "rte.h"
+#ifndef TARGET_KEY
+#define TARGET_KEY 'P' /**< Target key to monitor. Default is 'P'. Can be overridden with a preprocessor define. */
+#endif
 
 void keyboardInterface();
 
