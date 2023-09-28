@@ -1,6 +1,5 @@
 /**
- * @file test_power_signal_processing.cc
- * @brief GTest file for the power signal processing module.
+ * @file 
  */
 
 #include <gtest/gtest.h>
