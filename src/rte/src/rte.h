@@ -6,7 +6,7 @@
 #ifndef __rte_h__
 #define __rte_h__
 
-/** @brief Boolean type definition. */
+ /** @brief Boolean type definition. */
 typedef unsigned char boolean;
 
 /** @brief Macro for boolean TRUE. */
@@ -20,60 +20,73 @@ typedef unsigned char boolean;
  */
 typedef enum {
     POWER_STATE_OFF = 0, /**< Power is turned off. */
-    POWER_STATE_ON  = 1  /**< Power is turned on. */
+    POWER_STATE_ON = 1  /**< Power is turned on. */
 } PowerState;
 
 /**
+ * @brief Struct representing an RGB color.
+ */
+typedef struct {
+    int red; /**< The red component of the color. */
+    int green; /**< The green component of the color. */
+    int blue; /**< The blue component of the color. */
+} RGBColor;
+
+/**
  * @brief Set the current power state.
- * 
+ *
  * @param state The desired power state.
  */
 void RteSetPowerState(PowerState state);
 
 /**
  * @brief Retrieve the current power state.
- * 
+ *
  * @return The current power state.
  */
 PowerState RteGetPowerState(void);
 
 /**
  * @brief Get the state of the power key being pressed.
- * 
+ *
  * @return TRUE if the power key was pressed, FALSE otherwise.
  */
 boolean RteGetPowerKeyPressed(void);
 
 /**
  * @brief Set the state of the power key being pressed.
- * 
+ *
  * @param value The state to set for the power key press.
  */
 void RteSetPowerKeyPressed(boolean value);
 
 /**
- * @brief Set the value of the light.
- * 
- * @param value An integer representing the desired light value.
+ * @brief Sets the value of the RGB light.
+ *
+ * This function sets the value of the RGB light to the specified color.
+ *
+ * @param value The RGB color to set the light to.
  */
-void RteSetLightValue(int value);
+void RteSetLightValue(RGBColor value);
 
 /**
- * @brief Retrieve the current light value.
- * 
- * @return The current light value.
+ * @brief Gets the current value of the RGB light.
+ *
+ * This function retrieves the current value of the RGB light and stores it in the provided RGBColor pointer.
+ *
+ * @param value A pointer to an RGBColor struct to store the current light value in.
  */
-int RteGetLightValue(void);
+void RteGetLightValue(RGBColor* value);
 
 /**
  * @brief Check if the given key is currently pressed.
- * 
- * This function checks the most significant bit of the return value from GetAsyncKeyState 
+ *
+ * This function checks the most significant bit of the return value from GetAsyncKeyState
  * to determine if the key is currently pressed or not.
- * 
+ *
  * @param key The virtual-key code of the key to be checked.
  * @return TRUE if the key is pressed, FALSE otherwise.
  */
-boolean RteIsKeyPressed(int key);
+    boolean RteIsKeyPressed(int key);
 
 #endif // __rte_h__
