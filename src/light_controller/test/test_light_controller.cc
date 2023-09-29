@@ -59,3 +59,77 @@ TEST(light_controller, test_light_on_and_off)
         lightController();
     }
 }
+
+
+
+/*!
+* @rst
+*
+* .. test:: light_controller.test_light_blinking
+*    :id: TS_LC-002
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-003
+*
+* @endrst
+*/
+TEST(light_controller, test_light_blinking)
+{
+    CREATE_MOCK(mymock);
+
+    // Power is ON, the light should initially turn ON.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
+    RGBColor onColor = { .red = 0, .green = 128, .blue = 55 };
+    RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
+    // Expect that the light value changes to ON color (only once, no redundant updates).
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+    lightController();
+
+    // Test blinking behavior. The light should toggle between ON and OFF colors.
+    for (int i = 0; i < 5; i++) {
+        // Expect that the light value changes to OFF color.
+        EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(offColor))).Times(1);
+        lightController();
+        // Expect that the light value changes back to ON color.
+        EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+        lightController();
+    }
+}
+
+
+
+/*!
+* @rst
+*
+* .. test:: light_controller.test_min_blink_speed
+*    :id: TS_LC-003
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-004
+*
+* @endrst
+*/
+TEST(light_controller, test_min_blink_speed)
+{
+    CREATE_MOCK(mymock);
+
+    // Power is ON, the light should initially turn ON.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
+    RGBColor onColor = { .red = 0, .green = 128, .blue = 55 };
+    RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
+    // Expect that the light value changes to ON color (only once, no redundant updates).
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+    lightController();
+
+
+
+    // Set the main knob value to a value that results in a minimum blink speed.
+    EXPECT_CALL(mymock, RteGetMainKnobValue()).WillRepeatedly(Return(100)); // Adjust as needed.
+    // The light should still blink, but at the minimum speed.
+    for (int i = 0; i < 5; i++) {
+        // Expect that the light value changes to OFF color.
+        EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(offColor))).Times(1);
+        lightController();
+        // Expect that the light value changes back to ON color.
+        EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+        lightController();
+    }
+}

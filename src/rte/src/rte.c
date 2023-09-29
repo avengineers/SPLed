@@ -12,6 +12,9 @@ static RGBColor lightValue = {
 };
 static percentage_t main_knob_value = 0;
 
+// Define a variable to control blink speed
+int blinkSpeed = 50;
+
 void RteSetPowerState(PowerState state) {
     currentPowerState = state;
 }

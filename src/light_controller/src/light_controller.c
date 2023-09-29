@@ -27,6 +27,15 @@ void lightController(void) {
     // Fetch the power state
     PowerState powerState = RteGetPowerState();
 
+    // Fetch the main knob value
+    percentage_t mainKnobValue = RteGetMainKnobValue();
+
+    // Calculate blink speed based on main knob value
+    int blinkSpeed = 100 - mainKnobValue; // Adjust this formula as needed
+
+    // Ensure there's a minimum blink speed
+    blinkSpeed = (blinkSpeed > 10) ? blinkSpeed : 10; // Adjust the minimum speed as needed
+
     switch (currentLightState) {
     case LIGHT_OFF:
         if (powerState != POWER_STATE_OFF) {
@@ -55,6 +64,33 @@ void lightController(void) {
 
             // Transition to LIGHT_OFF state
             currentLightState = LIGHT_OFF;
+        }
+        else {
+            // Implement blinking based on blinkSpeed
+            static int blinkCounter = 0;
+            blinkCounter++;
+            if (blinkCounter >= blinkSpeed) {
+                // Toggle the LED state
+                if (currentLightState == LIGHT_ON) {
+                    RGBColor color = {
+                        .red = 0,
+                        .green = 0,
+                        .blue = 0
+                    };
+                    RteSetLightValue(color);
+                    currentLightState = LIGHT_OFF;
+                }
+                else {
+                    RGBColor color = {
+                        .red = 0,
+                        .green = 128,
+                        .blue = 55
+                    };
+                    RteSetLightValue(color);
+                    currentLightState = LIGHT_ON;
+                }
+                blinkCounter = 0;  // Reset the counter
+            }
         }
         break;
     }
