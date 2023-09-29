@@ -3,6 +3,8 @@
 
 static PowerState currentPowerState = POWER_STATE_OFF;
 static boolean powerKeyPressed = FALSE;
+static boolean arrowUpKeyPressed = FALSE;
+static boolean arrowDownKeyPressed = FALSE;
 static RGBColor lightValue = {
     .red = 0,
     .green = 0,
