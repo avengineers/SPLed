@@ -12,6 +12,17 @@ extern "C" {
 
 #include "mockup_src_main_control_knob.h"
 
+
+/*!
+* @rst
+*
+* .. test:: main_control_knob.arrow_up_increases_brightness
+*    :id: TS_MCK-001
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_MCK-001
+*
+* @endrst
+*/
 // Test cases for main_control_knob module
 TEST(main_control_knob, arrow_up_increases_brightness)
 {
@@ -34,6 +45,16 @@ TEST(main_control_knob, arrow_up_increases_brightness)
 
  
 
+/*!
+* @rst
+*
+* .. test:: main_control_knob.arrow_down_decreases_brightness
+*    :id: TS_MCK-002
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_MCK-002
+*
+* @endrst
+*/
 TEST(main_control_knob, arrow_down_decreases_brightness)
 {
      CREATE_MOCK(mymock);
