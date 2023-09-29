@@ -33,6 +33,13 @@ typedef struct {
 } RGBColor;
 
 /**
+ * @typedef Percentage
+ * @brief Represents a positive percentage value ranging from 0 to 100.
+ */
+typedef unsigned int percentage_t;
+
+
+/**
  * @brief Set the current power state.
  *
  * @param state The desired power state.
@@ -88,5 +95,27 @@ void RteGetLightValue(RGBColor* value);
  * @return TRUE if the key is pressed, FALSE otherwise.
  */
 boolean RteIsKeyPressed(int key);
+
+/**
+ * @brief Sets the value of the main knob.
+ * 
+ * This function sets the value of the main knob. The value should 
+ * represent a percentage and thus must be between 0 and 100 (inclusive).
+ * 
+ * @param[in] value Percentage value to set. Must be between 0 and 100.
+ * 
+ * @note Values greater than 100 will be clamped to 100.
+ */
+void RteSetMainKnobValue(percentage_t value);
+
+/**
+ * @brief Gets the value of the main knob.
+ * 
+ * This function retrieves the current percentage value of the main knob.
+ * 
+ * @return The percentage value of the main knob, between 0 and 100 (inclusive).
+ */
+percentage_t RteGetMainKnobValue(void);
+
 
 #endif // __rte_h__

@@ -8,6 +8,7 @@ static RGBColor lightValue = {
     .green = 0,
     .blue = 0
 };
+static percentage_t main_knob_value = 0;
 
 void RteSetPowerState(PowerState state) {
     currentPowerState = state;
@@ -35,4 +36,17 @@ void RteGetLightValue(RGBColor* value) {
 
 boolean RteIsKeyPressed(int key) {
     return (GetAsyncKeyState(key) & 0x8000) != 0;
+}
+
+
+void RteSetMainKnobValue(percentage_t value) {
+    if (value > 100) {
+        main_knob_value = 100;
+    } else {
+        main_knob_value = value;
+    }
+}
+
+percentage_t RteGetMainKnobValue(void) {
+    return main_knob_value;
 }
