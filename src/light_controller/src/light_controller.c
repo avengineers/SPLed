@@ -16,6 +16,38 @@ typedef enum {
 } LightState;
 
 static LightState currentLightState = LIGHT_OFF;  /**< Current state of the light. */
+static int blinkCounter = 0;
+static boolean blinkState = FALSE;
+
+static void turnLightOff(void) {
+    RGBColor color = {
+        .red = 0,
+        .green = 0,
+        .blue = 0
+    };
+    blinkState = FALSE;
+    RteSetLightValue(color);
+}
+
+static void turnLightOn(void) {
+    RGBColor color = {
+        .red = 0,
+        .green = 128,
+        .blue = 55
+    };
+    blinkState = TRUE;
+    RteSetLightValue(color);
+}
+
+static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
+    // Calculate blink period based on main knob value
+    unsigned int blinkPeriod = 100 - (mainKnobValue); // Adjust this formula as needed
+
+    // Ensure there's a minimum blink period
+    blinkPeriod = (blinkPeriod > 10) ? blinkPeriod : 10; // Adjust the minimum period as needed
+
+    return blinkPeriod;
+}
 
 /**
  * @brief Controls the light behavior based on the power state.
@@ -24,72 +56,40 @@ static LightState currentLightState = LIGHT_OFF;  /**< Current state of the ligh
  * when there's a change in the power state to ensure no redundant updates.
  */
 void lightController(void) {
-    // Fetch the power state
+
     PowerState powerState = RteGetPowerState();
-
-    // Fetch the main knob value
     percentage_t mainKnobValue = RteGetMainKnobValue();
+    unsigned int blinkPeriod = calculateBlinkPeriod(mainKnobValue);
 
-    // Calculate blink speed based on main knob value
-    int blinkSpeed = 100 - mainKnobValue; // Adjust this formula as needed
-
-    // Ensure there's a minimum blink speed
-    blinkSpeed = (blinkSpeed > 10) ? blinkSpeed : 10; // Adjust the minimum speed as needed
+#if LOGGING_ENABLED
+    RteLoggerPrintToConsole(LOG_LEVEL_DEBUG, "Light controller: power state = %d, main knob value = %d, blink period = %d", powerState, mainKnobValue, blinkPeriod);
+#endif
 
     switch (currentLightState) {
     case LIGHT_OFF:
+        blinkCounter = 0;
         if (powerState != POWER_STATE_OFF) {
-            // Transition action: turn the light on with specific color
-            RGBColor color = {
-                .red = 0,
-                .green = 128,
-                .blue = 55
-            };
-            RteSetLightValue(color);
-
-            // Transition to LIGHT_ON state
+            turnLightOn();
             currentLightState = LIGHT_ON;
         }
         break;
 
     case LIGHT_ON:
         if (powerState == POWER_STATE_OFF) {
-            // Transition action: turn the light off
-            RGBColor color = {
-                .red = 0,
-                .green = 0,
-                .blue = 0
-            };
-            RteSetLightValue(color);
-
-            // Transition to LIGHT_OFF state
+            turnLightOff();
             currentLightState = LIGHT_OFF;
         }
         else {
-            // Implement blinking based on blinkSpeed
-            static int blinkCounter = 0;
             blinkCounter++;
-            if (blinkCounter >= blinkSpeed) {
+            if (blinkCounter >= blinkPeriod) {
                 // Toggle the LED state
-                if (currentLightState == LIGHT_ON) {
-                    RGBColor color = {
-                        .red = 0,
-                        .green = 0,
-                        .blue = 0
-                    };
-                    RteSetLightValue(color);
-                    currentLightState = LIGHT_OFF;
+                if (blinkState == TRUE) {
+                    turnLightOff();
                 }
                 else {
-                    RGBColor color = {
-                        .red = 0,
-                        .green = 128,
-                        .blue = 55
-                    };
-                    RteSetLightValue(color);
-                    currentLightState = LIGHT_ON;
+                    turnLightOn();
                 }
-                blinkCounter = 0;  // Reset the counter
+                blinkCounter = 0;
             }
         }
         break;

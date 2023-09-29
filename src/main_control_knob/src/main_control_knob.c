@@ -6,10 +6,9 @@
 
 
 #include "main_control_knob.h"
-#include <windows.h>
 #include "rte.h"
 
- /*!
+/*!
 * @rst
 *
 * .. impl:: Main Control Knob
@@ -19,36 +18,24 @@
 */
 // Function to handle knob control input.
 void knobControlInput(void) {
-    if (RteIsKeyPressed(VK_UP)) {
-        // Arrow Up key is pressed.
-        percentage_t currentValue = RteGetMainKnobValue();
-        if (currentValue < 100) {
-            // Increment brightness by 5 with a maximum of 100.
-            currentValue += 5;
-            RteSetMainKnobValue(currentValue);
-
-            // Adjust the color brightness accordingly (for example, increasing green component).
-            RGBColor currentColor;
-            RteGetLightValue(&currentColor);
-            if (currentColor.green < 255) {
-                currentColor.green += 5; // Increase green component.
-            }
-            RteSetLightValue(currentColor);
+    percentage_t currentValue = RteGetMainKnobValue();
+    if (RteIsKeyPressed(CONTROL_KEY_UP)) {
+        // Increase brightness by 5 with a maximum of 100.
+        if (currentValue < (100 - KNOB_UPDATE_INCREMENT)) {
+            currentValue += KNOB_UPDATE_INCREMENT;
         }
-    } else if (RteIsKeyPressed(VK_DOWN)) {
-        // Arrow Down key is pressed.
-        percentage_t currentValue = RteGetMainKnobValue();
-        if (currentValue > 0) {
-            // Decrease brightness by 5 with a minimum of 0.
-            currentValue -= 5;
-            RteSetMainKnobValue(currentValue);
-            // Adjust the color brightness accordingly (for example, decreasing green component).
-            RGBColor currentColor;
-            RteGetLightValue(&currentColor);
-            if (currentColor.green > 0) {
-                currentColor.green -= 5; // Decrease green component.
-            }
-            RteSetLightValue(currentColor);
+        else {
+            currentValue = 100;
         }
     }
+    else if (RteIsKeyPressed(CONTROL_KEY_DOWN)) {
+        // Decrease brightness by 5 with a minimum of 0.
+        if (currentValue > KNOB_UPDATE_INCREMENT) {
+            currentValue -= KNOB_UPDATE_INCREMENT;
+        }
+        else {
+            currentValue = 0;
+        }
+    }
+    RteSetMainKnobValue(currentValue);
 }

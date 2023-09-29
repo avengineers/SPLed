@@ -1,5 +1,6 @@
 #include "rte.h"
 #include <windows.h>
+#include <stdio.h>
 
 static PowerState currentPowerState = POWER_STATE_OFF;
 static boolean powerKeyPressed = FALSE;
@@ -10,7 +11,7 @@ static RGBColor lightValue = {
     .green = 0,
     .blue = 0
 };
-static percentage_t main_knob_value = 0;
+static percentage_t main_knob_value = 50;
 
 // Define a variable to control blink speed
 int blinkSpeed = 50;
@@ -47,7 +48,8 @@ boolean RteIsKeyPressed(int key) {
 void RteSetMainKnobValue(percentage_t value) {
     if (value > 100) {
         main_knob_value = 100;
-    } else {
+    }
+    else {
         main_knob_value = value;
     }
 }
@@ -55,3 +57,30 @@ void RteSetMainKnobValue(percentage_t value) {
 percentage_t RteGetMainKnobValue(void) {
     return main_knob_value;
 }
+
+
+#if LOGGING_ENABLED
+static const char* LogLevelToString(LogLevel level) {
+    switch (level) {
+    case LOG_LEVEL_ERROR:   return "ERROR";
+    case LOG_LEVEL_WARNING: return "WARNING";
+    case LOG_LEVEL_INFO:    return "INFO";
+    case LOG_LEVEL_DEBUG:   return "DEBUG";
+    default:          return "UNKNOWN";
+    }
+}
+
+void RteLoggerPrintToConsole(LogLevel level, const char* message, ...) {
+    va_list args;
+    va_start(args, message);
+
+    // Print log level
+    printf("[%s] ", LogLevelToString(level));
+    // Print message
+    vprintf(message, args);
+    // Print a new line
+    printf("\n");
+
+    va_end(args);
+}
+#endif
