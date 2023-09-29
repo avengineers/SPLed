@@ -87,6 +87,6 @@ void RteGetLightValue(RGBColor* value);
  * @param key The virtual-key code of the key to be checked.
  * @return TRUE if the key is pressed, FALSE otherwise.
  */
-    boolean RteIsKeyPressed(int key);
+boolean RteIsKeyPressed(int key);
 
 #endif // __rte_h__
