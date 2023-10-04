@@ -7,6 +7,7 @@ using namespace testing;
 extern "C" {
 #include "light_controller.h"
 #include "rte.h"
+    extern unsigned int calculateBlinkPeriod(percentage_t mainKnobValue);
 }
 
 #include "mockup_src_light_controller.h" // Assuming you have mock sources for the light controller.
@@ -21,6 +22,8 @@ MATCHER_P(RGBColorEq, expected, "") {
     return areRGBColorsEqual(&arg, &expected);
 }
 
+const RGBColor onColor = { .red = 0, .green = 128, .blue = 55 };
+const RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
 
 /*!
 * @rst
@@ -28,7 +31,7 @@ MATCHER_P(RGBColorEq, expected, "") {
 * .. test:: light_controller.test_light_on_and_off
 *    :id: TS_LC-001
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-001, SWDD_LC-002
+*    :specified: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004
 *
 * @endrst
 */
@@ -43,7 +46,6 @@ TEST(light_controller, test_light_on_and_off)
 
     // Power turns ON, so the light should turn ON.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
-    RGBColor onColor = { .red = 0, .green = 128, .blue = 55 };
     // Expect that the light value changes to ON color (only once, no redundant updates).
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
     for (int i = 0; i < 10; i++) {
@@ -52,10 +54,96 @@ TEST(light_controller, test_light_on_and_off)
 
     // Power turns OFF, so the light should turn OFF.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_OFF));
-    RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
     // Expect that the light value changes to OFF color (only once, no redundant updates).
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(offColor))).Times(1);
     for (int i = 0; i < 10; i++) {
         lightController();
     }
 }
+
+/*!
+* @rst
+*
+* .. test:: light_controller.test_light_blinking
+*    :id: TS_LC-002
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-002
+*
+* @endrst
+*/
+TEST(light_controller, test_light_blinking)
+{
+    CREATE_MOCK(mymock);
+
+    // Set the initial power state to ON so the light can blink
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
+
+    // Assume main knob value is 50, so blinkPeriod will be 50.
+    EXPECT_CALL(mymock, RteGetMainKnobValue()).WillRepeatedly(Return(50));
+
+    // Expect that the light value changes to ON color (only once, no redundant updates).
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+    lightController();
+
+    // Call lightController repeatedly to simulate time passing and check the light state
+    for (int i = 0; i < 49; i++) {
+        EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0);
+        lightController();
+    }
+
+    // Expect that the light value changes to OFF color (only once, no redundant updates).
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(offColor))).Times(1);
+    lightController();
+
+    // Call lightController repeatedly to simulate time passing and check the light state
+    for (int i = 0; i < 49; i++) {
+        EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0);
+        lightController();
+    }
+
+    // Expect that the light value changes to ON color (only once, no redundant updates).
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+    lightController();
+}
+
+
+// Define a test fixture class
+class BlinkPeriodTest : public ::testing::TestWithParam<struct TestParam> {
+};
+
+// Define a struct to hold the parameters for each test case
+struct TestParam {
+    percentage_t mainKnobValue;
+    unsigned int expectedBlinkPeriod;
+};
+
+/*!
+* @rst
+*
+* .. test:: BlinkPeriodTest.CalculatesCorrectBlinkPeriod
+*    :id: TS_LC-003
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-002
+*
+* @endrst
+*/
+TEST_P(BlinkPeriodTest, CalculatesCorrectBlinkPeriod)
+{
+    // Get the parameters for this test case
+    TestParam param = GetParam();
+
+    unsigned int blinkPeriod = calculateBlinkPeriod(param.mainKnobValue);
+    EXPECT_EQ(blinkPeriod, param.expectedBlinkPeriod);
+}
+
+// Instantiate the test suite with a set of parameters
+INSTANTIATE_TEST_SUITE_P(
+    BlinkPeriodTests,
+    BlinkPeriodTest,
+    ::testing::Values(
+        TestParam{ 0, 100 },
+        TestParam{ 50, 50 },
+        TestParam{ 100, 10 }
+    )
+);
+
