@@ -9,6 +9,15 @@
           "SUBSYSTEM": "Disco"
         },
         "short": "CustA/Disco"
+      },
+      "CustB/Sleep": {
+        "buildType": "CustB_Sleep",
+        "long": "select to build variant 'CustB/Sleep'",
+        "settings": {
+          "FLAVOR": "CustB",
+          "SUBSYSTEM": "Sleep"
+        },
+        "short": "CustB/Sleep"
       }
     },
     "default": "CustA/Disco"

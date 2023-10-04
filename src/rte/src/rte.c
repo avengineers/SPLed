@@ -1,6 +1,7 @@
 #include "rte.h"
 #include <windows.h>
 #include <stdio.h>
+#include "autoconf.h"
 
 static PowerState currentPowerState = POWER_STATE_OFF;
 static boolean powerKeyPressed = FALSE;
@@ -12,9 +13,6 @@ static RGBColor lightValue = {
     .blue = 0
 };
 static percentage_t main_knob_value = 50;
-
-// Define a variable to control blink speed
-int blinkSpeed = 50;
 
 void RteSetPowerState(PowerState state) {
     currentPowerState = state;
