@@ -100,6 +100,24 @@ def create_variant_specific_junit_report(variant: str, junit_report_file: Path):
     xml.write()
 
 
+def build_reports_and_expect_success(variant):
+    """Reports generation shall not fail."""
+    assert 0 == (
+        SubprocessExecutor(
+            [
+                "build.bat",
+                "-variants",
+                variant,
+                "-target",
+                "reports",
+                "-reconfigure",
+            ]
+        )
+        .execute()
+        .returncode
+    )
+
+
 def build_and_expect_default(variant: str, prepackaging_artifacts_basenames: List[str] = [], target: str = "all"):
     """build wrapper shall build target and related outputs."""
 

@@ -31,6 +31,10 @@
             "Name": "dark"
         },
         {
+            "Source": "main",
+            "Name": "graphviz"
+        },
+        {
             "Source": "versions",
             "Name": "python311"
         },

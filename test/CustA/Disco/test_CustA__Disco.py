@@ -1,5 +1,5 @@
 import os.path
-from utils import build_and_expect_default, build_unittests_and_expect_success
+from utils import build_and_expect_default, build_unittests_and_expect_success, build_reports_and_expect_success
 
 
 class Test_CustA__Disco:
@@ -15,3 +15,6 @@ class Test_CustA__Disco:
 
     def test_build(self):
         build_and_expect_default(self.variant)
+
+    def test_reports(self):
+        build_reports_and_expect_success(self.variant)

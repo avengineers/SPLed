@@ -124,7 +124,8 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
 
         Foreach ($variant in $variantsSelected) {
             $buildKit = "prod"
-            if ($Target.Contains("unittests")) {
+            # Select 'test' build kit based on target
+            if ($Target.Contains("unittests") -or $Target.Contains("reports")) {
                 $buildKit = "test"
             }
             $buildFolder = "build/$variant/$buildKit"

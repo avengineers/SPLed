@@ -71,7 +71,7 @@ TEST(main_control_knob, test_main_arrow_down_decreases_brightness)
 * @rst
 *
 * .. test:: main_control_knob.test_main_does_not_decrease_bellow_zero
-*    :id: TS_MCK-002
+*    :id: TS_MCK-003
 *    :results: [[tr_link('title', 'case')]]
 *    :specified: SWDD_MCK-002
 *
@@ -98,7 +98,7 @@ TEST(main_control_knob, test_main_does_not_decrease_bellow_zero)
 * @rst
 *
 * .. test:: main_control_knob.test_main_does_not_increase_over_one_hundred
-*    :id: TS_MCK-002
+*    :id: TS_MCK-004
 *    :results: [[tr_link('title', 'case')]]
 *    :specified: SWDD_MCK-002
 *
