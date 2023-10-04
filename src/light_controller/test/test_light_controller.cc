@@ -31,7 +31,7 @@ const RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
 * .. test:: light_controller.test_light_on_and_off
 *    :id: TS_LC-001
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-001, SWDD_LC-002
+*    :specified: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004
 *
 * @endrst
 */
@@ -67,7 +67,7 @@ TEST(light_controller, test_light_on_and_off)
 * .. test:: light_controller.test_light_blinking
 *    :id: TS_LC-002
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-003, SWDD_LC-004
+*    :specified: SWDD_LC-002
 *
 * @endrst
 */
@@ -117,7 +117,16 @@ struct TestParam {
     unsigned int expectedBlinkPeriod;
 };
 
-// Define the test cases
+/*!
+* @rst
+*
+* .. test:: BlinkPeriodTest.CalculatesCorrectBlinkPeriod
+*    :id: TS_LC-003
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-002
+*
+* @endrst
+*/
 TEST_P(BlinkPeriodTest, CalculatesCorrectBlinkPeriod)
 {
     // Get the parameters for this test case

@@ -7,6 +7,12 @@
 #include "rte.h"
 
  /**
+  * * @rst
+  * .. impl:: Light state
+  *    :id: SWIMPL_LC-001
+  *    :implements: SWDD_LC-002
+  * @endrst
+  *
   * @enum LightState
   * @brief Represents the states of the light.
   */
@@ -19,6 +25,13 @@ static LightState currentLightState = LIGHT_OFF;  /**< Current state of the ligh
 static int blinkCounter = 0;
 static boolean blinkState = FALSE;
 
+/**
+ * * @rst
+ * .. impl:: Turn light off
+ *    :id: SWIMPL_LC-002
+ *    :implements: SWDD_LC-003
+ * @endrst
+ */
 static void turnLightOff(void) {
     RGBColor color = {
         .red = 0,
@@ -29,6 +42,13 @@ static void turnLightOff(void) {
     RteSetLightValue(color);
 }
 
+/**
+ * * @rst
+ * .. impl:: Turn light on
+ *    :id: SWIMPL_LC-003
+ *    :implements: SWDD_LC-003
+ * @endrst
+ */
 static void turnLightOn(void) {
     RGBColor color = {
         .red = 0,
@@ -39,6 +59,14 @@ static void turnLightOn(void) {
     RteSetLightValue(color);
 }
 
+/*!
+* @rst
+*
+* .. impl:: Calculate blink period
+*    :id: SWIMPL_LC-004
+*    :implements: SWDD_LC-002
+* @endrst
+*/
 static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
     // Calculate blink period based on main knob value
     unsigned int blinkPeriod = 100 - (mainKnobValue); // Adjust this formula as needed
