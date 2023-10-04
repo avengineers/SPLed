@@ -53,12 +53,6 @@ typedef struct {
 typedef unsigned int percentage_t;
 
 /**
- * @brief Represents a blink speed
- */
-extern int blinkSpeed;
-
-
-/**
  * @brief Set the current power state.
  *
  * @param state The desired power state.

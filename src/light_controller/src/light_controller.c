@@ -5,6 +5,7 @@
 
 #include "light_controller.h"
 #include "rte.h"
+#include "autoconf.h"
 
  /**
   * * @rst
@@ -22,8 +23,10 @@ typedef enum {
 } LightState;
 
 static LightState currentLightState = LIGHT_OFF;  /**< Current state of the light. */
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
 static int blinkCounter = 0;
 static boolean blinkState = FALSE;
+#endif
 
 /**
  * * @rst
@@ -38,7 +41,9 @@ static void turnLightOff(void) {
         .green = 0,
         .blue = 0
     };
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = FALSE;
+#endif
     RteSetLightValue(color);
 }
 
@@ -55,10 +60,13 @@ static void turnLightOn(void) {
         .green = 128,
         .blue = 55
     };
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = TRUE;
+#endif
     RteSetLightValue(color);
 }
 
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
 /*!
 * @rst
 *
@@ -76,6 +84,7 @@ static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
 
     return blinkPeriod;
 }
+#endif
 
 /**
  * @brief Controls the light behavior based on the power state.
@@ -87,7 +96,9 @@ void lightController(void) {
 
     PowerState powerState = RteGetPowerState();
     percentage_t mainKnobValue = RteGetMainKnobValue();
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     unsigned int blinkPeriod = calculateBlinkPeriod(mainKnobValue);
+#endif
 
 #if LOGGING_ENABLED
     RteLoggerPrintToConsole(LOG_LEVEL_DEBUG, "Light controller: power state = %d, main knob value = %d, blink period = %d", powerState, mainKnobValue, blinkPeriod);
@@ -95,7 +106,9 @@ void lightController(void) {
 
     switch (currentLightState) {
     case LIGHT_OFF:
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
         blinkCounter = 0;
+#endif
         if (powerState != POWER_STATE_OFF) {
             turnLightOn();
             currentLightState = LIGHT_ON;
@@ -107,6 +120,7 @@ void lightController(void) {
             turnLightOff();
             currentLightState = LIGHT_OFF;
         }
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
         else {
             blinkCounter++;
             if (blinkCounter >= blinkPeriod) {
@@ -120,6 +134,7 @@ void lightController(void) {
                 blinkCounter = 0;
             }
         }
+#endif
         break;
     }
 }

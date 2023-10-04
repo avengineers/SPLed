@@ -61,6 +61,7 @@ TEST(light_controller, test_light_on_and_off)
     }
 }
 
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
 /*!
 * @rst
 *
@@ -106,7 +107,6 @@ TEST(light_controller, test_light_blinking)
     lightController();
 }
 
-
 // Define a test fixture class
 class BlinkPeriodTest : public ::testing::TestWithParam<struct TestParam> {
 };
@@ -146,4 +146,4 @@ INSTANTIATE_TEST_SUITE_P(
         TestParam{ 100, 10 }
     )
 );
-
+#endif // CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE
