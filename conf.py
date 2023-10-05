@@ -62,15 +62,8 @@ extensions = ["sphinx_rtd_size"]
 
 sphinx_rtd_size_width = "90%"
 
-### mermaid config - @see https://pypi.org/project/sphinxcontrib-mermaid/
+# mermaid config - @see https://pypi.org/project/sphinxcontrib-mermaid/ #####
 extensions.append("sphinxcontrib.mermaid")
-
-### plantuml config ###########################################################
-extensions.append("sphinxcontrib.plantuml")
-conf_location = os.path.realpath(os.path.dirname(__file__))
-
-plantuml = f"plantuml.cmd {conf_location} -config {conf_location}/doc/_ext/plantuml.config"
-plantuml_output_format = "svg"
 
 # sphinx_needs ###############################################################
 extensions.append("sphinx_needs")
@@ -82,7 +75,7 @@ tr_report_template = "doc/test_report_template.txt"
 # todo #######################################################################
 extensions.append("sphinx.ext.todo")
 
-### Render Your Data Readable ################################################
+# Render Your Data Readable ##################################################
 # Enables adding Jupyter notebooks to toctree
 # @see https://sphinxcontribdatatemplates.readthedocs.io/en/latest/index.html
 extensions.append("sphinxcontrib.datatemplates")

@@ -1,9 +1,9 @@
 ﻿<#
 .DESCRIPTION
-    Wrapper for installing dependencies, running and testing the project
+  Wrapper for installing dependencies and building the product.
 
 .Notes
-On Windows, it may be required to call this script with the proper execution policy.
+  On Windows, it may be required to call this script with the proper execution policy.
 You can do this by issuing the following PowerShell command:
 
 PS C:\> powershell -ExecutionPolicy Bypass -File .\build.ps1
@@ -13,24 +13,25 @@ https://go.microsoft.com/fwlink/?LinkID=135170
 #>
 
 param(
+    [Parameter(Mandatory = $false, HelpMessage = 'Install all dependencies required to build. (Switch, default: false)')]
+    [switch]$install = $false,
     [Parameter(Mandatory = $false, HelpMessage = 'Clean build, wipe out all build artifacts. (Switch, default: false)')]
     [switch]$clean = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Install mandatory packages. (Switch, default: false)')]
-    [switch]$install = $false,
+    [Parameter(Mandatory = $false, HelpMessage = 'Build kit to be used. (String, default: "prod")')]
+    [string]$buildKit = "prod",
     [Parameter(Mandatory = $false, HelpMessage = 'Target to be built. (String, default: "all")')]
     [string]$target = "all",
-    [Parameter(Mandatory = $false, HelpMessage = 'Variants (projects) to be built (List of strings, leave empty to be asked or "all" for automatic build of all variants)')]
-    [ValidateNotNullOrEmpty()]
-    [string[]]$variants,
-    [Parameter(Mandatory = $false, HelpMessage = 'filter for selftests; define in pytest syntax: https://docs.pytest.org/en/6.2.x/usage.html; e.g. "PYRO_C or test/test_unittests.py"')]
+    [Parameter(Mandatory = $false, HelpMessage = 'Variants (of the product) to be built (List of strings, leave empty to be asked or "all" for automatic build of all variants)')]
+    [string[]]$variants = $null,
+    [Parameter(Mandatory = $false, HelpMessage = 'filter for selftests; define in pytest syntax: https://docs.pytest.org/en/6.2.x/usage.html; e.g. "Disco or test_CustA__Disco.py"')]
     [string]$filter = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Additional build arguments for Ninja (e.g., "-d explain -d keepdepfile" for debugging purposes)')]
     [string]$ninjaArgs = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Delete CMake cache and reconfigure')]
-    [switch]$reconfigure
+    [Parameter(Mandatory = $false, HelpMessage = 'Delete CMake cache and reconfigure. (Switch, default: false)')]
+    [switch]$reconfigure = $false
 )
 
-# Call a command and handle exit code
+# Call a command and handle its exit code
 Function Invoke-CommandLine {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingInvokeExpression', '', Justification = 'Usually this statement must be avoided (https://learn.microsoft.com/en-us/powershell/scripting/learn/deep-dives/avoid-using-invoke-expression?view=powershell-7.3), here it is OK as it does not execute unknown code.')]
     param (
@@ -73,13 +74,35 @@ function Test-RunningInCIorTestEnvironment {
     return [Boolean]($Env:JENKINS_URL -or $Env:PYTEST_CURRENT_TEST -or $Env:GITHUB_ACTIONS)
 }
 
-# start CMake with given targets
-Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filter, [String] $NinjaArgs, [bool] $Clean, [bool] $Reconfigure) {
-    if ("selftests" -eq $Target) {
+# Build with given parameters
+Function Invoke-Build {
+    param (
+        [Parameter(Mandatory = $false)]
+        [bool]$clean = $false,
+        [Parameter(Mandatory = $false)]
+        [string]$buildKit = "prod",
+        [Parameter(Mandatory = $true)]
+        [string]$target = "all",
+        [Parameter(Mandatory = $false)]
+        [string[]]$variants = $null,
+        [Parameter(Mandatory = $false)]
+        [string]$filter = "",
+        [Parameter(Mandatory = $false)]
+        [string]$ninjaArgs = "",
+        [Parameter(Mandatory = $false)]
+        [bool]$reconfigure = $false
+    )
+    if ("selftests" -eq $target) {
+        # Run python tests to test all relevant variants and platforms (build kits)
+        # (normally run in CI environment/Jenkins)
+        Write-Output "Running all selfstests ..."
+        
         $buildFolder = "build"
+
         # fresh and clean build
-        if ($Clean) {
+        if ($clean) {
             if (Test-Path -Path $buildFolder) {
+                Write-Output "Removing build folder '$buildFolder' ..."
                 Remove-Item $buildFolder -Force -Recurse
             }
         }
@@ -91,13 +114,13 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
             $filterCmd = "-k " + $Matches[1]
         }
         # otherwise consider command line option '-filter' if given
-        elseif ($Filter) {
-            $filterCmd = "-k '$Filter'"
+        elseif ($filter) {
+            $filterCmd = "-k '$filter'"
         }
-        Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test --capture=tee-sys --junitxml=test/output/test-report.xml -o junit_logging=all $filterCmd"
+        Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test $filterCmd"
     }
     else {
-        if ((-Not $Variants) -or ($Variants -eq 'all')) {
+        if ((-Not $variants) -or ($variants -eq 'all')) {
             $dirs = Get-Childitem -Include config.cmake -Path variants -Recurse | Resolve-Path -Relative
             $variantsList = @()
             Foreach ($dir in $dirs) {
@@ -105,8 +128,8 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
                 $variantsList += $variant
             }
             $variantsSelected = @()
-            if (-Not $Variants) {
-                # variant selection if not specified
+            if (-Not $variants) {
+                # variant selection by user if not specified
                 Write-Information -Tags "Info:" -MessageData "no '--variant <variant>' was given, please select from list:"
                 Foreach ($variant in $variantsList) {
                     Write-Information -Tags "Info:" -MessageData ("(" + [array]::IndexOf($variantsList, $variant) + ") " + $variant)
@@ -115,6 +138,7 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
                 Write-Information -Tags "Info:" -MessageData "Selected variant is: $variantsSelected"
             }
             else {
+                # otherwise build all variants
                 $variantsSelected = $variantsList
             }
         }
@@ -122,22 +146,25 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
             $variantsSelected = $Variants.Replace('\', '/').Replace('./variant/', '').Replace('./variants/', '').Split(',')
         }
 
+        # Select 'test' build kit based on target
+        if ($Target.Contains("unittests") -or $Target.Contains("reports")) {
+            $buildKit = "test"
+        }
+
         Foreach ($variant in $variantsSelected) {
-            $buildKit = "prod"
-            # Select 'test' build kit based on target
-            if ($Target.Contains("unittests") -or $Target.Contains("reports")) {
-                $buildKit = "test"
-            }
+            Write-Output "Building target '$target' with build kit '$buildKit' for variant '$variant' ..."
+
             $buildFolder = "build/$variant/$buildKit"
             # fresh and clean build
-            if ($Clean) {
+            if ($clean) {
                 if (Test-Path -Path $buildFolder) {
+                    Write-Output "Removing build folder '$buildFolder' ..."
                     Remove-Item $buildFolder -Force -Recurse
                 }
             }
 
             # delete CMake cache and reconfigure
-            if ($Reconfigure) {
+            if ($reconfigure) {
                 if (Test-Path -Path "$buildFolder/CMakeCache.txt") {
                     Remove-Item "$buildFolder/CMakeCache.txt" -Force
                 }
@@ -146,7 +173,7 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
                 }
             }
 
-            # CMake configure and generate
+            # CMake configure
             $variantDetails = $variant.Split('/')
             $platform = $variantDetails[0]
             $subsystem = $variantDetails[1]
@@ -157,15 +184,16 @@ Function Invoke-CMake-Build([String] $Target, [String] $Variants, [String] $Filt
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DFLAVOR=`"$platform`" -DSUBSYSTEM=`"$subsystem`" $additionalConfig"
 
             # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
-            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $Target -- -t cleandead"
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- -t cleandead"
             # CMake build
-            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $Target -- $NinjaArgs"
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- $ninjaArgs"
         }
     }
 }
 
 ## start of script
-# Always set the $InformationPreference variable to "Continue" globally, this way it gets printed on execution and continues execution afterwards.
+# Always set the $InformationPreference variable to "Continue" globally,
+# this way it gets printed on execution and continues execution afterwards.
 $InformationPreference = "Continue"
 
 # Stop on first error
@@ -176,28 +204,28 @@ Write-Output "Running in ${pwd}"
 
 try {
     if ($install) {
+        # Installation of Scoop, Python and pipenv via bootstrap
         if (-Not (Test-Path -Path '.bootstrap')) {
             New-Item -ItemType Directory '.bootstrap'
         }
-
-        # Installation of Scoop, Python and pipenv via bootstrap
         Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.1.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }
     else {
-        if ($clean) {
-            # Remove all build artifacts
-            $buildDir = ".\build"
-            if (Test-Path -Path $buildDir) {
-                Remove-Item $buildDir -Force -Recurse
-            }
-        }
+        # Call build system
         if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
             Initialize-EnvPath
         }
         # Call CMake
-        Invoke-CMake-Build -Target $target -Variants $variants -Filter $filter -NinjaArgs $ninjaArgs -Clean $clean -Reconfigure $reconfigure
+        Invoke-Build `
+            -target $target `
+            -buildKit $buildKit `
+            -variants $variants `
+            -clean $clean `
+            -reconfigure $reconfigure `
+            -ninjaArgs $ninjaArgs `
+            -filter $filter
     }
 }
 finally {

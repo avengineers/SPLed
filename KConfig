@@ -24,15 +24,15 @@ menu "Features"
     if BLINKING
         choice BLINKING_RATE
             prompt "Select Blinking Mode"
-            default FIXED
+            default BLINKING_RATE_FIXED
             config BLINKING_RATE_FIXED
-                bool "FIXED"
+                bool "Fixed"
 
             config BLINKING_RATE_MANUALLY_ADJUSTABLE
-                bool "MANUALLY_ADJUSTABLE"
+                bool "Manually adjustable"
 
             config BLINKING_RATE_AUTO_ADJUSTABLE
-                bool "AUTO_ADJUSTABLE"
+                bool "Automatically adjustable"
         endchoice
     endif
 
