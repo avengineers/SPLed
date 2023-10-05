@@ -152,7 +152,9 @@ void lightController(void) {
         }
 #endif
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
-        turnLightOn();
+        else {
+            turnLightOn();
+        }
 #endif
         break;
     }
