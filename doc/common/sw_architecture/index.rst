@@ -27,6 +27,5 @@ Feature Model
     * Immediate
 
 * Brightness
-    * Low
-    * Medium
-    * Medium to High
+    * Fixed
+    * Adjustable

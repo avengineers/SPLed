@@ -130,6 +130,28 @@ void RteSetMainKnobValue(percentage_t value);
  */
 percentage_t RteGetMainKnobValue(void);
 
+/**
+ * @brief Sets the value of the brightness.
+ *
+ * This function sets the value of the brightness. The value is based on
+ * the main knob value (percentage) and must be between 0 and 255 (inclusive).
+ *
+ * @param[in] value value to set. Must be between 0 and 255.
+ *
+ * @note Values greater than 255 will be clamped to 255.
+ */
+void RteSetBrightnessValue(unsigned int value);
+
+/**
+ * @brief Gets the value of the brightness.
+ *
+ * This function retrieves the current brightness value of the light.
+ *
+ * @return The percentage value of the brightness, between 0 and 255 (inclusive).
+ */
+unsigned int RteGetBrightnessValue(void);
+
+
 #if LOGGING_ENABLED
 /**
  * @brief Prints a message to the console.
