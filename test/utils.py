@@ -1,23 +1,35 @@
-#!/usr/bin/env python
 import os
 from subprocess import Popen, PIPE, STDOUT
 from pathlib import Path
 import pathlib
 import subprocess
-import tempfile
 import time
 from typing import Dict, List, Optional
 import os.path
 from junitparser import JUnitXml
 
 
-class SubprocessExecutor:
+class CommandLineExecutor:
     def __init__(self, cmd: str | List[str], cwd: Optional[Path] = None, env: Dict[str, str] = None):
+        """
+        A class for executing command line commands.
+
+        Args:
+        - cmd: A string or list of strings representing the command to be executed.
+        - cwd: An optional Path object representing the current working directory.
+        - env: An optional dictionary of environment variables to be used in the command execution.
+        """
         self.command = " ".join([cmd] if isinstance(cmd, str) else cmd)
         self.current_working_directory = cwd
         self.env = env
 
     def execute(self) -> subprocess.CompletedProcess:
+        """
+        Executes the command and returns a CompletedProcess object.
+
+        Returns:
+        - A subprocess.CompletedProcess object representing the result of the command execution.
+        """
         try:
             print(f"Running command: {self.command}")
             with Popen(self.command, cwd=str(self.current_working_directory or Path.cwd()), stdout=PIPE, stderr=STDOUT, bufsize=1, text=True, env=self.env, universal_newlines=True) as process:
@@ -28,27 +40,16 @@ class SubprocessExecutor:
         return process
 
 
-"""
-Utility functions needed by all test scripts.
-"""
-
-
-def get_test_data(filename=""):
-    return os.path.dirname(__file__) + "/data/" + filename
-
-
-def get_output_folder():
-    return os.path.dirname(__file__) + "/output"
-
-
 def build_unittests_and_expect_success(variant):
-    clean_gcov_files(variant)
+    delete_gcov_data_files(variant)
 
-    """Unit tests execution shall pass."""
+    """Unit tests execution shall be successful."""
     assert 0 == (
-        SubprocessExecutor(
+        CommandLineExecutor(
             [
                 "build.bat",
+                "-buildKit",
+                "test",
                 "-variants",
                 variant,
                 "-target",
@@ -60,9 +61,30 @@ def build_unittests_and_expect_success(variant):
         .returncode
     )
 
-    reports = find_junit_reports(variant)
-    for report in reports:
-        create_variant_specific_junit_report(variant, report)
+    """Coverage report shall be created"""
+    assert os.path.isfile(f"build/{variant}/test/coverage/index.html")
+
+
+def build_reports_and_expect_success(variant):
+    delete_gcov_data_files(variant)
+
+    """Reports generation shall be successful."""
+    assert 0 == (
+        CommandLineExecutor(
+            [
+                "build.bat",
+                "-buildKit",
+                "test",
+                "-variants",
+                variant,
+                "-target",
+                "all",
+                "-reconfigure",
+            ]
+        )
+        .execute()
+        .returncode
+    )
 
 
 def get_scoop_app_directory(app_name: str) -> Optional[Path]:
@@ -84,7 +106,16 @@ def find_junit_reports(variant) -> List[Path]:
     return junit_reports
 
 
-def clean_gcov_files(variant) -> None:
+def delete_gcov_data_files(variant) -> None:
+    """
+    Deletes all .gcda files found in the build directory for the specified variant.
+
+    Args:
+        variant (str): The build variant to clean up.
+
+    Returns:
+        None
+    """
     out_dir = pathlib.Path(f"build/{variant}/test/src")
 
     for file in out_dir.glob("**/*.gcda"):
@@ -100,29 +131,11 @@ def create_variant_specific_junit_report(variant: str, junit_report_file: Path):
     xml.write()
 
 
-def build_reports_and_expect_success(variant):
-    """Reports generation shall not fail."""
-    assert 0 == (
-        SubprocessExecutor(
-            [
-                "build.bat",
-                "-variants",
-                variant,
-                "-target",
-                "reports",
-                "-reconfigure",
-            ]
-        )
-        .execute()
-        .returncode
-    )
-
-
 def build_and_expect_default(variant: str, prepackaging_artifacts_basenames: List[str] = [], target: str = "all"):
     """build wrapper shall build target and related outputs."""
 
     while True:
-        result = SubprocessExecutor(["build.bat", "-variants", variant, "-target", target, "-reconfigure"]).execute()
+        result = CommandLineExecutor(["build.bat", "-variants", variant, "-target", target, "-reconfigure"]).execute()
 
         stdout_and_stderr_content = str(result.stderr) if result.stderr else ""
         if result.stdout:
