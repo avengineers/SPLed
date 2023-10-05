@@ -28,6 +28,21 @@ static int blinkCounter = 0;
 static boolean blinkState = FALSE;
 #endif
 
+static unsigned int getBrightnessValue() {
+#if CONFIG_BRIGHTNESS_ADJUSTMENT
+    /**
+     * * @rst
+     * .. impl:: Variable brightness
+     *    :id: SWIMPL_LC-005
+     *    :implements: SWDD_LC-005
+     * @endrst
+     */
+    return RteGetBrightnessValue();
+#else
+    return 128;
+#endif
+}
+
 /**
  * * @rst
  * .. impl:: Turn light off
@@ -60,6 +75,7 @@ static void turnLightOn(void) {
         .green = 128,
         .blue = 55
     };
+    color.green = getBrightnessValue();
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = TRUE;
 #endif
@@ -95,8 +111,8 @@ static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
 void lightController(void) {
 
     PowerState powerState = RteGetPowerState();
-    percentage_t mainKnobValue = RteGetMainKnobValue();
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
+    percentage_t mainKnobValue = RteGetMainKnobValue();
     unsigned int blinkPeriod = calculateBlinkPeriod(mainKnobValue);
 #endif
 
@@ -134,6 +150,9 @@ void lightController(void) {
                 blinkCounter = 0;
             }
         }
+#endif
+#if CONFIG_BRIGHTNESS_ADJUSTMENT
+        turnLightOn();
 #endif
         break;
     }

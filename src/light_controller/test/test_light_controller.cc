@@ -7,6 +7,7 @@ using namespace testing;
 extern "C" {
 #include "light_controller.h"
 #include "rte.h"
+#include "autoconf.h"
     extern unsigned int calculateBlinkPeriod(percentage_t mainKnobValue);
 }
 
@@ -22,8 +23,21 @@ MATCHER_P(RGBColorEq, expected, "") {
     return areRGBColorsEqual(&arg, &expected);
 }
 
-const RGBColor onColor = { .red = 0, .green = 128, .blue = 55 };
+#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#define GREEN_LED_BRIGHTNESS 200
+#else 
+#define GREEN_LED_BRIGHTNESS 128
+#endif
+
+const RGBColor onColor = { .red = 0, .green = GREEN_LED_BRIGHTNESS, .blue = 55 };
 const RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
+
+// Override the cout operator for RGBColor so that it can be printed in the test output
+std::ostream& operator<<(std::ostream& os, const RGBColor& color)
+{
+    os << "RGBColor(" << color.red << ", " << color.green << ", " << color.blue << ")";
+    return os;
+}
 
 /*!
 * @rst
@@ -46,8 +60,13 @@ TEST(light_controller, test_light_on_and_off)
 
     // Power turns ON, so the light should turn ON.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
+#if CONFIG_BRIGHTNESS_ADJUSTMENT
+    EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(GREEN_LED_BRIGHTNESS));
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(11);
+#else
     // Expect that the light value changes to ON color (only once, no redundant updates).
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+#endif
     for (int i = 0; i < 10; i++) {
         lightController();
     }
@@ -60,6 +79,31 @@ TEST(light_controller, test_light_on_and_off)
         lightController();
     }
 }
+
+#if CONFIG_BRIGHTNESS_ADJUSTMENT
+/*!
+* @rst
+*
+* .. test:: light_controller.test_light_on_very_bright
+*    :id: TS_LC-005
+*    :results: [[tr_link('title', 'case')]]
+*    :specified: SWDD_LC-005
+*
+* @endrst
+*/
+TEST(light_controller, test_light_on_very_bright)
+{
+    CREATE_MOCK(mymock);
+
+    // Power ON, so the light should turn ON.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
+    for (int i = 0; i < 3; i++) {
+        EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(GREEN_LED_BRIGHTNESS));
+        EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
+        lightController();
+    }
+}
+#endif
 
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
 /*!

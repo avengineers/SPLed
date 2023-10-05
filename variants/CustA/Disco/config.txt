@@ -7,10 +7,10 @@ CONFIG_LINKER_BYPRODUCTS_EXTENSIONS="map"
 # end of Linking
 
 #
-# Blinking
+# Features
 #
 CONFIG_BLINKING=y
 # CONFIG_BLINKING_RATE_FIXED is not set
 # CONFIG_BLINKING_RATE_MANUALLY_ADJUSTABLE is not set
 CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE=y
-# end of Blinking
+# end of Features
