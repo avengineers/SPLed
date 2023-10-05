@@ -62,7 +62,7 @@ TEST(light_controller, test_light_on_and_off)
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
     EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(GREEN_LED_BRIGHTNESS));
-    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(11);
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(10);
 #else
     // Expect that the light value changes to ON color (only once, no redundant updates).
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
@@ -102,6 +102,10 @@ TEST(light_controller, test_light_on_very_bright)
         EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
         lightController();
     }
+    // Power OFF, so the light should turn OFF.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_OFF));
+    EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(offColor))).Times(1);
+    lightController();
 }
 #endif
 
