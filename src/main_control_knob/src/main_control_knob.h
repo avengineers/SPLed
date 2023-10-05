@@ -6,6 +6,6 @@
 #define KNOB_UPDATE_INCREMENT 2
 
 // Function to initialize the knob control.
-void knobControlInput(void);
+void mainControlKnob(void);
 
 #endif // __main_control_knob_h__

@@ -17,7 +17,7 @@
 * @endrst
 */
 // Function to handle knob control input.
-void knobControlInput(void) {
+void mainControlKnob(void) {
     percentage_t currentValue = RteGetMainKnobValue();
     if (RteIsKeyPressed(CONTROL_KEY_UP)) {
         // Increase brightness by 5 with a maximum of 100.

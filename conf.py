@@ -97,7 +97,7 @@ needs_extra_options = ["integrity", "assignee", "version"]
 needs_extra_links = [
     {"option": "checks", "incoming": "is checked by", "outgoing": "checks"},
     {"option": "implements", "incoming": "is implemented by", "outgoing": "implements"},
-    {"option": "tests", "incoming": "is tested by", "outgoing": "tests requirement(s)"},
+    {"option": "tests", "incoming": "is tested by", "outgoing": "tests"},
     {"option": "results", "incoming": "is resulted from", "outgoing": "test results"},
     {"option": "requirement", "incoming": "specification", "outgoing": "requirement"},
     {"option": "specified", "incoming": "tested by", "outgoing": "specified by"},

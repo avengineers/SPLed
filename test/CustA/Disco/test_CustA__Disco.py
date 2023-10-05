@@ -18,3 +18,10 @@ class Test_CustA__Disco:
 
     def test_reports(self):
         build_reports_and_expect_success(self.variant)
+        
+        """SWE.4 reports shall be created"""
+        assert os.path.isfile(f"build/{self.variant}/test/src/keyboard_interface/reports/html/index.html")
+        assert os.path.isfile(f"build/{self.variant}/test/src/light_controller/reports/html/index.html")
+        assert os.path.isfile(f"build/{self.variant}/test/src/main_control_knob/reports/html/index.html")
+        assert os.path.isfile(f"build/{self.variant}/test/src/power_signal_processing/reports/html/index.html")
+        assert os.path.isfile(f"build/{self.variant}/test/src/spled/reports/html/index.html")

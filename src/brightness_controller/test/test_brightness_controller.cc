@@ -18,7 +18,7 @@ extern "C" {
 * .. test:: brightness_controller.test_increase_brightness
 *    :id: TS_BC-001
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_BC-001
+*    :tests: SWDD_BC-001
 *
 * @endrst
 */
@@ -43,7 +43,7 @@ TEST(brightness_controller, test_increase_brightness)
 * .. test:: brightness_controller.test_decrease_brightness
 *    :id: TS_BC-002
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_BC-002
+*    :tests: SWDD_BC-002
 *
 * @endrst
 */
@@ -68,7 +68,7 @@ TEST(brightness_controller, test_decrease_brightness)
 * .. test:: brightness_controller.test_brightness_does_not_decrease_below_zero
 *    :id: TS_BC-003
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_BC-002
+*    :tests: SWDD_BC-002
 *
 * @endrst
 */
@@ -94,7 +94,7 @@ TEST(brightness_controller, test_brightness_does_not_decrease_below_zero) {
 * .. test:: brightness_controller.test_brightness_does_not_increase_above_255
 *    :id: TS_BC-004
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_BC-001
+*    :tests: SWDD_BC-001
 *
 * @endrst
 */
