@@ -1,5 +1,5 @@
 Power Signal Processing
-=========================
+=======================
 
 This module is responsible for processing power signals based on key presses.
 
@@ -25,7 +25,7 @@ Function Description
    :id: SWDD_PSP-001
    :integrity: QM
 
-    The function must check for the press of the "P" key.
+    The function must check for the press of the power key.
 
 .. spec:: Set power state to ON
    :id: SWDD_PSP-002

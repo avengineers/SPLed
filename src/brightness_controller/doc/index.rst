@@ -29,5 +29,5 @@ Design Considerations
 Interfaces
 ----------
 
-- ``RteSetBrightnesstValue``: Function to update the value of the light brightness.
+- ``RteSetBrightnessValue``: Function to update the value of the light brightness.
 - ``RteGetMainKnobValue``: Function to get the main knob value to increase or decrease the brightness accordingly.

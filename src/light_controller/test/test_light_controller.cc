@@ -45,7 +45,7 @@ std::ostream& operator<<(std::ostream& os, const RGBColor& color)
 * .. test:: light_controller.test_light_on_and_off
 *    :id: TS_LC-001
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004
+*    :tests: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004
 *
 * @endrst
 */
@@ -87,7 +87,7 @@ TEST(light_controller, test_light_on_and_off)
 * .. test:: light_controller.test_light_on_very_bright
 *    :id: TS_LC-005
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-005
+*    :tests: SWDD_LC-005
 *
 * @endrst
 */
@@ -112,7 +112,7 @@ TEST(light_controller, test_light_on_very_bright)
 * .. test:: light_controller.test_light_blinking
 *    :id: TS_LC-002
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-002
+*    :tests: SWDD_LC-002
 *
 * @endrst
 */
@@ -167,7 +167,7 @@ struct TestParam {
 * .. test:: BlinkPeriodTest.CalculatesCorrectBlinkPeriod
 *    :id: TS_LC-003
 *    :results: [[tr_link('title', 'case')]]
-*    :specified: SWDD_LC-002
+*    :tests: SWDD_LC-002
 *
 * @endrst
 */
