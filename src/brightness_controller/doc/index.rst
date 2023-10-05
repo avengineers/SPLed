@@ -1,5 +1,5 @@
 Design Specification for Brightness Component
-===================================================
+=============================================
 
 .. contents:: Table of Contents
     :depth: 2
@@ -29,28 +29,5 @@ Design Considerations
 Interfaces
 ----------
 
-1. **External Functions**:
-    - ``RteSetBrightnesstValue``: Function to update the value of the light brightness.
-    - ``RteGetBrightnesstValue``: Function to get the current value of the light brightness.
-    - ``RteGetMainKnobValue``: Function to get the main knob value to increase or decrease the brightness accordingly.
-
-2. **Internal Functions**:
-    - ``calculateBrightness``: Internal function to calculate the brightness of the light.
-
-Internal Behavior
------------------
-
-.. mermaid::
-
-
-    graph TD
-     subgraph External Functions
-      BrightnessController -->|Get Main Knob Value| RteGetMainKnobValue
-      BrightnessController -->|Get Current Light Value| RteGetCurrentLightValue
-      BrightnessController -->|Set Light Value| RteSetLightValue
-     end
-
-     subgraph Internal Behavior
-      BrightnessController -->|Calculate New Brightness| calculateBrightness
-      calculateBrightness -->|Adjust Brightness| BrightnessController
-     end
+- ``RteSetBrightnesstValue``: Function to update the value of the light brightness.
+- ``RteGetMainKnobValue``: Function to get the main knob value to increase or decrease the brightness accordingly.

@@ -76,6 +76,18 @@
                 }
             },
             "problemMatcher": []
+        },
+        {
+            "label": "open report html",
+            "command": "${workspaceFolder}/build/${input:variant}/test/src/${input:component}/reports/html/index.html",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
         }
     ],
     "inputs": [
@@ -86,6 +98,21 @@
             "options": [
                 "CustA/Disco",
                 "CustB/Sleep"
+            ]
+        },
+        {
+            "type": "pickString",
+            "id": "component",
+            "description": "Which component do you want to select?",
+            "options": [
+                "brightness_controller",
+                "console_interface",
+                "keyboard_interface",
+                "light_controller",
+                "main_control_knob",
+                "power_signal_processing",
+                "rte",
+                "main"
             ]
         }
     ]

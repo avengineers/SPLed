@@ -28,10 +28,15 @@ Design Considerations
 
 .. spec:: Color Management
     :id: SWDD_LC-003
-    :integrity: B
 
     The color of the light when it is ON is specified as an RGB value.
 
+{% if config.BRIGHTNESS_ADJUSTMENT %}
+.. spec::  Brightness Adjustment
+    :id: SWDD_LC-005
+
+    When the light is ON, it may have a variable brightness. The brightness value is determined based on an external input (main knob value).
+{% endif %}
 
 Interfaces
 ----------
