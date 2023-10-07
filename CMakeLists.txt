@@ -23,10 +23,14 @@ include(FetchContent)
 # Fetch spl-core
 FetchContent_Declare(
     spl-core
-    GIT_REPOSITORY https://github.com/avengineers/spl-core.git
+    GIT_REPOSITORY https://git.marquardt.de/scm/sple/spl-core.git
     GIT_TAG v3.2.0
 )
 FetchContent_MakeAvailable(spl-core)
+
+# Global config for spl-core
+set(SPL_GTEST_URL https://git.marquardt.de/scm/sple/googletest.git)
+set(SPL_GTEST_TAG v1.14.0)
 
 # Include spl-core
 include(${spl-core_SOURCE_DIR}/cmake/spl.cmake)

@@ -1,5 +1,15 @@
 {
+    "config": {
+        "use_lessmsi": true,
+        "autostash_on_conflict": true,
+        "scoop_repo": "https://github.com/xxthunder/Scoop",
+        "scoop_branch": "develop"
+    },
     "buckets": [
+        {
+            "Name": "sple",
+            "Source": "https://git.marquardt.de/scm/sple/scoop-bucket.git"
+        },
         {
             "Name": "main",
             "Source": "https://github.com/ScoopInstaller/Main"
@@ -15,19 +25,19 @@
     ],
     "apps": [
         {
-            "Source": "main",
+            "Source": "sple",
             "Name": "lessmsi"
         },
         {
-            "Source": "main",
+            "Source": "sple",
             "Name": "7zip"
         },
         {
-            "Source": "main",
+            "Source": "sple",
             "Name": "innounp"
         },
         {
-            "Source": "main",
+            "Source": "sple",
             "Name": "dark"
         },
         {
@@ -39,7 +49,7 @@
             "Name": "python311"
         },
         {
-            "Source": "versions",
+            "Source": "sple",
             "Name": "mingw-winlibs-llvm-ucrt",
             "Version": "12.3.0-16.0.4-11.0.0-r1"
         }

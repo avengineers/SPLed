@@ -34,7 +34,10 @@
     "cmake.buildBeforeRun": false,
     "cmake.environment": {
         "PIPENV_VERBOSITY": "-1",
-        "PIPENV_VENV_IN_PROJECT": "1"
+        "PIPENV_VENV_IN_PROJECT": "1",
+        "HTTP_PROXY": "http://osde01proxy02.marquardt.de:8080",
+        "HTTPS_PROXY": "http://osde01proxy02.marquardt.de:8080",
+        "NO_PROXY": "localhost,.marquardt.de,.marquardt.com"
     },
     "cmake.buildToolArgs": [],
     "git.ignoreLimitWarning": true,

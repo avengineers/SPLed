@@ -191,6 +191,15 @@ Function Invoke-Build {
     }
 }
 
+Function Initialize-Proxy {
+    if ($askForCreds) {
+        . .\setProxy.ps1 -askForCreds
+    }
+    else {
+        . .\setProxy.ps1
+    }
+}
+
 ## start of script
 # Always set the $InformationPreference variable to "Continue" globally,
 # this way it gets printed on execution and continues execution afterwards.
@@ -203,12 +212,16 @@ Push-Location $PSScriptRoot
 Write-Output "Running in ${pwd}"
 
 try {
+    Initialize-Proxy
+
     if ($install) {
         # Installation of Scoop, Python and pipenv via bootstrap
         if (-Not (Test-Path -Path '.bootstrap')) {
             New-Item -ItemType Directory '.bootstrap'
         }
-        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.1.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
+        # Installation of Scoop, Python and pipenv via bootstrap
+        $Env:PIP_TRUSTED_HOST = "pypi.org files.pythonhosted.org"
+        Invoke-RestMethod "https://git.marquardt.de/projects/SPLE/repos/bootstrap/raw/bootstrap.ps1?at=refs%2Ftags%2Fv1.1.0" -OutFile ".\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }
