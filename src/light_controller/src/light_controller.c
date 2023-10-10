@@ -27,6 +27,7 @@ static LightState currentLightState = LIGHT_OFF;  /**< Current state of the ligh
 static int blinkCounter = 0;
 static boolean blinkState = FALSE;
 #endif
+const RGBColor OFF_COLOR = { .red = 0, .green = 0, .blue = 0 };
 
 static unsigned int getBrightnessValue() {
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
@@ -51,15 +52,10 @@ static unsigned int getBrightnessValue() {
  * @endrst
  */
 static void turnLightOff(void) {
-    RGBColor color = {
-        .red = 0,
-        .green = 0,
-        .blue = 0
-    };
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = FALSE;
 #endif
-    RteSetLightValue(color);
+    RteSetLightValue(OFF_COLOR);
 }
 
 /**
@@ -70,12 +66,12 @@ static void turnLightOff(void) {
  * @endrst
  */
 static void turnLightOn(void) {
-    RGBColor color = {
-        .red = 0,
-        .green = 128,
-        .blue = 55
-    };
+    RGBColor color = OFF_COLOR;
+#if CONFIG_COLOR_BLUE
+    color.blue = getBrightnessValue();
+#else
     color.green = getBrightnessValue();
+#endif
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = TRUE;
 #endif
