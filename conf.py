@@ -82,7 +82,6 @@ extensions.append("sphinxcontrib.datatemplates")
 
 # needs_types - this option allows the setup of own need types like bugs, user_stories and more.
 needs_types = [
-    dict(directive="req", title="Requirement", prefix="R_", color="#BFD8D2", style="node"),
     dict(directive="spec", title="Specification", prefix="S_", color="#FEDCD2", style="node"),
     dict(directive="impl", title="Implementation", prefix="I_", color="#DF744A", style="node"),
     dict(directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"),
@@ -95,12 +94,12 @@ needs_extra_options = ["integrity", "assignee", "version"]
 
 # Define own link types
 needs_extra_links = [
-    {"option": "checks", "incoming": "is checked by", "outgoing": "checks"},
+    # SWE.3 BP.5: link from Implementation (Software unit) to Specification (Software detailed design)
     {"option": "implements", "incoming": "is implemented by", "outgoing": "implements"},
+    # SWE.4 BP.5: link from Test Case (Unit test specification) to Specification (Software detailed design)
     {"option": "tests", "incoming": "is tested by", "outgoing": "tests"},
-    {"option": "results", "incoming": "is resulted from", "outgoing": "test results"},
-    {"option": "requirement", "incoming": "specification", "outgoing": "requirement"},
-    {"option": "specified", "incoming": "tested by", "outgoing": "specified by"},
+    # SWE.4 BP.5: link from Test Case (Unit test specification) to Test Result (Unit test result)
+    {"option": "results", "incoming": "is resulted from", "outgoing": "results"}
 ]
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
