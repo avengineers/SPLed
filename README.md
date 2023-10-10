@@ -1,6 +1,8 @@
 # Software Product Line SPLDemo
 
-SPLDemo is a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software_product_line) for automotive SW development. It is capable of holding a set of software modules that are differently used and configured among the variants. Each variant creates its own binaries.
+![Alt text](doc/_figures/SPLED_logo.png)
+
+This SPLDemo contains a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software_product_line) for automotive SW development. It is capable of holding a set of software modules that are differently used and configured among the variants. Each variant creates its own binaries.
 
 ## CI (Continuous Integration)
 

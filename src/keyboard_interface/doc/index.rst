@@ -1,5 +1,5 @@
-Keyboard Interface
-==================
+Design Specification for Keyboard Interface
+===========================================
 
 This module interfaces with the keyboard and detects specific key presses, primarily focusing on the TARGET_KEY.
 
