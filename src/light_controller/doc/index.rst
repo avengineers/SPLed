@@ -38,6 +38,12 @@ Design Considerations
     When the light is ON, it may have a variable brightness. The brightness value is determined based on an external input (main knob value).
 {% endif %}
 
+.. spec:: Configurable color
+    :id: SWDD_LC-006
+
+    The color of the light shall be fixed but configurable.
+    *Note:* The color is configurable in the sense that it is specified as a configuration parameter. The color is not configurable at runtime.
+
 Interfaces
 ----------
 

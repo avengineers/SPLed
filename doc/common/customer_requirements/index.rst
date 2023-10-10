@@ -32,3 +32,12 @@ Customer C requests a spa light encapsulating a tranquil and rejuvenating experi
 * RQ-2: Instead of a single color, the lighting shall cycle through multiple predefined colors that are commonly associated with relaxation and tranquility.
 * RQ-3: Transitions between colors shall be smooth and seamless, ensuring a continuous flow of relaxation.
 * RQ-4: The brightness of the light shall be adjustable.
+
+
+Updated Requirements
+====================
+
+Customer B - Sleep Light
+------------------------
+
+* RQ-4: The light color shall be blue.

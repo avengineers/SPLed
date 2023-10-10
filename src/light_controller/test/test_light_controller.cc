@@ -24,12 +24,16 @@ MATCHER_P(RGBColorEq, expected, "") {
 }
 
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
-#define GREEN_LED_BRIGHTNESS 200
+#define LED_BRIGHTNESS 200
 #else 
-#define GREEN_LED_BRIGHTNESS 128
+#define LED_BRIGHTNESS 128
 #endif
 
-const RGBColor onColor = { .red = 0, .green = GREEN_LED_BRIGHTNESS, .blue = 55 };
+#if CONFIG_COLOR_BLUE
+const RGBColor onColor = { .red = 0, .green = 0, .blue = LED_BRIGHTNESS };
+#else
+const RGBColor onColor = { .red = 0, .green = LED_BRIGHTNESS, .blue = 0 };
+#endif
 const RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
 
 // Override the cout operator for RGBColor so that it can be printed in the test output
@@ -37,6 +41,29 @@ std::ostream& operator<<(std::ostream& os, const RGBColor& color)
 {
     os << "RGBColor(" << color.red << ", " << color.green << ", " << color.blue << ")";
     return os;
+}
+
+/*!
+* @rst
+*
+* .. test:: light_controller.test_light_stays_off
+*    :id: TS_LC-006
+*    :results: [[tr_link('title', 'case')]]
+*    :tests: SWDD_LC-001, SWDD_LC-004
+*
+* @endrst
+*/
+TEST(light_controller, test_light_stays_off)
+{
+    CREATE_MOCK(mymock);
+
+    // Initial state: Power is OFF, so the light should be OFF.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_OFF));
+    EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0); // Expect that the light value doesn't change.
+
+    for (int i = 0; i < 10; i++) {
+        lightController();
+    }
 }
 
 /*!
@@ -53,15 +80,13 @@ TEST(light_controller, test_light_on_and_off)
 {
     CREATE_MOCK(mymock);
 
-    // Initial state: Power is OFF, so the light should be OFF.
     EXPECT_CALL(mymock, RteGetPowerState()).WillOnce(Return(POWER_STATE_OFF));
-    EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0); // Expect that the light value doesn't change.
     lightController();
 
     // Power turns ON, so the light should turn ON.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
-    EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(GREEN_LED_BRIGHTNESS));
+    EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(LED_BRIGHTNESS));
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(10);
 #else
     // Expect that the light value changes to ON color (only once, no redundant updates).
@@ -98,7 +123,7 @@ TEST(light_controller, test_light_on_very_bright)
     // Power ON, so the light should turn ON.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
     for (int i = 0; i < 3; i++) {
-        EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(GREEN_LED_BRIGHTNESS));
+        EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(LED_BRIGHTNESS));
         EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(1);
         lightController();
     }
