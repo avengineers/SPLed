@@ -46,6 +46,29 @@ std::ostream& operator<<(std::ostream& os, const RGBColor& color)
 /*!
 * @rst
 *
+* .. test:: light_controller.test_light_stays_off
+*    :id: TS_LC-006
+*    :results: [[tr_link('title', 'case')]]
+*    :tests: SWDD_LC-001, SWDD_LC-004
+*
+* @endrst
+*/
+TEST(light_controller, test_light_stays_off)
+{
+    CREATE_MOCK(mymock);
+
+    // Initial state: Power is OFF, so the light should be OFF.
+    EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_OFF));
+    EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0); // Expect that the light value doesn't change.
+
+    for (int i = 0; i < 10; i++) {
+        lightController();
+    }
+}
+
+/*!
+* @rst
+*
 * .. test:: light_controller.test_light_on_and_off
 *    :id: TS_LC-001
 *    :results: [[tr_link('title', 'case')]]
@@ -57,9 +80,7 @@ TEST(light_controller, test_light_on_and_off)
 {
     CREATE_MOCK(mymock);
 
-    // Initial state: Power is OFF, so the light should be OFF.
     EXPECT_CALL(mymock, RteGetPowerState()).WillOnce(Return(POWER_STATE_OFF));
-    EXPECT_CALL(mymock, RteSetLightValue(_)).Times(0); // Expect that the light value doesn't change.
     lightController();
 
     // Power turns ON, so the light should turn ON.
