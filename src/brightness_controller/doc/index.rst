@@ -1,5 +1,5 @@
-Design Specification for Brightness Component
-=============================================
+Design Specification for Brightness Controller
+==============================================
 
 .. contents:: Table of Contents
     :depth: 2
@@ -7,23 +7,23 @@ Design Specification for Brightness Component
 Introduction
 ------------
 
-The Brightness Controller module is responsible for adjusting the brightness of a light based on a knob value (percentage) input. This document outlines the design considerations and the high-level structure of the module.
-
+The Brightness Controller component is responsible for adjusting the brightness of a light based on a knob input.
+This document outlines the design considerations and the high-level structure of the module.
 
 Design Considerations
 ---------------------
 
-.. spec:: Brigther Adjustment
+.. spec:: Brightness Value
    :id: SWDD_BC-001
    :integrity: B
 
-    The brightness of the light can be increased up to 255. The color brightness is configurable and can be increased based on an external input (main knob value in percentage).
+    The brightness of the light is represented by an integer value from 0 up to 255.
 
-.. spec::  Darker Adjustment
+.. spec::  Brightness Adjustment
     :id: SWDD_BC-002
     :integrity: B
 
-    The brightness of the light can be decreased up to 0. The color brightness is configurable and can be decreased based on an external input (main knob value in percentage).
+    The brightness of the light is adjustable by an external input (main knob value in percentage).
 
 
 Interfaces
