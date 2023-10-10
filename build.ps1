@@ -198,6 +198,11 @@ Function Invoke-Build {
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- -t cleandead"
             # CMake build
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- $ninjaArgs"
+
+            # Jenkins shall deploy reports to MQ's Engineering web server
+            if ($Env:JENKINS_URL -and $Env:BRANCH_NAME -and ($buildKit -eq "test") -and ($target.Contains("reports") -or ($target -eq "all"))) {
+                & .\tools\scripts\deploy-reports.ps1 -buildFolder "$buildFolder" -outputSubdir "spled/$Env:BRANCH_NAME/$variant"
+            }
         }
     }
 }

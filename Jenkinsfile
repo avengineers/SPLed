@@ -9,10 +9,6 @@ node('SD-RM') {
         bat 'git config --global http.sslVerify false'
         checkout scm
 
-        dir('test/output') {
-            deleteDir() // cleanup old test reports
-        }
-
         bat '''
 call build.bat -install || exit /b 1
 call build.bat -target selftests || exit /b 0
@@ -21,7 +17,7 @@ call build.bat -target selftests || exit /b 0
 
         dir('build') {
             archiveArtifacts(
-                artifacts: '**/prod/spled.exe'
+                artifacts: '**/prod/spled.exe,**/test/reports.html'
             )
         }
     }
