@@ -55,7 +55,7 @@ html_theme_options = {
 }
 
 
-html_logo = "doc/_figures/logo.jpg"
+html_logo = "doc/_figures/SPLED_logo.png"
 
 # EXTENSIONS AND THEIR CONFIGS ##############################################
 extensions = ["sphinx_rtd_size"]
@@ -109,12 +109,17 @@ if "SPHINX_BUILD_CONFIGURATION_FILE" in os.environ:
         html_context = json.load(file)
         include_patterns.extend(html_context.get("include_patterns", []))
 
+html_context["config"] = {}
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
 # and if so, load the JSON file and set the 'html_context' variable
 if "AUTOCONF_JSON_FILE" in os.environ:
     with open(os.environ["AUTOCONF_JSON_FILE"], "r") as file:
         html_context["config"] = json.load(file)["features"]
+        
+
+if "VARIANT" in os.environ:
+    html_context["config"]["variant"] = os.environ["VARIANT"]
 
 
 def rstjinja(app, docname, source):
