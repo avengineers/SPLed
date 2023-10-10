@@ -6,35 +6,28 @@
 | Skipped test cases: :need_count:`'{id}' in tags and 'skipped' == result and type=='{case_need}'`
 | Test suites: :need_count:`'{id}' in tags and type=='{suite_need}'`
 
-**Failed test cases**:
+**Failed test cases**
 
 .. needtable::
    :filter: type == '{case_need}' and 'failure' == result
    :columns: id, title, is resulted from
    :style: table
 
-**Passed test cases**:
+**Passed test cases**
 
 .. needtable::
    :filter: type == '{case_need}' and 'passed' == result
    :columns: id, title, is resulted from
    :style: table
 
-**Skipped test cases**:
+**Skipped test cases**
 
 .. needtable::
    :filter: type == '{case_need}' and 'skipped' == result
    :columns: id, title, is resulted from
    :style: table
 
-**New table**:
-
-.. needtable::
-   :filter: type == 'test'
-   :columns: id, title, specified by, test results
-   :style: table
-
-**Imported data**
+**Details**
 
 
 .. {file_type}:: {title}
