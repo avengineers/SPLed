@@ -1,6 +1,6 @@
 /**
  * @file brightness_controller.c
- * @brief Module to control the brightness based on main knob value and light value.
+ * @brief Module to control the brightness.
 */
 
 #include "brightness_controller.h"
@@ -9,7 +9,7 @@
 /*!
 * @rst
 *
-* .. impl:: Calculate brightness of the light
+* .. impl:: Brightness Calculation
 *    :id: SWIMPL_BC-001
 *    :implements: SWDD_BC-001, SWDD_BC-002
 * @endrst
