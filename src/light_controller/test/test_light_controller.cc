@@ -147,6 +147,9 @@ TEST(light_controller, test_light_on_very_bright)
 */
 TEST(light_controller, test_light_blinking)
 {
+    /*!
+    * Test case for checking the blinking state changes while power is ON.
+    */
     CREATE_MOCK(mymock);
 
     // Set the initial power state to ON so the light can blink
@@ -186,14 +189,49 @@ class BlinkPeriodTest : public ::testing::TestWithParam<struct TestParam> {
 
 // Define a struct to hold the parameters for each test case
 struct TestParam {
+    const char* description;
     percentage_t mainKnobValue;
     unsigned int expectedBlinkPeriod;
 };
 
+// Override the cout operator for TestParam so that it can be printed in the test output
+std::ostream& operator<<(std::ostream& os, const TestParam& param)
+{
+    os << param.description;
+    return os;
+}
+
 /*!
 * @rst
 *
-* .. test:: BlinkPeriodTest.CalculatesCorrectBlinkPeriod
+* .. test:: light_controller.test_correct_blink_period
+*    :id: TS_LC-004
+*    :results: [[tr_link('title', 'case')]]
+*    :tests: SWDD_LC-002
+*
+* @endrst
+*/
+TEST(light_controller, test_correct_blink_period)
+{
+    /*!
+    * Test cases for the calculateBlinkPeriod function.
+    */
+    std::vector<TestParam> test_data = {
+        {"Slowest", 0, 100},
+        {"Inbetween", 50, 50},
+        {"Fastest", 100, 10}
+    };
+
+    for (const auto& param : test_data) {
+        unsigned int blinkPeriod = calculateBlinkPeriod(param.mainKnobValue);
+        EXPECT_EQ(blinkPeriod, param.expectedBlinkPeriod) << "Test case: " << param.description;
+    }
+}
+
+/*!
+* @rst
+*
+* .. test:: BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod/*
 *    :id: TS_LC-003
 *    :results: [[tr_link('title', 'case')]]
 *    :tests: SWDD_LC-002
@@ -206,7 +244,7 @@ TEST_P(BlinkPeriodTest, CalculatesCorrectBlinkPeriod)
     TestParam param = GetParam();
 
     unsigned int blinkPeriod = calculateBlinkPeriod(param.mainKnobValue);
-    EXPECT_EQ(blinkPeriod, param.expectedBlinkPeriod);
+    EXPECT_EQ(blinkPeriod, param.expectedBlinkPeriod) << "Test case: " << param.description;
 }
 
 // Instantiate the test suite with a set of parameters
@@ -214,9 +252,11 @@ INSTANTIATE_TEST_SUITE_P(
     BlinkPeriodTests,
     BlinkPeriodTest,
     ::testing::Values(
-        TestParam{ 0, 100 },
-        TestParam{ 50, 50 },
-        TestParam{ 100, 10 }
+        TestParam{ "Slowest", 0, 100 },
+        TestParam{ "Inbetween", 50, 50 },
+        TestParam{ "Fastest", 100, 10 }
     )
 );
+
+
 #endif // CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE
