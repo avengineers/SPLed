@@ -82,4 +82,3 @@ Internal Behavior
         BlinkON --> LIGHT_ON : Reset Blink Counter
         BlinkOFF --> LIGHT_ON : Reset Blink Counter
 {% endif %}
-
