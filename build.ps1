@@ -100,9 +100,6 @@ Function Invoke-Build {
         # Build folder for CMake builds
         $buildFolder = "build"
 
-        # Test result of pytest
-        $pytestJunitXml = "test/output/test-report.xml"
-
         # fresh and clean CMake builds
         if ($clean) {
             if (Test-Path -Path $buildFolder) {
@@ -121,6 +118,9 @@ Function Invoke-Build {
         elseif ($filter) {
             $filterCmd = "-k '$filter'"
         }
+
+        # Test result of pytest
+        $pytestJunitXml = "test/output/test-report.xml"
 
         # Delete any old pytest result
         if (Test-Path -Path $pytestJunitXml) {
