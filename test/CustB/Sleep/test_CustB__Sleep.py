@@ -17,14 +17,8 @@ class Test_CustB__Sleep:
         build_reports_and_expect_success(self.variant)
 
         """SWE.4 reports shall be created"""
-        assert os.path.isfile(f"build/{self.variant}/test/src/brightness_controller/reports/html/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/brightness_controller/reports/coverage/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/keyboard_interface/reports/html/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/keyboard_interface/reports/coverage/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/light_controller/reports/html/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/light_controller/reports/coverage/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/main_control_knob/reports/html/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/main_control_knob/reports/coverage/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/power_signal_processing/reports/html/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/power_signal_processing/reports/coverage/index.html")
-        assert os.path.isfile(f"build/{self.variant}/test/src/spled/reports/html/index.html")
+        report_types = ["html", "coverage"]
+        modules = ["brightness_controller", "keyboard_interface", "light_controller", "main_control_knob", "power_signal_processing", "spled"]
+        for report_type in report_types:
+            for module in modules:
+                assert os.path.isfile(f"build/{self.variant}/test/src/{module}/reports/{report_type}/index.html")
