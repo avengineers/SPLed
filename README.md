@@ -1,8 +1,8 @@
-# Software Product Line SPLDemo
+# SPLED: Software Product Line Engineering Demo
 
 ![Alt text](doc/_figures/SPLED_logo.png)
 
-This SPLDemo contains a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software_product_line) for automotive SW development. It is capable of holding a set of software modules that are differently used and configured among the variants. Each variant creates its own binaries.
+This demo repository contains a tiny but fully fledged [SPL](https://en.wikipedia.org/wiki/Software_product_line) for SW development. It is capable of holding a set of software modules that are differently used and configured among the variants. Each variant creates its own binaries.
 
 ## CI (Continuous Integration)
 
@@ -12,4 +12,3 @@ This SPLDemo contains a tiny but fully fledged [SPL](https://en.wikipedia.org/wi
 ## Preparation
 
 You can install required tools and install some VS Code extensions. The installer uses Scoop/PowerShell, so it will only run on Windows. The installation is done by executing `install-mandatory.bat`. In case you are sitting behind a proxy server, make sure to add:
-
