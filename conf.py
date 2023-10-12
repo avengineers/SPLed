@@ -21,7 +21,7 @@ templates_path = [
 ]
 
 exclude_patterns = ["README.md", "build/modules", "build/deps", ".venv", ".git"]
-include_patterns = ["index.rst", "doc/**"]
+include_patterns = ["index.rst", "references.rst", "doc/**"]
 
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html

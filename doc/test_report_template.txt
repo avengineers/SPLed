@@ -1,4 +1,29 @@
-**Statistics**
+Passed test cases
+-----------------
+
+.. needtable::
+   :filter: type == '{case_need}' and 'passed' == result
+   :columns: id, title, is resulted from
+   :style: table
+
+Failed test cases
+-----------------
+
+.. needtable::
+   :filter: type == '{case_need}' and 'failure' == result
+   :columns: id, title, is resulted from
+   :style: table
+
+Skipped test cases
+------------------
+
+.. needtable::
+   :filter: type == '{case_need}' and 'skipped' == result
+   :columns: id, title, is resulted from
+   :style: table
+
+Statistics
+----------
 
 | Test cases: :need_count:`'{id}' in tags and type=='{case_need}'`
 | Failed test cases: :need_count:`'{id}' in tags and 'failure' == result and type=='{case_need}'`
@@ -6,29 +31,8 @@
 | Skipped test cases: :need_count:`'{id}' in tags and 'skipped' == result and type=='{case_need}'`
 | Test suites: :need_count:`'{id}' in tags and type=='{suite_need}'`
 
-**Failed test cases**
-
-.. needtable::
-   :filter: type == '{case_need}' and 'failure' == result
-   :columns: id, title, is resulted from
-   :style: table
-
-**Passed test cases**
-
-.. needtable::
-   :filter: type == '{case_need}' and 'passed' == result
-   :columns: id, title, is resulted from
-   :style: table
-
-**Skipped test cases**
-
-.. needtable::
-   :filter: type == '{case_need}' and 'skipped' == result
-   :columns: id, title, is resulted from
-   :style: table
-
-**Details**
-
+Details
+-------
 
 .. {file_type}:: {title}
    :id: {id}{links_string}
