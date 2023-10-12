@@ -62,7 +62,7 @@ def build_unittests_and_expect_success(variant):
     )
 
     """Coverage report shall be created"""
-    assert os.path.isfile(f"build/{variant}/test/coverage/index.html")
+    assert os.path.isfile(f"build/{variant}/test/reports/coverage/index.html")
 
 
 def build_reports_and_expect_success(variant):
