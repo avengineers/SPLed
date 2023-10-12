@@ -4,6 +4,7 @@
 import json
 import os
 import datetime
+import re
 
 day = datetime.date.today()
 # meta data #################################################################
@@ -55,7 +56,7 @@ html_theme_options = {
 }
 
 
-html_logo = "doc/_figures/logo.jpg"
+html_logo = "doc/_figures/SPLED_logo.png"
 
 # EXTENSIONS AND THEIR CONFIGS ##############################################
 extensions = ["sphinx_rtd_size"]
@@ -71,6 +72,35 @@ extensions.append("sphinx_needs")
 # test_reports ###############################################################
 extensions.append("sphinxcontrib.test_reports")
 tr_report_template = "doc/test_report_template.txt"
+
+
+def tr_link(app, need, needs, first_option_name, second_option_name, *args, **kwargs):
+    """Make links between 'needs'. In comparison to the default 'tr_link' function,
+    this function supports regular expression pattern matching."""
+    if first_option_name not in need:
+        return ""
+    # Get the value of the 'first_option_name'
+    first_option_value = need[first_option_name]
+
+    links = []
+    for need_target in needs.values():
+        if second_option_name not in need_target:
+            continue
+
+        if first_option_value is not None and len(first_option_value) > 0:
+            second_option_value = need_target[second_option_name]
+            if second_option_value is not None and len(second_option_value) > 0:
+                if first_option_value == second_option_value:
+                    links.append(need_target["id"])
+                # if the first option value has a *, use regex matching
+                elif "*" in first_option_value:
+                    if re.match(first_option_value, second_option_value):
+                        links.append(need_target["id"])
+
+    return links
+
+
+needs_functions = [tr_link]
 
 # todo #######################################################################
 extensions.append("sphinx.ext.todo")
@@ -99,7 +129,7 @@ needs_extra_links = [
     # SWE.4 BP.5: link from Test Case (Unit test specification) to Specification (Software detailed design)
     {"option": "tests", "incoming": "is tested by", "outgoing": "tests"},
     # SWE.4 BP.5: link from Test Case (Unit test specification) to Test Result (Unit test result)
-    {"option": "results", "incoming": "is resulted from", "outgoing": "results"}
+    {"option": "results", "incoming": "is resulted from", "outgoing": "results"},
 ]
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
@@ -109,12 +139,17 @@ if "SPHINX_BUILD_CONFIGURATION_FILE" in os.environ:
         html_context = json.load(file)
         include_patterns.extend(html_context.get("include_patterns", []))
 
+html_context["config"] = {}
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
 # and if so, load the JSON file and set the 'html_context' variable
 if "AUTOCONF_JSON_FILE" in os.environ:
     with open(os.environ["AUTOCONF_JSON_FILE"], "r") as file:
         html_context["config"] = json.load(file)["features"]
+
+
+if "VARIANT" in os.environ:
+    html_context["config"]["variant"] = os.environ["VARIANT"]
 
 
 def rstjinja(app, docname, source):

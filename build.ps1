@@ -96,10 +96,14 @@ Function Invoke-Build {
         # Run python tests to test all relevant variants and platforms (build kits)
         # (normally run in CI environment/Jenkins)
         Write-Output "Running all selfstests ..."
-        
+
+        # Build folder for CMake builds
         $buildFolder = "build"
 
-        # fresh and clean build
+        # Test result of pytest
+        $pytestJunitXml = "test/output/test-report.xml"
+
+        # fresh and clean CMake builds
         if ($clean) {
             if (Test-Path -Path $buildFolder) {
                 Write-Output "Removing build folder '$buildFolder' ..."
@@ -107,7 +111,7 @@ Function Invoke-Build {
             }
         }
 
-        # Run test cases to be found in folder test/
+        # Filter pytest test cases
         $filterCmd = ''
         # Consider environment variable BRANCH_NAME (e.g. on Jenkins) to filter tests in release branch builds
         if ($Env:BRANCH_NAME -and ($Env:BRANCH_NAME -match 'release/([^/]+/[^/]+)(.*)')) {
@@ -117,7 +121,14 @@ Function Invoke-Build {
         elseif ($filter) {
             $filterCmd = "-k '$filter'"
         }
-        Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test $filterCmd"
+
+        # Delete any old pytest result
+        if (Test-Path -Path $pytestJunitXml) {
+            Remove-Item $pytestJunitXml -Force
+        }
+
+        # Finally run pytest
+        Invoke-CommandLine -CommandLine "python -m pipenv run python -m pytest test --junitxml=$pytestJunitXml $filterCmd"
     }
     else {
         if ((-Not $variants) -or ($variants -eq 'all')) {
@@ -147,7 +158,7 @@ Function Invoke-Build {
         }
 
         # Select 'test' build kit based on target
-        if ($Target.Contains("unittests") -or $Target.Contains("reports")) {
+        if ($target.Contains("unittests") -or $target.Contains("reports")) {
             $buildKit = "test"
         }
 

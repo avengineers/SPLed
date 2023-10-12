@@ -1,5 +1,5 @@
-Power Signal Processing
-=======================
+Design Specification for Power Signal Processing
+================================================
 
 This module is responsible for processing power signals based on key presses.
 
