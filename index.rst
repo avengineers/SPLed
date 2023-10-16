@@ -1,5 +1,5 @@
-Table of Contents
-=================
+Software Component Report
+=========================
 
 **Variant:** {{ config.variant }}
 
