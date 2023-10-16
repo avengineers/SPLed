@@ -21,6 +21,7 @@ Customer B requests a sleep light offering an ambient lighting experience that f
 * RQ-1: The light emitted shall be constant without any blink, ensuring a non-disruptive environment for rest.
 * RQ-2: Color of the light shall be fixed to a warm white, known for its soothing and calming properties. 
 * RQ-3: The brightness of the light shall be adjustable.
+* RQ-4: The light color shall be blue.
 
 
 Customer C - Spa Light
@@ -32,12 +33,3 @@ Customer C requests a spa light encapsulating a tranquil and rejuvenating experi
 * RQ-2: Instead of a single color, the lighting shall cycle through multiple predefined colors that are commonly associated with relaxation and tranquility.
 * RQ-3: Transitions between colors shall be smooth and seamless, ensuring a continuous flow of relaxation.
 * RQ-4: The brightness of the light shall be adjustable.
-
-
-Updated Requirements
-====================
-
-Customer B - Sleep Light
-------------------------
-
-* RQ-4: The light color shall be blue.
