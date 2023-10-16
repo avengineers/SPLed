@@ -1,0 +1,11 @@
+menu "Light Controller"
+    choice COLOR
+        prompt "Select color"
+        default COLOR_GREEN
+        config COLOR_GREEN
+            bool "Green"
+
+        config COLOR_BLUE
+            bool "Blue"
+    endchoice
+endmenu
