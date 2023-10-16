@@ -1,5 +1,5 @@
-Design Specification for Light Controller Component
-===================================================
+Software Detailed Design for Light Controller Component
+=======================================================
 
 .. contents:: Table of Contents
     :depth: 2

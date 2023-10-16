@@ -1,5 +1,5 @@
-Design Specification for Brightness Controller
-==============================================
+Software Detailed Design for Brightness Controller
+==================================================
 
 .. contents:: Table of Contents
     :depth: 2
