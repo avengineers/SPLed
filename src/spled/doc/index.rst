@@ -3,4 +3,6 @@ SPLed Documentation
 
 .. toctree::
 
-  /doc/common/index
+  /doc/common/customer_requirements/index.rst
+  /doc/common/sw_architecture/index.rst
+  /doc/common/variants/index.rst
