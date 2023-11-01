@@ -185,14 +185,11 @@ Function Invoke-Build {
             }
 
             # CMake configure
-            $variantDetails = $variant.Split('/')
-            $platform = $variantDetails[0]
-            $subsystem = $variantDetails[1]
             $additionalConfig = "-DBUILD_KIT=`"$buildKit`""
             if ($buildKit -eq "test") {
                 $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE=`"tools/toolchains/gcc/toolchain.cmake`""
             }
-            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DFLAVOR=`"$platform`" -DSUBSYSTEM=`"$subsystem`" $additionalConfig"
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT=`"$variant`" $additionalConfig"
 
             # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- -t cleandead"
