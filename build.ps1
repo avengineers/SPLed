@@ -185,14 +185,11 @@ Function Invoke-Build {
             }
 
             # CMake configure
-            $variantDetails = $variant.Split('/')
-            $platform = $variantDetails[0]
-            $subsystem = $variantDetails[1]
             $additionalConfig = "-DBUILD_KIT=`"$buildKit`""
             if ($buildKit -eq "test") {
                 $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE=`"tools/toolchains/gcc/toolchain.cmake`""
             }
-            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DFLAVOR=`"$platform`" -DSUBSYSTEM=`"$subsystem`" $additionalConfig"
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT=`"$variant`" $additionalConfig"
 
             # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- -t cleandead"
@@ -237,7 +234,7 @@ try {
         }
         # Installation of Scoop, Python and pipenv via bootstrap
         $Env:PIP_TRUSTED_HOST = "pypi.org files.pythonhosted.org"
-        Invoke-RestMethod "https://git.marquardt.de/projects/SPLE/repos/bootstrap/raw/bootstrap.ps1?at=refs%2Ftags%2Fv1.1.0" -OutFile ".\.bootstrap\bootstrap.ps1"
+        Invoke-RestMethod "https://raw.githubusercontent.com/avengineers/bootstrap/v1.1.0/bootstrap.ps1" -OutFile ".\.bootstrap\bootstrap.ps1"
         Invoke-CommandLine ". .\.bootstrap\bootstrap.ps1" -Silent $true
         Write-Output "For installation changes to take effect, please close and re-open your current shell."
     }
