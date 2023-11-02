@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.24.0)
 cmake_policy(VERSION 3.24)
 
 # configure the current variant to be build
-set(VARIANT ${VARIANT} CACHE STRING "Variant to build.")
 set(BUILD_KIT prod CACHE STRING "Target Group to build.")
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)

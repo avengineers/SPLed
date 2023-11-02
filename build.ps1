@@ -49,11 +49,11 @@ Function Invoke-CommandLine {
     Invoke-Expression $CommandLine
     if ($global:LASTEXITCODE -ne 0) {
         if ($StopAtError) {
-            Write-Error "Command line call `"$CommandLine`" failed with exit code $global:LASTEXITCODE"
+            Write-Error "Command line call '$CommandLine' failed with exit code $global:LASTEXITCODE"
         }
         else {
             if (-Not $Silent) {
-                Write-Output "Command line call `"$CommandLine`" failed with exit code $global:LASTEXITCODE, continuing ..."
+                Write-Output "Command line call '$CommandLine' failed with exit code $global:LASTEXITCODE, continuing ..."
             }
         }
     }
@@ -185,11 +185,11 @@ Function Invoke-Build {
             }
 
             # CMake configure
-            $additionalConfig = "-DBUILD_KIT=`"$buildKit`""
+            $additionalConfig = "-DBUILD_KIT='$buildKit'"
             if ($buildKit -eq "test") {
-                $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE=`"tools/toolchains/gcc/toolchain.cmake`""
+                $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE='tools/toolchains/gcc/toolchain.cmake'"
             }
-            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT=`"$variant`" $additionalConfig"
+            Invoke-CommandLine -CommandLine "python -m pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT='$variant' $additionalConfig"
 
             # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
             Invoke-CommandLine -CommandLine "python -m pipenv run cmake --build '$buildFolder' --target $target -- -t cleandead"
