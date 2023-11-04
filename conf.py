@@ -84,6 +84,9 @@ def tr_link(app, need, needs, first_option_name, second_option_name, *args, **kw
 
     links = []
     for need_target in needs.values():
+        # Skip linking to itself
+        if need_target["id"] == need["id"]:
+            continue
         if second_option_name not in need_target:
             continue
 
@@ -131,6 +134,11 @@ needs_extra_links = [
     # SWE.4 BP.5: link from Test Case (Unit test specification) to Test Result (Unit test result)
     {"option": "results", "incoming": "is resulted from", "outgoing": "results"},
 ]
+
+# Link all tests results to the test cases
+needs_global_options = {
+    'results': "[[tr_link('title', 'case')]]",
+}
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
 # and if so, load the JSON file and set the 'html_context' variable

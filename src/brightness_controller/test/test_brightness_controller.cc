@@ -18,7 +18,6 @@ extern "C" {
 *
 * .. test:: brightness_controller.test_brightness_knob
 *    :id: TS_BC-001
-*    :results: [[tr_link('title', 'case')]]
 *    :tests: SWDD_BC-001, SWDD_BC-002
 *
 * @endrst

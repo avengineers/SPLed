@@ -17,7 +17,6 @@ extern "C" {
 *
 * .. test:: power_signal_processing.test_power_stays_off
 *    :id: TS_PSP-001
-*    :results: [[tr_link('title', 'case')]]
 *    :tests: SWDD_PSP-001
 *
 * @endrst
@@ -38,7 +37,6 @@ TEST(power_signal_processing, test_power_stays_off)
 *
 * .. test:: power_signal_processing.test_power_toggles
 *    :id: TS_PSP-002
-*    :results: [[tr_link('title', 'case')]]
 *    :tests: SWDD_PSP-002, SWDD_PSP-003
 *
 * @endrst
