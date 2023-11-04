@@ -17,7 +17,6 @@ extern "C" {
 *
 * .. test:: keyboard_interface.test_key_press_and_release
 *    :id: TS_KI-001
-*    :results: [[tr_link('title', 'case')]]
 *    :tests: SWDD_KI-001, SWDD_KI-002, SWDD_KI-003
 *
 * @endrst
