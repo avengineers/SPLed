@@ -16,6 +16,8 @@ CONFIG_BRIGHTNESS_ADJUSTMENT=y
 # Light Controller
 #
 # CONFIG_COLOR_GREEN is not set
-CONFIG_COLOR_BLUE=y
+# CONFIG_COLOR_BLUE is not set
+# CONFIG_COLOR_RED is not set
+CONFIG_COLOR_PURPLE=y
 # end of Light Controller
 # end of Features

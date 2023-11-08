@@ -109,10 +109,11 @@
                 "console_interface",
                 "keyboard_interface",
                 "light_controller",
+                "main",
                 "main_control_knob",
                 "power_signal_processing",
                 "rte",
-                "main"
+                "spled"
             ]
         }
     ]

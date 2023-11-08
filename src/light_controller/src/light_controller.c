@@ -69,8 +69,13 @@ static void turnLightOn(void) {
     RGBColor color = OFF_COLOR;
 #if CONFIG_COLOR_BLUE
     color.blue = getBrightnessValue();
-#else
+#elif CONFIG_COLOR_GREEN
     color.green = getBrightnessValue();
+#elif CONFIG_COLOR_RED
+    color.red = getBrightnessValue();
+#elif CONFIG_COLOR_PURPLE
+    color.red = getBrightnessValue() / 2;
+    color.blue = getBrightnessValue();
 #endif
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
     blinkState = TRUE;

@@ -31,8 +31,12 @@ MATCHER_P(RGBColorEq, expected, "") {
 
 #if CONFIG_COLOR_BLUE
 const RGBColor onColor = { .red = 0, .green = 0, .blue = LED_BRIGHTNESS };
-#else
+#elif CONFIG_COLOR_GREEN
 const RGBColor onColor = { .red = 0, .green = LED_BRIGHTNESS, .blue = 0 };
+#elif CONFIG_COLOR_RED
+const RGBColor onColor = { .red = LED_BRIGHTNESS, .green = 0, .blue = 0 };
+#elif CONFIG_COLOR_PURPLE
+const RGBColor onColor = { .red = LED_BRIGHTNESS / 2, .green = 0, .blue = LED_BRIGHTNESS };
 #endif
 const RGBColor offColor = { .red = 0, .green = 0, .blue = 0 };
 
