@@ -53,33 +53,24 @@ class CommandLineExecutor:
 
 
 class ArtifactsCollection:
-    def __init__(self, variant, build_dir):
+    def __init__(self, variant: str):
         self.variant = variant
-        self.build_dir = build_dir
         self.artifacts = []
 
-    def collect(self, artifact_path):
+    def collect(self, artifact_path: str):
         """Collect an artifact."""
         self.artifacts.append(artifact_path)
 
-    def create_bom(self):
+    def create_bom(self, bom_json_path: Path):
         """Create a BOM (Bill of Materials) for the collected artifacts."""
         bom = {"variant": self.variant, "artifacts": self.artifacts}
-        bom_path = os.path.join(self.build_dir, "bom.json")
-
+      
         try:
-            with open(bom_path, "w") as bom_file:
+            with open(bom_json_path, "w") as bom_file:
                 json.dump(bom, bom_file, indent=4)
-            print(f"BOM file created at: {bom_path}")
+            print(f"BOM file created at: {bom_json_path}")
         except Exception as e:
             print(f"Error creating BOM file: {e}")
-
-        if not os.path.isfile(bom_path):
-            print(f"BOM file does not exist at: {bom_path}")
-
-
-def create_artifacts_collection(variant, build_dir):
-    return ArtifactsCollection(variant, build_dir)
 
 
 def spl_build(variant: str, build_kit: str, target: str):
