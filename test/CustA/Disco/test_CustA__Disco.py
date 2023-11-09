@@ -1,12 +1,15 @@
 import os.path
-from utils import spl_build
+from utils import create_artifacts_collection, spl_build
 
 
 class Test_CustA__Disco:
     @classmethod
     def setup_class(cls):
         cls.variant = "CustA/Disco"
-        cls.artifacts_collection = ArtifactsCollection()
+        cls.build_dir = "build/CustA/Disco"
+        cls.artifacts_collection = create_artifacts_collection(
+            cls.variant, cls.build_dir
+        )
 
     def test_unit_tests(self):
         """Unit tests execution shall be successful."""
@@ -22,8 +25,14 @@ class Test_CustA__Disco:
         """executable shall exist and collected for the bom."""
         self.artifacts_collection.collect(f"build/{self.variant}/prod/spled.exe")
 
-        """bom shall be created"""
-        assert os.path.isfile(f"build/{self.variant}/prod/bom.json")
+        self.artifacts_collection.create_bom()
+
+        """executable shall exist and collected for the BOM."""
+        assert os.path.isfile(f"build/{self.variant}/prod/spled.exe")
+
+        """BOM shall be created"""
+        bom_path = os.path.join(self.build_dir, "bom.json")
+        assert os.path.isfile(bom_path)
 
     def test_reports(self):
         """Reports generation shall be successful."""

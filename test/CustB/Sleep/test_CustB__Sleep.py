@@ -1,11 +1,15 @@
 import os.path
-from utils import spl_build
+from utils import create_artifacts_collection, spl_build
 
 
 class Test_CustB__Sleep:
     @classmethod
     def setup_class(cls):
         cls.variant = "CustB/Sleep"
+        cls.build_dir = "build/CustB/Sleep"
+        cls.artifacts_collection = create_artifacts_collection(
+            cls.variant, cls.build_dir
+        )
 
     def test_unit_tests(self):
         """Unit tests execution shall be successful."""
@@ -18,7 +22,17 @@ class Test_CustB__Sleep:
         """build wrapper shall build target and related outputs."""
         assert 0 == spl_build(self.variant, "prod", "all")
 
+        """executable shall exist and collected for the bom."""
+        self.artifacts_collection.collect(f"build/{self.variant}/prod/spled.exe")
+
+        self.artifacts_collection.create_bom()
+
+        """executable shall exist and collected for the BOM."""
         assert os.path.isfile(f"build/{self.variant}/prod/spled.exe")
+
+        """BOM shall be created"""
+        bom_path = os.path.join(self.build_dir, "bom.json")
+        assert os.path.isfile(bom_path)
 
     def test_reports(self):
         """Reports generation shall be successful."""
