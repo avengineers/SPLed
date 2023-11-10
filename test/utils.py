@@ -1,3 +1,5 @@
+import glob
+import re
 from subprocess import Popen, PIPE, STDOUT
 from pathlib import Path
 import pathlib
@@ -5,6 +7,7 @@ import subprocess
 from typing import Dict, List, Optional
 import os
 import json
+import zipfile
 
 
 class CommandLineExecutor:
@@ -59,18 +62,37 @@ class ArtifactsCollection:
 
     def collect(self, artifact_path: str):
         """Collect an artifact."""
-        self.artifacts.append(artifact_path)
+        if "*" in artifact_path:
+            self.artifacts.extend(glob.glob(artifact_path))
+        else:
+            self.artifacts.append(artifact_path)
 
     def create_bom(self, bom_json_path: Path):
         """Create a BOM (Bill of Materials) for the collected artifacts."""
-        bom = {"variant": self.variant, "artifacts": self.artifacts}
-      
+        bom = {
+            "variant": self.variant,
+            "artifacts": [os.path.basename(artifact) for artifact in self.artifacts],
+        }
+
         try:
             with open(bom_json_path, "w") as bom_file:
                 json.dump(bom, bom_file, indent=4)
             print(f"BOM file created at: {bom_json_path}")
         except Exception as e:
             print(f"Error creating BOM file: {e}")
+
+    def create_artifacts_zip(self, artifacts_zip_path: Path):
+        """Create a zip file containing the collected artifacts."""
+        try:
+            with zipfile.ZipFile(artifacts_zip_path, "w") as zip_file:
+                for artifact in self.artifacts:
+                    """Adjust the arcname as needed to control the path inside the zip file"""
+                    zip_file.write(
+                        artifact,
+                        arcname=os.path.basename(artifact))
+            print(f"Artifacts zip file created at: {artifacts_zip_path}")
+        except Exception as e:
+            print(f"Error creating artifacts zip file: {e}")
 
 
 def spl_build(variant: str, build_kit: str, target: str):

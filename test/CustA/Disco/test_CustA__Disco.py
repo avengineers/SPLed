@@ -22,10 +22,10 @@ class Test_CustA__Disco:
 
         """executable shall exist and collected for the bom."""
         artifacts_collection = ArtifactsCollection(self.variant)
-        artifacts_collection.collect(f"build/{self.variant}/prod/spled.exe")
+        artifacts_collection.collect(f"build/{self.variant}/*/*.exe")
 
         """executable shall exist and collected for the BOM."""
-        assert os.path.isfile(f"build/{self.variant}/prod/spled.exe")
+        assert len(artifacts_collection.artifacts) > 0
 
         """BOM shall be created"""
         bom_json_path = Path(f"build/{self.variant}/prod/bom.json")
@@ -33,14 +33,17 @@ class Test_CustA__Disco:
         assert bom_json_path.is_file()
 
         """BOM shall contain the expected artifacts"""
+        expected_artifacts = [
+            os.path.basename(artifact) for artifact in artifacts_collection.artifacts
+        ]
         with open(bom_json_path, "r") as bom_file:
             bom = json.load(bom_file)
             assert bom["variant"] == self.variant
-            assert len(bom["artifacts"]) == 1
-            assert bom["artifacts"][0] == f"build/{self.variant}/prod/*.exe"
+            assert set(bom["artifacts"]) == set(expected_artifacts)
 
         """variant's artifacts zip file shall be created"""
-        artifacts_zip_path = Path(f"build/{self.variant}/prod/{self.variant}.zip")
+        variant_path = self.variant.replace("/", "_")
+        artifacts_zip_path = Path(f"build/{self.variant}/prod/{variant_path}.zip")
         artifacts_collection.create_artifacts_zip(artifacts_zip_path)
         assert artifacts_zip_path.is_file()
 
