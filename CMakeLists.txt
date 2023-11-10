@@ -11,7 +11,7 @@ if(BUILD_KIT STREQUAL prod)
     project(${VARIANT} C ASM)
 else()
     project(${VARIANT} C ASM CXX)
-    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic=)
+    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic= -save-temps)
 endif()
 
 # Fetch all external dependencies into modules directory
