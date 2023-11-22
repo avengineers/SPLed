@@ -96,9 +96,6 @@ class ArtifactsCollection:
 
 
 def spl_build(variant: str, build_kit: str, target: str):
-    if build_kit == "test":
-        delete_gcov_data_files(variant)
-
     """build wrapper shall build target and related outputs."""
     result = CommandLineExecutor(
         [
@@ -113,20 +110,3 @@ def spl_build(variant: str, build_kit: str, target: str):
         ]
     ).execute()
     return result.returncode
-
-
-def delete_gcov_data_files(variant) -> None:
-    """
-    Deletes all .gcda files found in the build directory for the specified variant.
-
-    Args:
-        variant (str): The build variant to clean up.
-
-    Returns:
-        None
-    """
-    out_dir = pathlib.Path(f"build/{variant}/test/src")
-
-    for file in out_dir.glob("**/*.gcda"):
-        print(f"Found coverage file: {file}")
-        file.unlink()
