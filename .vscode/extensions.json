@@ -12,6 +12,7 @@
             "ms-python.vscode-pylance",
             "ms-python.python",
             "donjayamanne.python-environment-manager",
-            "felipecaputo.git-project-manager"
+            "felipecaputo.git-project-manager",
+            "ms-vscode.powershell"
         ]
 }
