@@ -10,7 +10,7 @@ day = datetime.date.today()
 # meta data #################################################################
 
 project = "SPLed"
-copyright = f"{day.year} Marquardt GmbH"
+copyright = f"{day.year} Avengineers"
 release = f"{day}"
 
 # file handling #############################################################
@@ -115,9 +115,23 @@ extensions.append("sphinxcontrib.datatemplates")
 
 # needs_types - this option allows the setup of own need types like bugs, user_stories and more.
 needs_types = [
-    dict(directive="spec", title="Specification", prefix="S_", color="#FEDCD2", style="node"),
-    dict(directive="impl", title="Implementation", prefix="I_", color="#DF744A", style="node"),
-    dict(directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"),
+    dict(
+        directive="spec",
+        title="Specification",
+        prefix="S_",
+        color="#FEDCD2",
+        style="node",
+    ),
+    dict(
+        directive="impl",
+        title="Implementation",
+        prefix="I_",
+        color="#DF744A",
+        style="node",
+    ),
+    dict(
+        directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"
+    ),
 ]
 
 
@@ -137,7 +151,7 @@ needs_extra_links = [
 
 # Link all tests results to the test cases
 needs_global_options = {
-    'results': "[[tr_link('title', 'case')]]",
+    "results": "[[tr_link('title', 'case')]]",
 }
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
