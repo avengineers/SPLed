@@ -20,8 +20,16 @@ templates_path = [
     "doc/_tmpl",
 ]
 
-exclude_patterns = ["README.md", "build/modules", "build/deps", ".venv", ".git"]
-include_patterns = ["index.rst", "references.rst", "doc/**"]
+exclude_patterns = [
+    "README.md",
+    "build/modules",
+    "build/deps",
+    ".venv",
+    ".git",
+    "**/test_results.rst",  # We renamed this file, but nobody deletes it.
+]
+
+include_patterns = ["index.rst", "coverage.rst", "definitions.rst", "doc/**"]
 
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -105,7 +113,6 @@ def tr_link(app, need, needs, first_option_name, second_option_name, *args, **kw
 
 needs_functions = [tr_link]
 
-# todo #######################################################################
 extensions.append("sphinx.ext.todo")
 
 # Render Your Data Readable ##################################################
@@ -115,6 +122,9 @@ extensions.append("sphinxcontrib.datatemplates")
 
 # needs_types - this option allows the setup of own need types like bugs, user_stories and more.
 needs_types = [
+    dict(
+        directive="req", title="Requirement", prefix="R_", color="#BFD8D2", style="node"
+    ),
     dict(
         directive="spec",
         title="Specification",
@@ -149,7 +159,7 @@ needs_extra_links = [
     {"option": "results", "incoming": "is resulted from", "outgoing": "results"},
 ]
 
-# Link all tests results to the test cases
+# Link tests results to the test cases
 needs_global_options = {
     "results": "[[tr_link('title', 'case')]]",
 }
