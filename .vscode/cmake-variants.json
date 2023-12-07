@@ -1,6 +1,14 @@
 {
   "variant": {
     "choices": {
+      "Base/Dev": {
+        "buildType": "Base_Dev",
+        "long": "select to build variant 'Base/Dev'",
+        "settings": {
+          "VARIANT": "Base/Dev"
+        },
+        "short": "Base/Dev"
+      },
       "CustA/Disco": {
         "buildType": "CustA_Disco",
         "long": "select to build variant 'CustA/Disco'",
