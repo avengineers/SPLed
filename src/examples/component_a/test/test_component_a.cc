@@ -15,8 +15,8 @@ extern "C" {
 * @rst
 *
 * .. test:: component_a.test_1
-*    :id: TS_COMP_A-001
-*    :tests: SWDD_COMP_A-001
+*    :id: TS_COMP_A-010
+*    :tests: SWDD_COMP_A-010
 *
 * @endrst
 */
@@ -30,9 +30,26 @@ TEST(component_a, test_1)
 /*!
 * @rst
 *
+* .. test:: component_a.test_1_1
+*    :id: TS_COMP_A-011
+*    :tests: SWDD_COMP_A-011
+*
+* @endrst
+*/
+TEST(component_a, test_1_1)
+{
+    CREATE_MOCK(mymock);
+    // Expect that ReadSomeData is called with a pointer which points to a value that is equal to 13
+    EXPECT_CALL(mymock, ReadSomeData(Pointee(13)));
+    CheckWriteSomeData(13);
+}
+
+/*!
+* @rst
+*
 * .. test:: component_a.test_2
-*    :id: TS_COMP_A-002
-*    :tests: SWDD_COMP_A-002
+*    :id: TS_COMP_A-020
+*    :tests: SWDD_COMP_A-020
 *
 * @endrst
 */
@@ -51,8 +68,8 @@ TEST(component_a, test_2)
 * @rst
 *
 * .. test:: component_a.test_3
-*    :id: TS_COMP_A-003
-*    :tests: SWDD_COMP_A-003
+*    :id: TS_COMP_A-030
+*    :tests: SWDD_COMP_A-030
 *
 * @endrst
 */
@@ -79,8 +96,8 @@ TEST(component_a, test_3)
 * @rst
 *
 * .. test:: component_a.test_4
-*    :id: TS_COMP_A-004
-*    :tests: SWDD_COMP_A-004
+*    :id: TS_COMP_A-040
+*    :tests: SWDD_COMP_A-040
 *
 * @endrst
 */
@@ -106,8 +123,8 @@ TEST(component_a, test_4)
 * @rst
 *
 * .. test:: component_a.test_5
-*    :id: TS_COMP_A-005
-*    :tests: SWDD_COMP_A-005
+*    :id: TS_COMP_A-050
+*    :tests: SWDD_COMP_A-050
 *
 * @endrst
 */
@@ -131,8 +148,8 @@ TEST(component_a, test_5) {
 * @rst
 *
 * .. test:: component_a.test_6
-*    :id: TS_COMP_A-006
-*    :tests: SWDD_COMP_A-006
+*    :id: TS_COMP_A-060
+*    :tests: SWDD_COMP_A-060
 *
 * @endrst
 */
@@ -163,8 +180,8 @@ TEST(component_a, test_6)
 * @rst
 *
 * .. test:: component_a.test_7
-*    :id: TS_COMP_A-007
-*    :tests: SWDD_COMP_A-007
+*    :id: TS_COMP_A-070
+*    :tests: SWDD_COMP_A-070
 *
 * @endrst
 */
@@ -187,5 +204,51 @@ TEST(component_a, test_7)
         }}));
 
     CheckReadDataStructureArray(input);
+
+}
+
+
+typedef struct
+{
+    const char* description;
+    // Inputs
+    int input;
+    // Outputs
+    int output;
+} TestDataCalculateSquare_t;
+
+/*!
+* @rst
+*
+* .. test:: component_a.test_8
+*    :id: TS_COMP_A-080
+*    :tests: SWDD_COMP_A-080
+*
+* @endrst
+*/
+TEST(component_a, test_8)
+{
+    CREATE_MOCK(mymock);
+
+    std::vector<TestDataCalculateSquare_t> TestDataCalculateSquare = {
+        {"Positive integer", 10, 100},
+        {"Negative interger", -4, 16},
+        {"Square zero", 0, 0}
+    };
+
+    for (const auto& param : TestDataCalculateSquare) {
+        /*
+        'SCOPED_TRACE' provides a way to add additional context to the output of test assertions.
+        This is particularly useful in situations where tests are performed within  a loop or
+        across various data sets, and you want to identify which specific  iteration or data set
+        caused a test failure.
+        */
+        SCOPED_TRACE(param.description);
+        // Make Read_MyInput return param.input
+        EXPECT_CALL(mymock, Read_MyInput(_)).WillOnce(SetArgPointee<0>(param.input));
+        // Check that Write_MyInput was called with param.output value
+        EXPECT_CALL(mymock, Write_MyInput(Pointee(param.output)));
+        CalculateSquare();
+    }
 
 }

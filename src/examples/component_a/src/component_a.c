@@ -10,6 +10,10 @@ int CheckReadSomeData() {
     return var;
 }
 
+void CheckWriteSomeData(int var) {
+    ReadSomeData(&var);
+}
+
 int CheckReadSomeDataAndReturn() {
     int var = 0;
     unsigned char ret = ReadSomeDataAndReturn(&var);
@@ -43,4 +47,12 @@ void CheckReadDataStructure(MyDataType* output) {
 
 void CheckReadDataStructureArray(MyDataType* output) {
     ReadDataStructureArray(output);
+}
+
+
+extern void CalculateSquare(void) {
+    int input, output;
+    Read_MyInput(&input);
+    output = input * input;
+    Write_MyInput(&output);
 }
