@@ -3,6 +3,7 @@
 
 extern void ReadSomeData(int* var);
 extern int CheckReadSomeData();
+extern void CheckWriteSomeData(int var);
 
 extern unsigned char ReadSomeDataAndReturn(int* var);
 extern int CheckReadSomeDataAndReturn();
@@ -23,6 +24,8 @@ extern void CheckReadDataStructure(MyDataType* output);
 extern void ReadDataStructureArray(MyDataType* var);
 extern void CheckReadDataStructureArray(MyDataType* output);
 
-
+extern void Read_MyInput(int* var);
+extern void Write_MyInput(int* var);
+extern void CalculateSquare(void);
 
 #endif // __component_a_h__
