@@ -35,6 +35,10 @@
             "Name": "graphviz"
         },
         {
+            "Source": "main",
+            "Name": "cppcheck"
+        },
+        {
             "Source": "versions",
             "Name": "python311"
         },

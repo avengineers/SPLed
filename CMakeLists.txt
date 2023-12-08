@@ -32,6 +32,10 @@ include(${spl-core_SOURCE_DIR}/cmake/spl.cmake)
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
+if(BUILD_KIT STREQUAL prod)
+    include(cppcheck.cmake)
+endif()
+
 # TODO: refactor/remove; we want to explicitly add includes where required
 foreach(component_name ${COMPONENT_NAMES})
     target_include_directories(${component_name} PUBLIC ${target_include_directories__INCLUDES})
