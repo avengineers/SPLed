@@ -2,7 +2,7 @@ Passed test cases
 -----------------
 
 .. needtable::
-   :filter: type == '{case_need}' and 'passed' == result
+   :filter: '{id}' in tags and type == '{case_need}' and 'passed' == result
    :columns: id, title, is resulted from
    :style: table
 
@@ -10,7 +10,7 @@ Failed test cases
 -----------------
 
 .. needtable::
-   :filter: type == '{case_need}' and 'failure' == result
+   :filter: '{id}' in tags and type == '{case_need}' and 'failure' == result
    :columns: id, title, is resulted from
    :style: table
 
@@ -18,7 +18,7 @@ Skipped test cases
 ------------------
 
 .. needtable::
-   :filter: type == '{case_need}' and 'skipped' == result
+   :filter: '{id}' in tags and type == '{case_need}' and 'skipped' == result
    :columns: id, title, is resulted from
    :style: table
 

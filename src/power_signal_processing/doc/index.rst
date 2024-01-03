@@ -1,5 +1,5 @@
-Software Detailed Design for Power Signal Processing
-====================================================
+Software Detailed Design
+========================
 
 This module is responsible for processing power signals based on key presses.
 
