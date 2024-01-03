@@ -29,7 +29,7 @@ exclude_patterns = [
     "**/test_results.rst",  # We renamed this file, but nobody deletes it.
 ]
 
-include_patterns = ["index.rst", "coverage.rst", "definitions.rst", "doc/**"]
+include_patterns = ["index.rst", "doc/**"]
 
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -164,14 +164,18 @@ needs_global_options = {
     "results": "[[tr_link('title', 'case')]]",
 }
 
+# Provide all config values to jinja
+html_context = {
+    "build_config": {},
+    "config": {},
+}
+
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
 # and if so, load the JSON file and set the 'html_context' variable
 if "SPHINX_BUILD_CONFIGURATION_FILE" in os.environ:
     with open(os.environ["SPHINX_BUILD_CONFIGURATION_FILE"], "r") as file:
-        html_context = json.load(file)
-        include_patterns.extend(html_context.get("include_patterns", []))
-
-html_context["config"] = {}
+        html_context["build_config"] = json.load(file)
+        include_patterns.extend(html_context["build_config"].get("include_patterns", []))
 
 # Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
 # and if so, load the JSON file and set the 'html_context' variable
@@ -179,9 +183,8 @@ if "AUTOCONF_JSON_FILE" in os.environ:
     with open(os.environ["AUTOCONF_JSON_FILE"], "r") as file:
         html_context["config"] = json.load(file)["features"]
 
-
 if "VARIANT" in os.environ:
-    html_context["config"]["variant"] = os.environ["VARIANT"]
+    html_context["build_config"]["variant"] = os.environ["VARIANT"]
 
 
 def rstjinja(app, docname, source):

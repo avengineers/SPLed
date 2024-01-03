@@ -1,5 +1,5 @@
-Software Detailed Design for Main Control Knob Component
-========================================================
+Software Detailed Design
+========================
 
 
 The main control knob component is responsible for calculating a value between 0 and 100 percent depending on the user's input.

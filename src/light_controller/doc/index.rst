@@ -1,5 +1,5 @@
-Software Detailed Design for Light Controller Component
-=======================================================
+Software Detailed Design
+========================
 
 .. contents:: Table of Contents
     :depth: 2

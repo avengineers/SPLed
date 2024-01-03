@@ -1,7 +1,36 @@
+{% if build_config.component_info %}
+
 Software Component Report
-=========================
+#########################
 
-**Variant:** {{ config.variant }}
+| **Variant:** {{ build_config.variant }}
+| **Component:** {{ build_config.component_info.long_name }}
 
-{{ generated_rst_content }}
-    coverage
+.. toctree::
+    :maxdepth: 2
+
+    {{ build_config.component_info.path }}/doc/index
+{% if build_config.component_info.has_tests %}
+    {{ build_config.component_info.output_dir }}/unit_test_spec
+    {{ build_config.component_info.output_dir }}/unit_test_results
+    {{ build_config.component_info.output_dir }}/doxygen/html/index
+    {{ build_config.component_info.output_dir }}/coverage
+{% endif %}
+
+{% else %}
+
+Variant Report
+##############
+
+**Variant:** {{ build_config.variant }}
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Contents
+
+    doc/customer_requirements/index
+    doc/software_architecture/index
+    doc/variants/index
+    doc/components/index
+    
+{% endif %}
