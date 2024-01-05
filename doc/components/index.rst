@@ -11,11 +11,11 @@ Components
     :maxdepth: 2
 
     /{{ component_info.path }}/doc/index
-{% if component_info.has_tests %}
-    /{{ component_info.output_dir }}/unit_test_spec
-    /{{ component_info.output_dir }}/unit_test_results
-    /{{ component_info.output_dir }}/doxygen/html/index
-    /{{ component_info.output_dir }}/coverage
+{% if (build_config.target == 'reports') and component_info.has_reports %}
+    /{{ component_info.reports_output_dir }}/unit_test_spec
+    /{{ component_info.reports_output_dir }}/unit_test_results
+    /{{ component_info.reports_output_dir }}/doxygen/html/index
+    /{{ component_info.reports_output_dir }}/coverage
 {% endif %}
 
 

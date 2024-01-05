@@ -21,7 +21,6 @@ def test_reports():
                 "light_controller",
                 "main_control_knob",
                 "power_signal_processing",
-                "spled",
             ]
         ),
-    ).execute(target="all", strict=True, archive=True)
+    ).execute(target="reports", strict=True, archive=True)
