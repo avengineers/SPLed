@@ -15,13 +15,5 @@ def test_reports():
     assert 0 == SplBuild(
         variant="CustB/Sleep",
         build_kit="test",
-        expected_artifacts=ComponentReportsCollection(
-            modules=[
-                "brightness_controller",
-                "keyboard_interface",
-                "light_controller",
-                "main_control_knob",
-                "power_signal_processing",
-            ]
-        ),
-    ).execute(target="reports", strict=True, archive=False)
+        expected_artifacts=ArtifactsCollection(artifacts=["reports"]),
+    ).execute(target="reports", strict=True, archive=True)

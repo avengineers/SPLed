@@ -1,4 +1,4 @@
-name: selftests
+name: CI
 
 on:
   push:
@@ -8,38 +8,33 @@ on:
 
   workflow_dispatch:
 
-env:
-  USER_PATH_FIRST: true
-
 jobs:
   test:
+    name: CI Gate
     runs-on: windows-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          submodules: true
-      - name: install tools and run selftests
+          fetch-depth: 0
+      - name: install tools, build and test
+        env:
+          # Workaround to force usage of scoop apps installed in USERPROFILE.
+          USER_PATH_FIRST: 1
         run: |
           .\build.ps1 -install
           .\build.ps1 -target selftests
         shell: powershell
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          files: |
+            test/output/test-report.xml
       - uses: actions/upload-artifact@v2
         with:
-          name: quality-gate-results.zip
+          name: artifacts.zip
           retention-days: 90
-          path: test/output/test-report.xml
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v2
-        with:
-          name: unittest-results.zip
-          retention-days: 90
-          path: "build/**/junit.xml"
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage.zip
-          retention-days: 90
-          path: build/**/coverage/*
+          path: "build/**/artifacts.*"
           if-no-files-found: error

@@ -15,12 +15,5 @@ def test_reports():
     assert 0 == SplBuild(
         variant="CustA/Disco",
         build_kit="test",
-        expected_artifacts=ComponentReportsCollection(
-            modules=[
-                "keyboard_interface",
-                "light_controller",
-                "main_control_knob",
-                "power_signal_processing",
-            ]
-        ),
+        expected_artifacts=ArtifactsCollection(artifacts=["reports"]),
     ).execute(target="reports", strict=True, archive=True)
