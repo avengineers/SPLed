@@ -152,6 +152,8 @@ needs_extra_options = ["integrity", "assignee", "version"]
 # Define own link types
 needs_extra_links = [
     # SWE.3 BP.5: link from Implementation (Software unit) to Specification (Software detailed design)
+    # AND
+    # SWE.2 BP.7: link from Requirements (Software Requirement) to Architecture (Software Architecture)
     {"option": "implements", "incoming": "is implemented by", "outgoing": "implements"},
     # SWE.4 BP.5: link from Test Case (Unit test specification) to Specification (Software detailed design)
     {"option": "tests", "incoming": "is tested by", "outgoing": "tests"},

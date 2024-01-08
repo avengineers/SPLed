@@ -52,7 +52,7 @@ std::ostream& operator<<(std::ostream& os, const RGBColor& color)
 *
 * .. test:: light_controller.test_light_stays_off
 *    :id: TS_LC-006
-*    :tests: SWDD_LC-001, SWDD_LC-004
+*    :tests: SWDD_LC-001, SWDD_LC-004, R_001
 *
 * @endrst
 */
@@ -74,7 +74,7 @@ TEST(light_controller, test_light_stays_off)
 *
 * .. test:: light_controller.test_light_on_and_off
 *    :id: TS_LC-001
-*    :tests: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004
+*    :tests: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004, R_002
 *
 * @endrst
 */
