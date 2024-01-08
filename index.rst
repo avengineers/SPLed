@@ -32,5 +32,8 @@ Variant Report
     doc/software_architecture/index
     doc/variants/index
     doc/components/index
-    
+{% if build_config.target == 'reports' %}
+    {{ build_config.reports_output_dir }}/coverage
+{% endif %}
+
 {% endif %}
