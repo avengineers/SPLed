@@ -7,25 +7,10 @@ Customer A - Disco Light
 
 Customer A requests a Disco Light that shall offer an ambient lighting experience that resonates with the rhythm of the surroundings.
 
-.. req:: Sync light with the ambient music
-   :id: R_001
-
-    The lighting shall automatically sync with any ambient music, adjusting its blink rate to match the beats or rhythm.
-
-.. req:: Option to choose a color for the light
-   :id: R_002
-
-    Users shall have the freedom to choose a specific color for the light. However, in the absence of a user-defined color, the software shall delight the user with randomized colors, ensuring an authentic disco experience.
-
-.. req:: The light transition must be adjustable
-   :id: R_003
-    
-    As the essence of a disco environment is dynamic and lively, light transitions shall happen instantaneously without any lag.
-
-.. req:: The illumination must be adjustable
-   :id: R_004
-
-    The illumination provided shall be vibrant and noticeable, ranging from medium to high levels to keep up with the lively ambiance of disco settings.
+* RQ-1: The lighting shall automatically sync with any ambient music, adjusting its blink rate to match the beats or rhythm.
+* RQ-2: Users shall have the freedom to choose a specific color for the light. However, in the absence of a user-defined color, the software shall delight the user with randomized colors, ensuring an authentic disco experience.
+* RQ-3: As the essence of a disco environment is dynamic and lively, light transitions shall happen instantaneously without any lag.
+* RQ-4: The illumination provided shall be vibrant and noticeable, ranging from medium to high levels to keep up with the lively ambiance of disco settings.
 
 
 Customer B - Sleep Light
