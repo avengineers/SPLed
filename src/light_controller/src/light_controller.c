@@ -8,10 +8,10 @@
 #include "autoconf.h"
 
  /**
-  * * @rst
+  * @rst
   * .. impl:: Light state
   *    :id: SWIMPL_LC-001
-  *    :implements: SWDD_LC-002
+  *    :implements: SWDD_LC-001
   * @endrst
   *
   * @enum LightState
@@ -32,7 +32,7 @@ const RGBColor OFF_COLOR = { .red = 0, .green = 0, .blue = 0 };
 static unsigned int getBrightnessValue() {
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
     /**
-     * * @rst
+     * @rst
      * .. impl:: Variable brightness
      *    :id: SWIMPL_LC-005
      *    :implements: SWDD_LC-005
@@ -45,7 +45,7 @@ static unsigned int getBrightnessValue() {
 }
 
 /**
- * * @rst
+ * @rst
  * .. impl:: Turn light off
  *    :id: SWIMPL_LC-002
  *    :implements: SWDD_LC-003
@@ -59,7 +59,7 @@ static void turnLightOff(void) {
 }
 
 /**
- * * @rst
+ * @rst
  * .. impl:: Turn light on
  *    :id: SWIMPL_LC-003
  *    :implements: SWDD_LC-003

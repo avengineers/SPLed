@@ -31,7 +31,7 @@ Variant Report
     doc/customer_requirements/index
     doc/software_requirements/index
     doc/software_architecture/index
-    doc/variants/index
+    doc/ai_example/index
     doc/components/index
 {% if build_config.target == 'reports' %}
     {{ build_config.reports_output_dir }}/coverage

@@ -44,12 +44,12 @@ html_title = f"{project} {release}"
 
 html_theme = "sphinx_rtd_theme"
 
-# Hide hyper link which leeds to the source of page displayed
+# Show hyper link which leeds to the source of page displayed
 html_show_sourcelink = True
 
 html_theme_options = {
     "canonical_url": "",
-    "analytics_id": "",  #  Provided by Google in your dashboard
+    "analytics_id": "",  # Provided by Google in your dashboard
     "display_version": True,
     "prev_next_buttons_location": "bottom",
     "style_external_links": True,
@@ -66,18 +66,16 @@ html_theme_options = {
 
 html_logo = "doc/_figures/SPLED_logo.png"
 
-# EXTENSIONS AND THEIR CONFIGS ##############################################
-extensions = ["sphinx_rtd_size"]
+# extensions and their configuration #########################################
+extensions = []
 
+extensions.append("sphinx_rtd_size")
 sphinx_rtd_size_width = "90%"
 
-# mermaid config - @see https://pypi.org/project/sphinxcontrib-mermaid/ #####
 extensions.append("sphinxcontrib.mermaid")
 
-# sphinx_needs ###############################################################
 extensions.append("sphinx_needs")
 
-# test_reports ###############################################################
 extensions.append("sphinxcontrib.test_reports")
 tr_report_template = "doc/test_report_template.txt"
 
@@ -144,10 +142,8 @@ needs_types = [
     ),
 ]
 
-
 # Define own options
-needs_extra_options = ["integrity", "assignee", "version"]
-
+needs_extra_options = ["integrity"]
 
 # Define own link types
 needs_extra_links = [
@@ -172,19 +168,20 @@ html_context = {
     "config": {},
 }
 
-# Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
-# and if so, load the JSON file and set the 'html_context' variable
+# pass build configuration to jinja
 if "SPHINX_BUILD_CONFIGURATION_FILE" in os.environ:
     with open(os.environ["SPHINX_BUILD_CONFIGURATION_FILE"], "r") as file:
         html_context["build_config"] = json.load(file)
-        include_patterns.extend(html_context["build_config"].get("include_patterns", []))
+        include_patterns.extend(
+            html_context["build_config"].get("include_patterns", [])
+        )
 
-# Check if the SPHINX_BUILD_CONFIGURATION_FILE environment variable exists
-# and if so, load the JSON file and set the 'html_context' variable
+# pass feature configuration to jinja
 if "AUTOCONF_JSON_FILE" in os.environ:
     with open(os.environ["AUTOCONF_JSON_FILE"], "r") as file:
         html_context["config"] = json.load(file)["features"]
 
+# we almost forgot the variant :o)
 if "VARIANT" in os.environ:
     html_context["build_config"]["variant"] = os.environ["VARIANT"]
 
