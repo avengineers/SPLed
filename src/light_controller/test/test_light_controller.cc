@@ -47,15 +47,15 @@ std::ostream& operator<<(std::ostream& os, const RGBColor& color)
     return os;
 }
 
-/*!
-* @rst
-*
-* .. test:: light_controller.test_light_stays_off
-*    :id: TS_LC-006
-*    :tests: SWDD_LC-001, SWDD_LC-004, R_001
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: light_controller.test_light_stays_off
+ *    :id: TS_LC-006
+ *    :tests: SWDD_LC-001, SWDD_LC-004, R_001
+ *
+ * @endrst
+ */
 TEST(light_controller, test_light_stays_off)
 {
     CREATE_MOCK(mymock);
@@ -69,15 +69,15 @@ TEST(light_controller, test_light_stays_off)
     }
 }
 
-/*!
-* @rst
-*
-* .. test:: light_controller.test_light_on_and_off
-*    :id: TS_LC-001
-*    :tests: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004, R_002
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: light_controller.test_light_on_and_off
+ *    :id: TS_LC-001
+ *    :tests: SWDD_LC-001, SWDD_LC-003, SWDD_LC-004, R_002
+ *
+ * @endrst
+ */
 TEST(light_controller, test_light_on_and_off)
 {
     CREATE_MOCK(mymock);
@@ -108,15 +108,15 @@ TEST(light_controller, test_light_on_and_off)
 }
 
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
-/*!
-* @rst
-*
-* .. test:: light_controller.test_light_on_very_bright
-*    :id: TS_LC-005
-*    :tests: SWDD_LC-005
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: light_controller.test_light_on_very_bright
+ *    :id: TS_LC-005
+ *    :tests: SWDD_LC-005
+ *
+ * @endrst
+ */
 TEST(light_controller, test_light_on_very_bright)
 {
     CREATE_MOCK(mymock);
@@ -136,15 +136,15 @@ TEST(light_controller, test_light_on_very_bright)
 #endif
 
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
-/*!
-* @rst
-*
-* .. test:: light_controller.test_light_blinking
-*    :id: TS_LC-002
-*    :tests: SWDD_LC-002
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: light_controller.test_light_blinking
+ *    :id: TS_LC-002
+ *    :tests: SWDD_LC-002
+ *
+ * @endrst
+ */
 TEST(light_controller, test_light_blinking)
 {
     /*!
@@ -201,20 +201,20 @@ std::ostream& operator<<(std::ostream& os, const TestParam& param)
     return os;
 }
 
-/*!
-* @rst
-*
-* .. test:: light_controller.test_correct_blink_period
-*    :id: TS_LC-004
-*    :tests: SWDD_LC-002
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: light_controller.test_correct_blink_period
+ *    :id: TS_LC-004
+ *    :tests: SWDD_LC-002
+ *
+ * @endrst
+ */
 TEST(light_controller, test_correct_blink_period)
 {
-    /*!
-    * Test cases for the calculateBlinkPeriod function.
-    */
+    /**
+     * Test cases for the calculateBlinkPeriod function.
+     */
     std::vector<TestParam> test_data = {
         {"Slowest", 0, 100},
         {"Inbetween", 50, 50},
@@ -227,15 +227,15 @@ TEST(light_controller, test_correct_blink_period)
     }
 }
 
-/*!
-* @rst
-*
-* .. test:: BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod/*
-*    :id: TS_LC-003
-*    :tests: SWDD_LC-002
-*
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. test:: BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod/*
+ *    :id: TS_LC-003
+ *    :tests: SWDD_LC-002
+ *
+ * @endrst
+ */
 TEST_P(BlinkPeriodTest, CalculatesCorrectBlinkPeriod)
 {
     // Get the parameters for this test case
@@ -255,6 +255,5 @@ INSTANTIATE_TEST_SUITE_P(
         TestParam{ "Fastest", 100, 10 }
     )
 );
-
 
 #endif // CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE
