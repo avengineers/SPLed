@@ -84,14 +84,14 @@ static void turnLightOn(void) {
 }
 
 #if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
-/*!
-* @rst
-*
-* .. impl:: Calculate blink period
-*    :id: SWIMPL_LC-004
-*    :implements: SWDD_LC-002
-* @endrst
-*/
+/**
+ * @rst
+ *
+ * .. impl:: Calculate blink period
+ *    :id: SWIMPL_LC-004
+ *    :implements: SWDD_LC-002
+ * @endrst
+ */
 static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
     // Calculate blink period based on main knob value
     unsigned int blinkPeriod = 100 - (mainKnobValue); // Adjust this formula as needed
@@ -104,10 +104,16 @@ static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
 #endif
 
 /**
- * @brief Controls the light behavior based on the power state.
+ * @rst
+ * .. impl:: Light Controller's main function
+ *    :id: SWIMPL_LC-006
+ *    :implements: SWDD_LC-001
+ * @endrst
+ * 
+ * @brief Controls the light state.
  *
- * Uses a state machine to determine the light's color. The light color is only updated
- * when there's a change in the power state to ensure no redundant updates.
+ * Uses a state machine to determine the light state based on several inputs,
+ * e.g., the system's power state.
  */
 void lightController(void) {
 
