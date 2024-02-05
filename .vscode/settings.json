@@ -1,8 +1,5 @@
 {
     "python.testing.pytestEnabled": true,
-    "python.testing.pytestArgs": [
-        "test"
-    ],
     "python.testing.unittestEnabled": false,
     "python.analysis.extraPaths": [
         "test"
@@ -35,7 +32,8 @@
         "*.h": "c",
         "*.c": "c",
         "Jenkinsfile": "groovy",
-        "*.py": "python"
+        "*.py": "python",
+        "array": "cpp"
     },
     "git.repositoryScanMaxDepth": 3,
     "git-graph.maxDepthOfRepoSearch": 3,

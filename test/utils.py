@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 from typing import Dict, List, Optional
 import zipfile
+from py_app_dev.core.logging import time_it
 
 
 class CommandLineExecutor:
@@ -27,11 +28,12 @@ class CommandLineExecutor:
 
     def execute(self) -> subprocess.CompletedProcess:
         """
-        Executes the given command.
+        Executes the command and returns a CompletedProcess object.
 
         Returns:
         - A subprocess.CompletedProcess object representing the result of the command execution.
         """
+        output = ""
         try:
             print(f"Running command: {self.command}")
             with Popen(
@@ -48,6 +50,10 @@ class CommandLineExecutor:
                     print(line, end="")
         except Exception:
             raise RuntimeError(f"Command '{self.command}' failed.")
+        finally:
+            # We have to restore the stdout content.
+            # This is necessary because the stdout object is closed after we printed its content
+            process.stdout = output
         return process
 
 
@@ -61,7 +67,8 @@ class ArtifactsCollection:
 
     def assert_exists_in(self, directory: Path):
         for artifact in self.artifacts:
-            assert (directory / artifact).exists()
+            filePath = Path(directory).joinpath(artifact)
+            assert filePath.exists(), f"{filePath} does not exist."
 
 
 # TODO: Determine expected artifacts out of the feature model. Currently, they are hardcoded in the test.
@@ -177,6 +184,7 @@ class SplBuild:
             print(f"Error creating artifacts zip file: {e}")
             raise e
 
+    @time_it()
     def execute(self, target: str, strict: bool, archive: bool) -> int:
         """
         Build the target and therefore the expected artifacts.

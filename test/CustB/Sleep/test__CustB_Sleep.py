@@ -1,4 +1,4 @@
-from utils import ArtifactsCollection, ComponentReportsCollection, SplBuild
+from utils import ArtifactsCollection, SplBuild
 
 
 def test_build():

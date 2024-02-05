@@ -92,7 +92,7 @@ static void turnLightOn(void) {
  *    :implements: SWDD_LC-002
  * @endrst
  */
-static unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
+static_scope_file unsigned int calculateBlinkPeriod(percentage_t mainKnobValue) {
     // Calculate blink period based on main knob value
     unsigned int blinkPeriod = 100 - (mainKnobValue); // Adjust this formula as needed
 

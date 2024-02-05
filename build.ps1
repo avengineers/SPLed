@@ -74,6 +74,31 @@ function Test-RunningInCIorTestEnvironment {
     return [Boolean]($Env:JENKINS_URL -or $Env:PYTEST_CURRENT_TEST -or $Env:GITHUB_ACTIONS)
 }
 
+# Consider CI environment variables (e.g. on Jenkins BRANCH_NAME and CHANGE_TARGET) to filter tests in release branch builds
+function Get-ReleaseBranchPytestFilter {
+    $ChangeId = $env:CHANGE_ID
+    $BranchName = $env:BRANCH_NAME
+    $ChangeTarget = $env:CHANGE_TARGET
+
+    $targetBranch = ''
+
+    if (-not $ChangeId -and $BranchName -and $BranchName.StartsWith("release/")) {
+        $targetBranch = $BranchName
+    }
+
+    if ($ChangeId -and $ChangeTarget -and $ChangeTarget.StartsWith("release/") ) {
+        $targetBranch = $ChangeTarget
+    }
+
+    $filter = ''
+    if ($targetBranch -and ($targetBranch -match 'release/([^/]+/[^/]+)(.*)')) {
+        $filter = $Matches[1]
+    }
+
+    return $filter
+}
+
+
 # Build with given parameters
 Function Invoke-Build {
     param (
@@ -110,9 +135,9 @@ Function Invoke-Build {
 
         # Filter pytest test cases
         $filterCmd = ''
-        # Consider environment variable BRANCH_NAME (e.g. on Jenkins) to filter tests in release branch builds
-        if ($Env:BRANCH_NAME -and ($Env:BRANCH_NAME -match 'release/([^/]+/[^/]+)(.*)')) {
-            $filterCmd = "-k " + $Matches[1]
+        $releaseBranchFilter = Get-ReleaseBranchPytestFilter
+        if ($releaseBranchFilter) {
+            $filterCmd = "-k '$releaseBranchFilter'"
         }
         # otherwise consider command line option '-filter' if given
         elseif ($filter) {
@@ -211,6 +236,10 @@ Push-Location $PSScriptRoot
 Write-Output "Running in ${pwd}"
 
 try {
+    if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
+        Initialize-EnvPath
+    }
+
     if ($install) {
         # Installation of Scoop, Python and pipenv via bootstrap
         if (-Not (Test-Path -Path '.bootstrap')) {
@@ -222,10 +251,6 @@ try {
     }
     else {
         # Call build system
-        if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
-            Initialize-EnvPath
-        }
-        # Call CMake
         Invoke-Build `
             -target $target `
             -buildKit $buildKit `
