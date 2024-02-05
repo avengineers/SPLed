@@ -9,9 +9,16 @@ include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/config.cmake)
 
 if(BUILD_KIT STREQUAL prod)
     project(${VARIANT} C ASM)
+    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic_scope_file=static)
 else()
+    # In case of test the project is a C++ project due to GTest usage
     project(${VARIANT} C ASM CXX)
-    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic= -save-temps)
+
+    # define static to nothing on file scope to allow access to
+    # static variables and function in unit test cases.
+    # Furthermore store temporary files during compilation to
+    # get preprocessed files.
+    set(VARIANT_ADDITIONAL_COMPILE_C_FLAGS -Dstatic_scope_file= -save-temps)
 endif()
 
 # Fetch all external dependencies into modules directory
@@ -23,7 +30,7 @@ include(FetchContent)
 FetchContent_Declare(
     spl-core
     GIT_REPOSITORY https://github.com/avengineers/spl-core.git
-    GIT_TAG v3.15.0
+    GIT_TAG v3.16.0
 )
 FetchContent_MakeAvailable(spl-core)
 
