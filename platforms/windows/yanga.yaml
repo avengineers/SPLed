@@ -1,0 +1,17 @@
+platforms:
+  - name: win_exe
+    cmake_generators:
+      - step: CreateExecutableCMakeGenerator
+        module: yanga.cmake.create_executable
+    toolchain_file: clang.cmake
+    is_default: true
+  - name: gtest
+    cmake_generators:
+      - step: GTestCMakeGenerator
+        module: yanga.cmake.gtest
+    toolchain_file: gcc.cmake
+  - name: spl_exe
+    cmake_generators:
+      - step: SplCMakeGenerator
+        file: tools/spl_cmake_generator.py
+    toolchain_file: clang.cmake

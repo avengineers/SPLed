@@ -1,0 +1,68 @@
+components:
+  - name: main
+    type: component
+    sources:
+      - src/main/src/main.c
+  - name: rte
+    type: component
+    sources:
+      - src/rte/src/rte.c
+  - name: spled
+    type: component
+    sources:
+      - src/spled/src/spled.c
+  - name: power_signal_processing
+    type: component
+    sources:
+      - src/power_signal_processing/src/power_signal_processing.c
+  - name: light_controller
+    type: component
+    sources:
+      - src/light_controller/src/light_controller.c
+  - name: keyboard_interface
+    type: component
+    sources:
+      - src/keyboard_interface/src/keyboard_interface.c
+    test_sources:
+      - src/keyboard_interface/test/test_keyboard_interface.cc
+  - name: console_interface
+    type: component
+    sources:
+      - src/console_interface/src/console_interface.c
+  - name: main_control_knob
+    type: component
+    sources:
+      - src/main_control_knob/src/main_control_knob.c
+
+variants:
+  - name: Disco
+    description: Disco light.
+    bom:
+      components:
+        - main
+        - rte
+        - spled
+        - power_signal_processing
+        - light_controller
+        - keyboard_interface
+        - console_interface
+        - main_control_knob
+    config_file: "CustA/Disco/config.txt"
+
+pipeline:
+  install:
+    - step: ScoopInstall
+      module: yanga.steps.scoop_install
+      description: Install scoop dependencies
+      timeout_sec: 120
+    - step: WestInstall
+      module: yanga.steps.west_install
+      description: Install west dependencies
+  gen:
+    - step: KConfigGen
+      module: yanga.steps.kconfig_gen
+  build:
+    - step: GenerateBuildSystemFiles
+      module: yanga.steps.execute_build
+    - step: ExecuteBuild
+      module: yanga.steps.execute_build

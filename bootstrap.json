@@ -1,0 +1,7 @@
+{
+  "python_version": "3.11",
+  "python_package_manager": "poetry>=1.7.1",
+  "scoop_installer": "https://raw.githubusercontent.com/ScoopInstaller/Install/master/install.ps1",
+  "scoop_python_json_base_url": "https://raw.githubusercontent.com/ScoopInstaller/Versions/master/bucket",
+  "bootstrap_version": "0.5.0"
+}

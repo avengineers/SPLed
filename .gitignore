@@ -1,3 +1,6 @@
+# Python virtual environment
+/.venv
+
 # Binary output dir, not recommended to push binary results to Git.
 /build
 

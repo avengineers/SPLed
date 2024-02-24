@@ -1,0 +1,10 @@
+manifest:
+  remotes:
+    - name: gtest
+      url-base: https://github.com/google
+
+  projects:
+    - name: googletest
+      remote: gtest
+      revision: v1.14.0
+      path: external/gtest
