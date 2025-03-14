@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "afac8891c062641963b1a1a5243d9785eb5a62a6865187e7a7b44a8a87d7e566"
+            "sha256": "3b8978e85d038a907bb70041fe64d9b7efa602bf138e11432cf0fccd4d75f7c2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -42,11 +42,11 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e",
-                "sha256:c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a"
+                "sha256:427318ce031701fea540783410126f03899a97ffc6f61596ad581ac2e40e3bc3",
+                "sha256:75d7cefc7fb576747b2c81b4442d4d4a1ce0900973527c011d1030fd3bf4af1b"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==25.1.0"
+            "version": "==25.3.0"
         },
         "babel": {
             "hashes": [
@@ -325,11 +325,11 @@
         },
         "filelock": {
             "hashes": [
-                "sha256:533dc2f7ba78dc2f0f531fc6c4940addf7b70a481e269a5a3b93be94ffbe8338",
-                "sha256:ee4e77401ef576ebb38cd7f13b9b28893194acc20a8e68e18730ba9c0e54660e"
+                "sha256:adbc88eabb99d2fec8c9c1b229b171f18afa655400173ddc653d5d01501fb9f2",
+                "sha256:c401f4f8377c4464e6db25fff06205fd89bdd83b65eb0488ed1b160f780e21de"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==3.17.0"
+            "version": "==3.18.0"
         },
         "fonttools": {
             "hashes": [
@@ -1079,11 +1079,11 @@
         },
         "py-app-dev": {
             "hashes": [
-                "sha256:8d48363ebce5f17d83706d75cd2c94c95543cb58fec4a6d8e51794335fe84411",
-                "sha256:af06e0b109d169ec8f2510714ce264f6b0a36a7bc48d3758bf174198220ab3ad"
+                "sha256:d9ca2dd7462417a33e8a2031e872a7cac8986b1a4a7c6733285b4837dd44cedf",
+                "sha256:f34ad860913fc766a67ad23d2cac6f9925eb45d47c07b4c9328ee5d5e33dc4db"
             ],
             "markers": "python_version >= '3.10' and python_version < '4.0'",
-            "version": "==2.7.0"
+            "version": "==2.8.0"
         },
         "pydata-sphinx-theme": {
             "hashes": [
@@ -1713,12 +1713,12 @@
         },
         "spl-core": {
             "hashes": [
-                "sha256:461f086a2ed4e1913fceafb6466b979e9961a89cf9b5c506febaf7de5d8936fa",
-                "sha256:97325116fd4f866d11b6bb7562181b37e3c26f38350c126798cfa98e922416d8"
+                "sha256:8a54069e647398612b4164559f92c36fc2d51579df0266432577bc6aba867d32",
+                "sha256:fd586e9f58211fb852d8b1e4fc753d3d43caf0e75e046238c5f8ed870f858992"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10' and python_version < '3.12'",
-            "version": "==6.4.1"
+            "version": "==6.5.0"
         },
         "testfixtures": {
             "hashes": [

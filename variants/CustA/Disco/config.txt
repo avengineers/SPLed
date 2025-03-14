@@ -1,10 +1,16 @@
 
 #
+# SPL Core
+#
+
+#
 # Linking
 #
 CONFIG_LINKER_OUTPUT_FILE="spled.exe"
+# CONFIG_LINKER_BYPRODUCTS_CONFIG is not set
 CONFIG_LINKER_BYPRODUCTS_EXTENSIONS="map"
 # end of Linking
+# end of SPL Core
 
 #
 # Features
@@ -13,4 +19,13 @@ CONFIG_BLINKING=y
 # CONFIG_BLINKING_RATE_FIXED is not set
 # CONFIG_BLINKING_RATE_MANUALLY_ADJUSTABLE is not set
 CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE=y
+
+#
+# Light Controller
+#
+CONFIG_COLOR_GREEN=y
+# CONFIG_COLOR_BLUE is not set
+# CONFIG_COLOR_RED is not set
+# CONFIG_COLOR_PURPLE is not set
+# end of Light Controller
 # end of Features

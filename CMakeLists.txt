@@ -19,16 +19,8 @@ set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/build/modules CACHE INTERNAL "")
 set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
 
-# Fetch spl-core
-FetchContent_Declare(
-    spl-core
-    GIT_REPOSITORY https://github.com/avengineers/spl-core.git
-    GIT_TAG v6.3.1
-)
-FetchContent_MakeAvailable(spl-core)
-
 # Include spl-core
-include(${spl-core_SOURCE_DIR}/cmake/spl.cmake)
+include(".venv/Lib/site-packages/spl_core/spl.cmake")
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
 
