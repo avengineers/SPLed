@@ -349,7 +349,7 @@ try {
 finally {
     Pop-Location
     if (-Not (Test-RunningInCIorTestEnvironment)) {
-        Read-Host -Prompt "Press Enter to continue ..."
+        # Read-Host -Prompt "Press Enter to continue ..."
     }
 }
 ## end of script

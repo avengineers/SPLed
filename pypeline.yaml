@@ -1,0 +1,11 @@
+pipeline:
+  - step: CreateVEnv
+    module: pypeline.steps.create_venv
+    config:
+        bootstrap_script: .bootstrap/bootstrap.py
+  - step: ScoopInstall
+    module: pypeline.steps.scoop_install
+  - step: PrintExecutionInfo
+    file: tools/steps.py
+  - step: Selftests
+    run: ["powershell", "./build.ps1", "-build", "-buildKit", "test", "-variant", "CustA/Disco", "-target", "all"]

@@ -1,0 +1,38 @@
+        -:    0:Source:C:/D/git/_oss_/spled/src/spled/src/spled.c
+        -:    0:Graph:build\CustA\Disco\test\src\spled\CMakeFiles\src_spled.dir\src/spled.c.gcno
+        -:    0:Data:build\CustA\Disco\test\src\spled\CMakeFiles\src_spled.dir\src/spled.c.gcda
+        -:    0:Runs:1
+        -:    1:#include "autoconf.h"
+        -:    2:#include "spled.h"
+        -:    3:
+        -:    4:#include "keyboard_interface.h"
+        -:    5:#include "power_signal_processing.h"
+        -:    6:#include "light_controller.h"
+        -:    7:#include "console_interface.h"
+        -:    8:#include "main_control_knob.h"
+        -:    9:#if defined(CONFIG_BRIGHTNESS_ADJUSTMENT) && CONFIG_BRIGHTNESS_ADJUSTMENT == 1
+        -:   10:#include "brightness_controller.h"
+        -:   11:#endif
+        -:   12:#include <stdio.h>
+        -:   13:#include <unistd.h>
+        -:   14:
+function spled called 1 returned 100% blocks executed 100%
+        1:   15:void spled(void) {
+        1:   16:    keyboardInterface();
+        1:   16-block  0
+call    0 returned 1
+        1:   17:    powerSignalProcessing();
+call    0 returned 1
+        1:   18:    mainControlKnob();
+call    0 returned 1
+        -:   19:#if defined(CONFIG_BRIGHTNESS_ADJUSTMENT) && CONFIG_BRIGHTNESS_ADJUSTMENT == 1
+        -:   20:    brightnessController();
+        -:   21:#endif
+        1:   22:    lightController();
+call    0 returned 1
+        1:   23:    consoleInterface();
+call    0 returned 1
+        -:   24:    // simple main loop of 10 milliseconds
+        1:   25:    usleep(10000);
+call    0 returned 1
+        1:   26:}
