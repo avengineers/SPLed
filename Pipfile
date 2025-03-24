@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-spl-core = ">=6.5"
+spl-core = ">=7.0"
 pytest = ">=8.3"
 pytest-env = ">=1.1.5"
 pipenv = ">=2024.0.3"
