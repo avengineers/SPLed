@@ -1,3 +1,4 @@
 {
-    "python_package_manager": "pipenv>=2024.0.3"
+    "python_package_manager": "pipenv>=2024.0.3",
+    "scoop_ignore_scoopfile": true
 }

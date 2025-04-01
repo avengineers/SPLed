@@ -304,6 +304,11 @@ try {
     # Load bootstrap's utility functions
     . .\.bootstrap\utils.ps1
 
+    Invoke-CommandLine ".venv\Scripts\pypeline run --step GenerateEnvSetupScript"
+
+    # Load environment setup script
+    . .\build\env_setup.ps1
+
     if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
         Initialize-EnvPath
     }

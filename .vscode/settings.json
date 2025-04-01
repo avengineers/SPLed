@@ -22,10 +22,6 @@
     },
     "cmake.configureOnEdit": false,
     "cmake.buildBeforeRun": false,
-    "cmake.environment": {
-        "PIPENV_VERBOSITY": "-1",
-        "PIPENV_VENV_IN_PROJECT": "1"
-    },
     "cmake.buildToolArgs": [],
     "git.ignoreLimitWarning": true,
     "C_Cpp.errorSquiggles": "enabled",
