@@ -14,6 +14,14 @@ class Test_Base__Dev(BaseVariantTestRunner):
     def expected_build_artifacts(self):
         return []
 
+    @pytest.mark.unittests
+    def test_unittests(self):
+        super().test_unittests(build_type="Debug")
+
     @pytest.mark.build
     def test_build(self):
         pass
+
+    @pytest.mark.reports
+    def test_reports(self):
+        super().test_reports(build_type="Debug")

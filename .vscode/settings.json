@@ -9,10 +9,11 @@
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "cmake.configureOnOpen": false,
-    "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}",
+    "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}/${buildType}",
     "cmake.configureSettings": {
         "BUILD_KIT": "${buildKit}",
-        "CMAKE_MESSAGE_LOG_LEVEL": "STATUS"
+        "CMAKE_MESSAGE_LOG_LEVEL": "STATUS",
+        "BUILD_TYPE": "${buildType}",
     },
     "cmake.generator": "Ninja",
     "cmake.debugConfig": {

@@ -2,7 +2,6 @@
   "variant": {
     "choices": {
       "Base/Dev": {
-        "buildType": "Base_Dev",
         "long": "select to build variant 'Base/Dev'",
         "settings": {
           "VARIANT": "Base/Dev"
@@ -10,7 +9,6 @@
         "short": "Base/Dev"
       },
       "CustA/Disco": {
-        "buildType": "CustA_Disco",
         "long": "select to build variant 'CustA/Disco'",
         "settings": {
           "VARIANT": "CustA/Disco"
@@ -18,7 +16,6 @@
         "short": "CustA/Disco"
       },
       "CustB/Sleep": {
-        "buildType": "CustB_Sleep",
         "long": "select to build variant 'CustB/Sleep'",
         "settings": {
           "VARIANT": "CustB/Sleep"
@@ -27,5 +24,20 @@
       }
     },
     "default": "CustA/Disco"
+  },
+  "buildType": {
+    "default": "Debug",
+    "choices": {
+      "Debug": {
+        "short": "Debug",
+        "long": "Disable optimizations and include debug information",
+        "buildType": "Debug"
+      },
+      "Release": {
+        "short": "Release",
+        "long": "Optimize for speed and exclude debug information",
+        "buildType": "Release"
+      }
+    }
   }
 }

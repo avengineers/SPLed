@@ -20,6 +20,8 @@ param(
     [switch]$clean = $false,
     [Parameter(Mandatory = $false, HelpMessage = 'Build kit to be used. (String, default: "prod")')]
     [string]$buildKit = "prod",
+    [Parameter(Mandatory = $false, HelpMessage = 'Type of build. (String, default: "Debug")')]
+    [string]$buildType = "Debug",
     [Parameter(Mandatory = $false, HelpMessage = 'Target to be built. (String, default: "all")')]
     [string]$target = "all",
     [Parameter(Mandatory = $false, HelpMessage = 'Variants (of the product) to be built (List of strings, leave empty to be asked or "all" for automatic build of all variants)')]
@@ -69,6 +71,8 @@ function Invoke-Build-System {
         [bool]$build = $false,
         [Parameter(Mandatory = $false)]
         [string]$buildKit = "prod",
+        [Parameter(Mandatory = $false)]
+        [string]$buildType = "Release",
         [Parameter(Mandatory = $true)]
         [string]$target = "all",
         [Parameter(Mandatory = $false)]
@@ -121,9 +125,13 @@ function Invoke-Build-System {
     if ($target.Contains("unittests") -or $target.Contains("reports")) {
         $buildKit = "test"
     }
+    # If buildKit is 'test' then buildType is 'Debug'
+    if ($buildKit -eq "test") {
+        $buildType = "Debug"
+    }
 
     Foreach ($variant in $variantsSelected) {
-        $buildFolder = "build\$variant\$buildKit".Replace("/", "\")
+        $buildFolder = "build\$variant\$buildKit\$buildType".Replace("/", "\")
         # fresh and clean build
         if ($clean) {
             Remove-Path $buildFolder
@@ -137,17 +145,19 @@ function Invoke-Build-System {
         }
 
         if ($build) {
-            Write-Output "Building target '$target' with build kit '$buildKit' for variant '$variant' ..."
+            Write-Output "Building target '$target' with build kit '$buildKit' and build type '$buildType' for variant '$variant' ..."
 
             # CMake configure
             $additionalConfig = "-DBUILD_KIT='$buildKit'"
+            $additionalConfig += " -DBUILD_TYPE='$buildType'"
             if ($buildKit -eq "test") {
                 $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE='tools/toolchains/gcc/toolchain.cmake'"
             }
+            
             Invoke-CommandLine -CommandLine ".venv\Scripts\pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT='$variant' $additionalConfig"
 
             if (-Not $configureOnly) {
-                $cmd = ".venv\Scripts\pipenv run cmake --build '$buildFolder' --target $target"
+                $cmd = ".venv\Scripts\pipenv run cmake --build '$buildFolder' --config '$buildType' --target $target"
 
                 # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
                 Invoke-CommandLine -CommandLine "$cmd -- -t cleandead"
@@ -330,6 +340,7 @@ try {
             -build $build `
             -target $target `
             -buildKit $buildKit `
+            -buildType $buildType `
             -variants $variants `
             -reconfigure $reconfigure `
             -configureOnly $configureOnly `
