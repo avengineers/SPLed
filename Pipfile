@@ -9,7 +9,7 @@ pipenv = ">=2024.0.3"
 testfixtures = ">=8.3"
 pip-system-certs = ">=4.0"
 pytest = ">=8.3"
-pypeline-runner = ">=1.12"
+pypeline-runner = ">=1.14"
 spl-core = ">=7.2"
 
 [requires]
