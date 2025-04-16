@@ -8,6 +8,9 @@
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
+    "[cmake]": {
+        "editor.defaultFormatter": "josetr.cmake-language-support-vscode"
+    },
     "cmake.configureOnOpen": false,
     "cmake.buildDirectory": "${workspaceFolder}/build/${variant:variant}/${buildKit}/${buildType}",
     "cmake.configureSettings": {
@@ -23,6 +26,7 @@
     },
     "cmake.configureOnEdit": false,
     "cmake.buildBeforeRun": false,
+    "cmake.options.statusBarVisibility": "compact",
     "cmake.buildToolArgs": [],
     "git.ignoreLimitWarning": true,
     "C_Cpp.errorSquiggles": "enabled",
@@ -125,6 +129,5 @@
     },
     "peacock.color": "#215732",
     "editor.formatOnSave": true,
-    "restructuredtext.pythonRecommendation.disabled": true,
     "files.insertFinalNewline": true
 }
