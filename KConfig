@@ -27,6 +27,16 @@ menu "Features"
         depends on !BLINKING
         default n
 
+    config BRIGHTNESS_ADJUSTMENT_PERIOD
+        int "Brightness Adjustment Period (in seconds)"
+        depends on BRIGHTNESS_ADJUSTMENT
+        default 5
+        range 1 60
+        help
+            This option allows you to set the period for brightness adjustment.
+            The value is in seconds and can be set between 1 and 60 seconds.
+
+    source "src/os/KConfig"
     source "src/light_controller/KConfig"
 
 endmenu

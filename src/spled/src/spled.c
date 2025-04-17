@@ -9,8 +9,6 @@
 #if defined(CONFIG_BRIGHTNESS_ADJUSTMENT) && CONFIG_BRIGHTNESS_ADJUSTMENT == 1
 #include "brightness_controller.h"
 #endif
-#include <stdio.h>
-#include <unistd.h>
 
 void spled(void) {
     keyboardInterface();
@@ -21,6 +19,4 @@ void spled(void) {
 #endif
     lightController();
     consoleInterface();
-    // simple main loop of 10 milliseconds
-    usleep(10000);
 }

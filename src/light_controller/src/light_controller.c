@@ -29,7 +29,7 @@ static boolean blinkState = FALSE;
 #endif
 const RGBColor OFF_COLOR = { .red = 0, .green = 0, .blue = 0 };
 
-static unsigned int getBrightnessValue() {
+static brightness_t getBrightnessValue() {
 #if CONFIG_BRIGHTNESS_ADJUSTMENT
     /**
      * @rst

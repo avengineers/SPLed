@@ -6,6 +6,8 @@
 #ifndef __rte_h__
 #define __rte_h__
 
+#include "autoconf.h"
+
  /** @brief Boolean type definition. */
 typedef unsigned char boolean;
 
@@ -29,6 +31,10 @@ typedef enum {
 } LogLevel;
 #endif
 
+/** @brief Configure the brightness adjustment task period use to calculate transition times. */
+#define BRIGHTNESS_TASK_PERIOD CONFIG_OS_TASK_PERIOD
+
+
 /**
  * @brief Enumerated type for power states.
  */
@@ -51,6 +57,12 @@ typedef struct {
  * @brief Represents a positive percentage value ranging from 0 to 100.
  */
 typedef unsigned int percentage_t;
+
+/**
+ * @typedef Brightness
+ * @brief Represents a brightness value ranging from 0 to 255.
+ */
+typedef unsigned int brightness_t;
 
 /**
  * @brief Set the current power state.
@@ -140,7 +152,7 @@ percentage_t RteGetMainKnobValue(void);
  *
  * @note Values greater than 255 will be clamped to 255.
  */
-void RteSetBrightnessValue(unsigned int value);
+void RteSetBrightnessValue(brightness_t value);
 
 /**
  * @brief Gets the value of the brightness.
@@ -149,7 +161,7 @@ void RteSetBrightnessValue(unsigned int value);
  *
  * @return The percentage value of the brightness, between 0 and 255 (inclusive).
  */
-unsigned int RteGetBrightnessValue(void);
+brightness_t RteGetBrightnessValue(void);
 
 
 #if LOGGING_ENABLED

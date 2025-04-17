@@ -57,12 +57,11 @@ percentage_t RteGetMainKnobValue(void) {
     return mainKnobValue;
 }
 
-
-void RteSetBrightnessValue(unsigned int value) {
+void RteSetBrightnessValue(brightness_t value) {
     brightnessValue = value;
 }
 
-unsigned int RteGetBrightnessValue(void) {
+brightness_t RteGetBrightnessValue(void) {
     return brightnessValue;
 }
 

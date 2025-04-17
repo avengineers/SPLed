@@ -1,0 +1,8 @@
+menu "OS"
+    config OS_TASK_PERIOD
+        int "Task period"
+        default 10
+        help
+            The period of the task in milliseconds.
+            This value is used to calculate the task frequency.
+endmenu

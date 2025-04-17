@@ -1,4 +1,5 @@
 spl_add_component(src/main)
+spl_add_component(src/os)
 spl_add_component(src/rte)
 spl_add_component(src/spled)
 spl_add_component(src/power_signal_processing)
