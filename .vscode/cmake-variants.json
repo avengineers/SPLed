@@ -21,6 +21,13 @@
           "VARIANT": "Sleep"
         },
         "short": "Sleep"
+      },
+      "Spa": {
+        "long": "select to build variant 'Spa'",
+        "settings": {
+          "VARIANT": "Spa"
+        },
+        "short": "Spa"
       }
     },
     "default": "Disco"
