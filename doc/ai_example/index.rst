@@ -3,7 +3,7 @@ Examplary Usage of GitHub Copilot
 
 Steps to add two additional colors to the Sleep Light for Customer B by using GitHub Copilot:
 
-* Open guiconfig of variant CustB/Sleep to show the configuration of the light controller.
+* Open guiconfig of variant Sleep to show the configuration of the light controller.
 * Close it.
 * Build the product and show that the LED is blue for the Sleep Light for Customer B.
 * Open KConfig of light controller and add two additional colors to the list of colors by marking the whole file, hit Ctrl+I and ask:
@@ -12,7 +12,7 @@ Steps to add two additional colors to the Sleep Light for Customer B by using Gi
 
    "Please add two additional colors red and purple to the list of colors."
 
-* Open guiconfig of variant CustB/Sleep again and configure purple as color.
+* Open guiconfig of variant Sleep again and configure purple as color.
 * Open test_light_controller.cc and adapt the tests to support purple as configured color by marking the color config section and asking:
 
 ::

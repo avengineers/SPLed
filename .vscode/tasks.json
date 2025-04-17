@@ -58,8 +58,8 @@
             "id": "variant",
             "description": "Which variant do you want to select?",
             "options": [
-                "CustA/Disco",
-                "CustB/Sleep",
+                "Disco",
+                "Sleep",
                 "Base/Dev"
             ]
         },

@@ -26,7 +26,7 @@ param(
     [string]$target = "all",
     [Parameter(Mandatory = $false, HelpMessage = 'Variants (of the product) to be built (List of strings, leave empty to be asked or "all" for automatic build of all variants)')]
     [string[]]$variants = $null,
-    [Parameter(Mandatory = $false, HelpMessage = 'filter for self tests, e.g. "Disco or test_CustA__Disco.py" (see https://docs.pytest.org/en/stable/usage.html).')]
+    [Parameter(Mandatory = $false, HelpMessage = 'filter for self tests, e.g. "Disco or test_Disco.py" (see https://docs.pytest.org/en/stable/usage.html).')]
     [string]$filter = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Marker for self tests, e.g. "static_analysis" (see https://docs.pytest.org/en/stable/how-to/mark.html).')]
     [string]$marker = "",
@@ -154,10 +154,10 @@ function Invoke-Build-System {
                 $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE='tools/toolchains/gcc/toolchain.cmake'"
             }
             
-            Invoke-CommandLine -CommandLine ".venv\Scripts\pipenv run cmake -B '$buildFolder' -G Ninja -DVARIANT='$variant' $additionalConfig"
+            Invoke-CommandLine -CommandLine "cmake -B '$buildFolder' -G Ninja -DVARIANT='$variant' $additionalConfig"
 
             if (-Not $configureOnly) {
-                $cmd = ".venv\Scripts\pipenv run cmake --build '$buildFolder' --config '$buildType' --target $target"
+                $cmd = "cmake --build '$buildFolder' --config '$buildType' --target $target"
 
                 # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
                 Invoke-CommandLine -CommandLine "$cmd -- -t cleandead"
@@ -213,7 +213,7 @@ function Invoke-Self-Tests {
     }
 
     # Finally run pytest and ignore return value. Content of test-report.xml will be evaluated by CI system.
-    $commandLine = ".venv\Scripts\pipenv run python -m pytest " + ($pytestArgs -join " ")
+    $commandLine = "pytest " + ($pytestArgs -join " ")
     Invoke-CommandLine -CommandLine $commandLine -StopAtError $false
 }
 
@@ -316,10 +316,6 @@ try {
 
     # Load environment setup script
     . .\build\env_setup.ps1
-
-    if (Test-RunningInCIorTestEnvironment -or $Env:USER_PATH_FIRST) {
-        Initialize-EnvPath
-    }
 
     if ($installOptional) {
         Import-ScoopFile "scoopfile-optional.json"

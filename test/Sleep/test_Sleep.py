@@ -3,7 +3,7 @@ import pytest
 from spl_core.test_utils.base_variant_test_runner import BaseVariantTestRunner
 
 
-class Test_CustA__Disco(BaseVariantTestRunner):
+class Test_Sleep(BaseVariantTestRunner):
     @property
     def component_paths(self):
         return [
@@ -13,6 +13,7 @@ class Test_CustA__Disco(BaseVariantTestRunner):
             Path("src/keyboard_interface"),
             # Path("src/console_interface"),
             Path("src/main_control_knob"),
+            Path("src/brightness_controller"),
         ]
 
     @property

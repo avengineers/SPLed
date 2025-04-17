@@ -8,22 +8,22 @@
         },
         "short": "Base/Dev"
       },
-      "CustA/Disco": {
-        "long": "select to build variant 'CustA/Disco'",
+      "Disco": {
+        "long": "select to build variant 'Disco'",
         "settings": {
-          "VARIANT": "CustA/Disco"
+          "VARIANT": "Disco"
         },
-        "short": "CustA/Disco"
+        "short": "Disco"
       },
-      "CustB/Sleep": {
-        "long": "select to build variant 'CustB/Sleep'",
+      "Sleep": {
+        "long": "select to build variant 'Sleep'",
         "settings": {
-          "VARIANT": "CustB/Sleep"
+          "VARIANT": "Sleep"
         },
-        "short": "CustB/Sleep"
+        "short": "Sleep"
       }
     },
-    "default": "CustA/Disco"
+    "default": "Disco"
   },
   "buildType": {
     "default": "Debug",
