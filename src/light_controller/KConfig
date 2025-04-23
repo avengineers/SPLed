@@ -14,4 +14,27 @@ menu "Light Controller"
         config COLOR_PURPLE
             bool "Purple"
     endchoice
+
+    choice COLOR_1
+        prompt "Select second color"
+        default COLOR_1_OFF
+        config COLOR_1_GREEN
+            bool "Green"
+
+        config COLOR_1_BLUE
+            bool "Blue"
+
+        config COLOR_1_RED
+            bool "Red"
+
+        config COLOR_1_PURPLE
+            bool "Purple"
+        config COLOR_1_OFF
+            bool "Off"
+    endchoice
+
+    config COLOR_1_IS_ENABLED
+        # Internal config. Not visible for the user in the menuconfig.
+        bool
+        default y if !COLOR_1_OFF
 endmenu

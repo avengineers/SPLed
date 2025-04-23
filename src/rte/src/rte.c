@@ -15,6 +15,10 @@ static RGBColor lightValue = {
 static percentage_t mainKnobValue = 50;
 static unsigned int brightnessValue = 0;
 
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
+static unsigned int brightnessAdjustmentCounter = 0;
+#endif
+
 void RteSetPowerState(PowerState state) {
     currentPowerState = state;
 }
@@ -65,6 +69,15 @@ brightness_t RteGetBrightnessValue(void) {
     return brightnessValue;
 }
 
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
+void RteSetBrightnessAdjustmentCounter(unsigned int counter) {
+    brightnessAdjustmentCounter = counter;
+}
+
+void RteGetBrightnessAdjustmentCounter(unsigned int* counter) {
+    *counter = brightnessAdjustmentCounter;
+}
+#endif // CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
 
 
 #if LOGGING_ENABLED

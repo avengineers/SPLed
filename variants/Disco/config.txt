@@ -21,11 +21,22 @@ CONFIG_BLINKING=y
 CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE=y
 
 #
+# OS
+#
+CONFIG_OS_TASK_PERIOD=10
+# end of OS
+
+#
 # Light Controller
 #
 CONFIG_COLOR_GREEN=y
 # CONFIG_COLOR_BLUE is not set
 # CONFIG_COLOR_RED is not set
 # CONFIG_COLOR_PURPLE is not set
+# CONFIG_COLOR_1_GREEN is not set
+# CONFIG_COLOR_1_BLUE is not set
+# CONFIG_COLOR_1_RED is not set
+# CONFIG_COLOR_1_PURPLE is not set
+CONFIG_COLOR_1_OFF=y
 # end of Light Controller
 # end of Features

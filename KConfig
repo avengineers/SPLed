@@ -22,14 +22,24 @@ menu "Features"
         endchoice
     endif
 
-    config BRIGHTNESS_ADJUSTMENT
-        bool "Brightness Adjustment Feature"
+    choice BRIGHTNESS_ADJUSTMENT
         depends on !BLINKING
-        default n
+        prompt "Select brightness adjustment mode"
+            config BRIGHTNESS_ADJUSTMENT_MANUALLY
+                bool "Manually adjustable"
+
+            config BRIGHTNESS_ADJUSTMENT_AUTOMATIC
+                bool "Automatically adjustable"
+    endchoice
+
+    config BRIGHTNESS_ADJUSTMENT_IS_ENABLED
+        # Internal config. Not visible for the user in the menuconfig.
+        bool
+        default y if BRIGHTNESS_ADJUSTMENT_MANUALLY || BRIGHTNESS_ADJUSTMENT_AUTOMATIC
 
     config BRIGHTNESS_ADJUSTMENT_PERIOD
         int "Brightness Adjustment Period (in seconds)"
-        depends on BRIGHTNESS_ADJUSTMENT
+        depends on BRIGHTNESS_ADJUSTMENT_AUTOMATIC
         default 5
         range 1 60
         help

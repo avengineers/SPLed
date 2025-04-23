@@ -55,7 +55,7 @@ brightness_t manualBrightnessAdjustment(void) {
 
 void brightnessController(void) {
     brightness_t brightnessValue = 0;
-#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_AUTOMATIC
     static BrightnessAdjustmentData data = {
         .timeCounter = 0,
         .period = BRIGHTNESS_PERIOD_TICKS,
@@ -65,7 +65,8 @@ void brightnessController(void) {
     };
 
     brightnessValue = periodicBrightnessAdjustment(&data);
-#else
+    RteSetBrightnessAdjustmentCounter(data.timeCounter);
+#elif defined(CONFIG_BRIGHTNESS_ADJUSTMENT_MANUALLY)
     brightnessValue = manualBrightnessAdjustment();
 #endif
     RteSetBrightnessValue(brightnessValue);

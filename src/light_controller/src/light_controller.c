@@ -8,15 +8,27 @@
 #include "autoconf.h"
 
  /**
-  * @rst
-  * .. impl:: Light state
-  *    :id: SWIMPL_LC-001
-  *    :implements: SWDD_LC-001
-  * @endrst
-  *
-  * @enum LightState
-  * @brief Represents the states of the light.
+  * @enum LightColor
+  * @brief Represents the possible light colors.
   */
+typedef enum {
+    COLOR_VAL_OFF,
+    COLOR_VAL_GREEN,
+    COLOR_VAL_BLUE,
+    COLOR_VAL_RED,
+    COLOR_VAL_PURPLE
+} LightColor;
+
+/**
+ * @rst
+ * .. impl:: Light state
+ *    :id: SWIMPL_LC-001
+ *    :implements: SWDD_LC-001
+ * @endrst
+ *
+ * @enum LightState
+ * @brief Represents the states of the light.
+ */
 typedef enum {
     LIGHT_OFF,  /**< Represents a state where the light is turned off. */
     LIGHT_ON    /**< Represents a state where the light is turned on with a specific color. */
@@ -29,8 +41,39 @@ static boolean blinkState = FALSE;
 #endif
 const RGBColor OFF_COLOR = { .red = 0, .green = 0, .blue = 0 };
 
+const LightColor light_colors[] = {
+#if CONFIG_COLOR_GREEN
+    COLOR_VAL_GREEN
+#elif CONFIG_COLOR_BLUE
+    COLOR_VAL_BLUE
+#elif CONFIG_COLOR_RED
+    COLOR_VAL_RED
+#elif CONFIG_COLOR_PURPLE
+    COLOR_VAL_PURPLE
+#else
+    COLOR_VAL_OFF
+#endif
+#if CONFIG_COLOR_1_IS_ENABLED
+    ,
+#if CONFIG_COLOR_1_GREEN
+    COLOR_VAL_GREEN
+#elif CONFIG_COLOR_1_BLUE
+    COLOR_VAL_BLUE
+#elif CONFIG_COLOR_1_RED
+    COLOR_VAL_RED
+#elif CONFIG_COLOR_1_PURPLE
+    COLOR_VAL_PURPLE
+#else
+    COLOR_VAL_OFF
+#endif
+#endif // CONFIG_COLOR_1_IS_ENABLED
+};
+const int light_colors_count = sizeof(light_colors) / sizeof(light_colors[0]);
+// Used to iterate through the light colors
+int light_colors_index = 0;
+
 static brightness_t getBrightnessValue() {
-#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_IS_ENABLED
     /**
      * @rst
      * .. impl:: Variable brightness
@@ -42,6 +85,36 @@ static brightness_t getBrightnessValue() {
 #else
     return 128;
 #endif
+}
+
+/**
+ * @brief Converts a LightColor enum and brightness to an RGBColor struct.
+ * @param colorEnum The LightColor enum value.
+ * @param brightness The brightness value (0-255).
+ * @return The corresponding RGBColor struct.
+ */
+static RGBColor getRGBColorWithBrightness(LightColor colorEnum, brightness_t brightness) {
+    RGBColor color = OFF_COLOR;
+    switch (colorEnum) {
+    case COLOR_VAL_GREEN:
+        color.green = brightness;
+        break;
+    case COLOR_VAL_BLUE:
+        color.blue = brightness;
+        break;
+    case COLOR_VAL_RED:
+        color.red = brightness;
+        break;
+    case COLOR_VAL_PURPLE:
+        color.red = brightness / 2; // Assuming purple is half red, full blue
+        color.blue = brightness;
+        break;
+    case COLOR_VAL_OFF:
+    default:
+        color = OFF_COLOR;
+        break;
+    }
+    return color;
 }
 
 /**
@@ -66,18 +139,25 @@ static void turnLightOff(void) {
  * @endrst
  */
 static void turnLightOn(void) {
-    RGBColor color = OFF_COLOR;
-#if CONFIG_COLOR_BLUE
-    color.blue = getBrightnessValue();
-#elif CONFIG_COLOR_GREEN
-    color.green = getBrightnessValue();
-#elif CONFIG_COLOR_RED
-    color.red = getBrightnessValue();
-#elif CONFIG_COLOR_PURPLE
-    color.red = getBrightnessValue() / 2;
-    color.blue = getBrightnessValue();
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
+    // Check if the brightness adjustment counter is zero to switch colors
+    unsigned int counter = 0;
+    RteGetBrightnessAdjustmentCounter(&counter);
+    if (counter == 0) {
+        light_colors_index = (light_colors_index + 1) % light_colors_count;
+    }
+#else
+    light_colors_index = 0;
 #endif
-#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE 
+
+    // Get the current color enum and brightness
+    LightColor currentColorEnum = light_colors[light_colors_index];
+    brightness_t currentBrightness = getBrightnessValue();
+
+    // Convert to RGBColor and set the light value
+    RGBColor color = getRGBColorWithBrightness(currentColorEnum, currentBrightness);
+
+#if CONFIG_BLINKING_RATE_AUTO_ADJUSTABLE
     blinkState = TRUE;
 #endif
     RteSetLightValue(color);
@@ -158,7 +238,7 @@ void lightController(void) {
             }
         }
 #endif
-#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_IS_ENABLED
         else {
             turnLightOn();
         }

@@ -163,6 +163,25 @@ void RteSetBrightnessValue(brightness_t value);
  */
 brightness_t RteGetBrightnessValue(void);
 
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
+/**
+ * @brief Sets the brightness adjustment counter.
+ *
+ * This function sets the brightness adjustment counter to the specified value.
+ *
+ * @param[in] counter The value to set for the brightness adjustment counter.
+ */
+void RteSetBrightnessAdjustmentCounter(unsigned int counter);
+
+/**
+ * @brief Gets the brightness adjustment counter.
+ *
+ * This function retrieves the current value of the brightness adjustment counter.
+ *
+ * @param[out] counter A pointer to an integer where the current brightness adjustment counter will be stored.
+ */
+void RteGetBrightnessAdjustmentCounter(unsigned int* counter);
+#endif // CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
 
 #if LOGGING_ENABLED
 /**

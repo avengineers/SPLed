@@ -8,7 +8,9 @@ extern "C" {
 #include "brightness_controller.h"
 #include "rte.h"
 
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
     extern brightness_t periodicBrightnessAdjustment(BrightnessAdjustmentData* data);
+#endif
 
 }
 

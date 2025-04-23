@@ -23,7 +23,7 @@ MATCHER_P(RGBColorEq, expected, "") {
     return areRGBColorsEqual(&arg, &expected);
 }
 
-#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_IS_ENABLED
 #define LED_BRIGHTNESS 200
 #else 
 #define LED_BRIGHTNESS 128
@@ -87,7 +87,7 @@ TEST(light_controller, test_light_on_and_off)
 
     // Power turns ON, so the light should turn ON.
     EXPECT_CALL(mymock, RteGetPowerState()).WillRepeatedly(Return(POWER_STATE_ON));
-#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_IS_ENABLED
     EXPECT_CALL(mymock, RteGetBrightnessValue()).WillRepeatedly(Return(LED_BRIGHTNESS));
     EXPECT_CALL(mymock, RteSetLightValue(RGBColorEq(onColor))).Times(10);
 #else
@@ -107,7 +107,7 @@ TEST(light_controller, test_light_on_and_off)
     }
 }
 
-#if CONFIG_BRIGHTNESS_ADJUSTMENT
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_IS_ENABLED
 /**
  * @rst
  *
