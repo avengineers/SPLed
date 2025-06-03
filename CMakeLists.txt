@@ -23,10 +23,3 @@ include(FetchContent)
 include(".venv/Lib/site-packages/spl_core/spl.cmake")
 
 include(${CMAKE_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
-
-# add all components' include paths to all components
-foreach(component_name ${COMPONENT_NAMES})
-    if(TARGET ${component_name})
-        target_include_directories(${component_name} PUBLIC ${target_include_directories__INCLUDES})
-    endif()
-endforeach()

@@ -2,16 +2,15 @@
 name = "spled"
 version = "0.0.1"
 description = "SPL demo project"
-authors = [
-    {name = "Avengineers"},
-]
-requires-python = "<4.0,>=3.11"
+authors = [{ name = "Avengineers" }]
+requires-python = "<3.12,>=3.10"
 
 dependencies = [
     "spl-core>=7,<8",
     "pypeline-runner>=1,<2",
     "pytest>=8,<9",
     "pip_system_certs>=4.0,<5",
-    # Added because UV needs it as explicit dependency. It might be a bug in UV
-    "wrapt>=1,<2", 
 ]
+
+[tool.poetry]
+package-mode = false
