@@ -10,8 +10,11 @@ dependencies = [
     "pypeline-runner>=1,<2",
     "pytest>=8,<9",
     "pip_system_certs>=4.0,<5",
-    "myst-parser>=4.0,<5"
+    "myst-parser>=4.0,<5",
 ]
 
 [tool.poetry]
 package-mode = false
+
+[tool.ruff]
+line-length = 180

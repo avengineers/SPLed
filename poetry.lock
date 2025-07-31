@@ -2576,14 +2576,14 @@ test = ["pytest"]
 
 [[package]]
 name = "spl-core"
-version = "7.4.0"
+version = "7.5.0"
 description = "Software Product Line Support for CMake"
 optional = false
 python-versions = "<3.12,>=3.10"
 groups = ["main"]
 files = [
-    {file = "spl_core-7.4.0-py3-none-any.whl", hash = "sha256:a05afb64bddfa946ba199a2da02244ba1fe267dccdfe8080b0cb2d2d1f397a10"},
-    {file = "spl_core-7.4.0.tar.gz", hash = "sha256:d866f621752958c1a7f9bc1a136fbcca5409f0ab375b1acde5cf76bd3cade729"},
+    {file = "spl_core-7.5.0-py3-none-any.whl", hash = "sha256:6817e4c5d01d4d4e74c851ebb009c531a7c84c409479c7e57f976a1d1e0f8f4e"},
+    {file = "spl_core-7.5.0.tar.gz", hash = "sha256:5015cee7481ba405f66075ac4adb7d1d59f9d93180863cfcd776c594657bc7f8"},
 ]
 
 [package.dependencies]

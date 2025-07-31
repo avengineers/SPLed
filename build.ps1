@@ -32,6 +32,8 @@ param(
     [string]$filter = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Marker for self tests, e.g. "static_analysis" (see https://docs.pytest.org/en/stable/how-to/mark.html).')]
     [string]$marker = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'Additional arguments for pytest, e.g. "--collect-only" (see https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags).')]
+    [string]$pytestExtraArgs = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Additional build arguments for Ninja (e.g., "-d explain -d keepdepfile" for debugging purposes)')]
     [string]$ninjaArgs = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Delete CMake cache and reconfigure. (Switch, default: false)')]
@@ -222,6 +224,11 @@ function Invoke-Self-Tests {
     # Execute marker tests
     if ($marker) {
         $pytestArgs += "-m '$marker'"
+    }
+
+    # Add any extra pytest arguments given via command line
+    if ($pytestExtraArgs -and $pytestExtraArgs -ne "") {
+        $pytestArgs += $pytestExtraArgs
     }
 
     # Finally run pytest and ignore return value. Content of test-report.xml will be evaluated by CI system.
