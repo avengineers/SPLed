@@ -1,5 +1,6 @@
 import pytest
 from spl_core.test_utils.spl_build import SplBuild
+from spl_core.test_utils.archive_artifacts_collection import ArchiveArtifactsCollection
 
 
 class Test_Disco:
@@ -21,22 +22,42 @@ class Test_Disco:
     )
     def test_build(self, build_type):
         # Arrange
-        spl_build: SplBuild = SplBuild(variant=self.variant, build_kit="prod", build_type=build_type, target="all")
+        spl_build: SplBuild = SplBuild(
+            variant=self.variant,
+            build_kit="prod",
+            build_type=build_type,
+            target="all",
+        )
 
         # Act
         result = spl_build.execute()
 
         # Assert
         assert result == 0, "Building failed"
+
         artifacts = spl_build.get_variant_artifacts()
-        artifacts.append(spl_build.build_dir / "spled.exe")
+        artifacts.extend(
+            [
+                spl_build.build_dir / "spled.exe",
+                spl_build.build_dir / "kconfig",
+            ]
+        )
         for artifact in artifacts:
-            assert artifact.exists(), f"Artifact {artifact} does not exist"
+            assert artifact.exists(), f"Variant artifact {artifact} does not exist"
+
+        artifacts_collection = ArchiveArtifactsCollection(artifacts=artifacts, build_dir=spl_build.build_dir)
+        assert artifacts_collection.create_archive(zip_filename=self.variant).exists(), "Artifacts archive creation failed"
+        assert artifacts_collection.create_json(json_filename=self.variant).exists(), "Artifacts JSON creation failed"
 
     @pytest.mark.unittests
     def test_unittests(self):
         # Arrange
-        spl_build: SplBuild = SplBuild(variant=self.variant, build_kit="test", build_type="Debug", target="unittests")
+        spl_build: SplBuild = SplBuild(
+            variant=self.variant,
+            build_kit="test",
+            build_type="Debug",
+            target="unittests",
+        )
 
         # Act
         result = spl_build.execute()
@@ -50,7 +71,12 @@ class Test_Disco:
     @pytest.mark.reports
     def test_reports(self):
         # Arrange
-        spl_build: SplBuild = SplBuild(variant=self.variant, build_kit="test", build_type="Debug", target="reports")
+        spl_build: SplBuild = SplBuild(
+            variant=self.variant,
+            build_kit="test",
+            build_type="Debug",
+            target="reports",
+        )
 
         # Act
         result = spl_build.execute()

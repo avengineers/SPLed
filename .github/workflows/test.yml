@@ -34,7 +34,8 @@ jobs:
             test/output/test-report.xml
       - uses: actions/upload-artifact@v4
         with:
-          name: artifacts.zip
+          name: artifacts
           retention-days: 90
-          path: "build/**/artifacts.*"
+          path: |
+            build/**/*.zip
           if-no-files-found: error
