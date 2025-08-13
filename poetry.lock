@@ -287,7 +287,7 @@ description = "Cross-platform colored terminal text."
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 groups = ["main"]
-markers = "sys_platform == \"win32\" or sys_platform == \"windows\" or platform_system == \"Windows\""
+markers = "platform_system == \"Windows\" or sys_platform == \"windows\" or sys_platform == \"win32\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -1502,19 +1502,19 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "py-app-dev"
-version = "2.12.1"
+version = "2.15.0"
 description = "My application development modules."
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "py_app_dev-2.12.1-py3-none-any.whl", hash = "sha256:0b58cbe7c0795693809694c35e3061655ad8e527aa39ff0442a5b0fdc150821c"},
-    {file = "py_app_dev-2.12.1.tar.gz", hash = "sha256:7ddbb256b52d301b5c6cf870848ab06b0e24f83fdc782589e912cc69c7ee1593"},
+    {file = "py_app_dev-2.15.0-py3-none-any.whl", hash = "sha256:5b43b056d0d19c1fad348aaaea897834fd945862aaaa568c5ba970de951ca85a"},
+    {file = "py_app_dev-2.15.0.tar.gz", hash = "sha256:5afc945c4ad54e0c23207c5a751342db12ed651fd6fb0447cefa7c25e8114ee1"},
 ]
 
 [package.dependencies]
-loguru = ">=0.7,<0.8"
-mashumaro = ">=3.15,<4.0"
+loguru = ">=0.7,<1.0"
+mashumaro = ">=3.5,<4.0"
 
 [[package]]
 name = "pydata-sphinx-theme"
@@ -2561,14 +2561,14 @@ test = ["pytest"]
 
 [[package]]
 name = "spl-core"
-version = "7.6.0"
+version = "7.7.0"
 description = "Software Product Line Support for CMake"
 optional = false
 python-versions = "<3.12,>=3.10"
 groups = ["main"]
 files = [
-    {file = "spl_core-7.6.0-py3-none-any.whl", hash = "sha256:12ff6595076c1b5996f60e9653271e7c5a4102b199d1a5003abe76fcc29f117b"},
-    {file = "spl_core-7.6.0.tar.gz", hash = "sha256:db7554ece4e17eb010b6a0722e02e6d345580b9638f1ece092a247b11714aa99"},
+    {file = "spl_core-7.7.0-py3-none-any.whl", hash = "sha256:dba09f5cf6a75a9281cfdf3d278c59b9f050bfa8ee1c9fa9e7fc2dc918d9e0a8"},
+    {file = "spl_core-7.7.0.tar.gz", hash = "sha256:76560db87ec14655ca7e3dcb2ad9fcb2c744da0aa85f4c4834165a512bee5661"},
 ]
 
 [package.dependencies]

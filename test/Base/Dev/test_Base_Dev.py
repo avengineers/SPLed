@@ -2,7 +2,7 @@ import pytest
 from spl_core.test_utils.spl_build import SplBuild
 
 
-class Test_Base_Dev:
+class Test_Base__Dev:
     variant: str = "Base/Dev"
     components = [
         "components/examples/hello_gmock",
