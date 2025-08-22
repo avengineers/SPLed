@@ -11,6 +11,7 @@ dependencies = [
     "pytest>=8,<9",
     "pip_system_certs>=4.0,<5",
     "myst-parser>=4.0,<5",
+    "pypeline-semantic-release (>=0.4.1,<0.5.0)",
 ]
 
 [tool.poetry]

@@ -185,8 +185,6 @@ function Invoke-Build-System {
 function Invoke-Self-Tests {
     param (
         [Parameter(Mandatory = $false)]
-        [bool]$clean = $false,
-        [Parameter(Mandatory = $false)]
         [string]$filter = "",
         [Parameter(Mandatory = $false)]
         [string]$marker = ""
@@ -195,11 +193,6 @@ function Invoke-Self-Tests {
     # Run python tests to test all relevant variants and platforms (build kits)
     # (normally run in CI environment/Jenkins)
     Write-Output "Running all self tests ..."
-
-    if ($clean) {
-        # Remove all build outputs in one step, this will remove obsolete variants, too.
-        Remove-Path "build"
-    }
 
     # Test result of pytest
     $pytestJunitXml = "test/output/test-report.xml"
@@ -276,9 +269,26 @@ function Get-User-Menu-Selection {
 
 function Invoke-Bootstrap {
     # Download bootstrap scripts from external repository
-    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.17.1/install.ps1 | Invoke-Expression
+    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.17.2/install.ps1 | Invoke-Expression
     # Execute bootstrap script
     . .\.bootstrap\bootstrap.ps1
+}
+
+function Invoke-Clean-Workspace {
+    param (
+        [Parameter(Mandatory = $false)]
+        [bool]$install = $false,
+        [Parameter(Mandatory = $false)]
+        [bool]$selftests = $false
+    )
+
+    if ($install) {
+        Remove-Path ".venv"
+    }
+    if ($selftests) {
+        # Remove all build outputs in one step, this will remove obsolete variants, too.
+        Remove-Path "build"
+    }
 }
 
 ## start of script
@@ -325,10 +335,6 @@ try {
     }
 
     if ($install) {
-        if ($clean) {
-            Remove-Path ".venv"
-        }
-
         # bootstrap environment
         Invoke-Bootstrap
 
@@ -338,7 +344,11 @@ try {
     # Load bootstrap's utility functions
     . .\.bootstrap\utils.ps1
 
-    Invoke-CommandLine ".venv\Scripts\pypeline run --step GenerateEnvSetupScript"
+    if ($clean) {
+        Invoke-Clean-Workspace -install $install -selftests $selftests
+    }
+
+    Invoke-CommandLine ".venv\Scripts\pypeline run --step CollectPRChanges"
 
     # Load environment setup script
     . .\build\env_setup.ps1
@@ -373,7 +383,7 @@ try {
     }
 
     if ($selftests) {
-        Invoke-Self-Tests -clean $clean -filter $filter -marker $marker
+        Invoke-Self-Tests -filter $filter -marker $marker
     }
 
     if ($command -ne '') {

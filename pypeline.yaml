@@ -8,3 +8,7 @@ pipeline:
     module: pypeline.steps.scoop_install
   - step: GenerateEnvSetupScript
     module: pypeline.steps.env_setup_script
+  - step: CheckCIContext
+    module: pypeline_semantic_release.steps
+  - step: CollectPRChanges
+    module: spl_core.steps.collect_pr_changes
