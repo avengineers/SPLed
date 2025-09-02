@@ -29,7 +29,7 @@ exclude_patterns = [
     "**/test_results.rst",  # We renamed this file, but nobody deletes it.
 ]
 
-include_patterns = ["index.rst", "doc/**"]
+include_patterns = ["index.md", "doc/**"]
 
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -120,9 +120,7 @@ extensions.append("sphinxcontrib.datatemplates")
 
 # needs_types - this option allows the setup of own need types like bugs, user_stories and more.
 needs_types = [
-    dict(
-        directive="req", title="Requirement", prefix="R_", color="#BFD8D2", style="node"
-    ),
+    dict(directive="req", title="Requirement", prefix="R_", color="#BFD8D2", style="node"),
     dict(
         directive="spec",
         title="Specification",
@@ -137,9 +135,7 @@ needs_types = [
         color="#DF744A",
         style="node",
     ),
-    dict(
-        directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"
-    ),
+    dict(directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"),
 ]
 
 # Define own options
@@ -181,15 +177,14 @@ source_suffix = [
 html_context = {
     "build_config": {},
     "config": {},
+    "timestamp": f"{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC",
 }
 
 # pass build configuration to jinja
 if "SPHINX_BUILD_CONFIGURATION_FILE" in os.environ:
     with open(os.environ["SPHINX_BUILD_CONFIGURATION_FILE"], "r") as file:
         html_context["build_config"] = json.load(file)
-        include_patterns.extend(
-            html_context["build_config"].get("include_patterns", [])
-        )
+        include_patterns.extend(html_context["build_config"].get("include_patterns", []))
 
 # pass feature configuration to jinja
 if "AUTOCONF_JSON_FILE" in os.environ:

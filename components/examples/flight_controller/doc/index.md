@@ -1,6 +1,6 @@
 # Software Detailed Design
 
-```{toc}
+```{toctree}
 :maxdepth: 2
 :caption: Contents
 :class: toc
