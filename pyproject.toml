@@ -3,10 +3,10 @@ name = "spled"
 version = "0.0.1"
 description = "SPL demo project"
 authors = [{ name = "Avengineers" }]
-requires-python = "<3.12,>=3.10"
+requires-python = "<3.12,>=3.11"
 
 dependencies = [
-    "spl-core (>=7,<8)",
+    "spl-core (>=7.11,<8)",
     "pypeline-runner>=1,<2",
     "pytest>=8,<9",
     "pip_system_certs>=4.0,<5",

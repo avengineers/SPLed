@@ -1,6 +1,9 @@
+from pathlib import Path
+from typing import Generator
+
 import pytest
 from spl_core.test_utils.spl_build import SplBuild
-from spl_core.test_utils.archive_artifacts_collection import ArchiveArtifactsCollection
+from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
 
 class Test_Disco:
@@ -12,6 +15,18 @@ class Test_Disco:
         "components/main_control_knob",
     ]
 
+    @pytest.fixture(scope="class")
+    def archiver(self) -> Generator[ArtifactsArchiver, None, None]:
+        archiver_instance = ArtifactsArchiver()
+        out_dir = Path("build", self.variant)
+        archiver_instance.add_archive(
+            out_dir=out_dir,
+            archive_filename=self.variant + ".7z",
+        )
+        yield archiver_instance
+        # Create archive and RT upload JSON after all tests in the class have completed
+        archiver_instance.create_archive()
+
     @pytest.mark.parametrize(
         ("build_type"),
         [
@@ -19,7 +34,7 @@ class Test_Disco:
             pytest.param("Release", marks=pytest.mark.build_release),
         ],
     )
-    def test_build(self, build_type):
+    def test_build(self, build_type, archiver: ArtifactsArchiver):
         # Arrange
         spl_build: SplBuild = SplBuild(
             variant=self.variant,
@@ -27,13 +42,6 @@ class Test_Disco:
             build_type=build_type,
             target="all",
         )
-
-        # Act
-        result = spl_build.execute()
-
-        # Assert
-        assert result == 0, "Building failed"
-
         artifacts = spl_build.get_variant_artifacts()
         artifacts.extend(
             [
@@ -41,12 +49,16 @@ class Test_Disco:
                 spl_build.build_dir / "kconfig",
             ]
         )
+        archiver.register(artifacts=artifacts)
+
+        # Act
+        result = spl_build.execute()
+
+        # Assert
+        assert result == 0, "Building failed"
+
         for artifact in artifacts:
             assert artifact.exists(), f"Variant artifact {artifact} does not exist"
-
-        artifacts_collection = ArchiveArtifactsCollection(artifacts=artifacts, build_dir=spl_build.build_dir)
-        assert artifacts_collection.create_archive(zip_filename=self.variant).exists(), "Artifacts archive creation failed"
-        assert artifacts_collection.create_json(json_filename=self.variant).exists(), "Artifacts JSON creation failed"
 
     @pytest.mark.unittests
     def test_unittests(self):
@@ -68,7 +80,7 @@ class Test_Disco:
             assert artifact.exists(), f"Artifact {artifact} does not exist"
 
     @pytest.mark.reports
-    def test_reports(self):
+    def test_reports(self, archiver: ArtifactsArchiver):
         # Arrange
         spl_build: SplBuild = SplBuild(
             variant=self.variant,
@@ -76,6 +88,7 @@ class Test_Disco:
             build_type="Debug",
             target="reports",
         )
+        archiver.register(artifacts=[spl_build.build_dir / "reports/html"])
 
         # Act
         result = spl_build.execute()

@@ -1,5 +1,5 @@
 {
     "python_version": "3.11",
-    "python_package_manager": "poetry>=2.0",
+    "python_package_manager": "poetry>=2.1.0",
     "scoop_ignore_scoopfile": true
 }

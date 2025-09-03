@@ -37,6 +37,6 @@ jobs:
           name: artifacts
           retention-days: 90
           path: |
-            build/**/*.zip
+            build/**/*.7z
             build/**/pr_changes.json
           if-no-files-found: error

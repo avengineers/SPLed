@@ -131,5 +131,6 @@
         "titleBar.inactiveForeground": "#e7e7e799"
     },
     "peacock.color": "#215732",
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "python-envs.pythonProjects": [],
 }
