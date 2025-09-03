@@ -14,25 +14,27 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: install tools, build and test
+      - name: Installation of Dependencies and Execute Tests
         env:
-          # Workaround to force usage of scoop apps installed in USERPROFILE.
+          # Workaround to force usage of scoop apps installed in $env:USERPROFILE
           USER_PATH_FIRST: 1
         run: |
           .\build.ps1 -install
           .\build.ps1 -selftests -marker "build_debug or reports"
         shell: powershell
-      - name: Publish Test Results
+      - name: Deploy Test Results
         uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
         with:
           files: |
             test/output/test-report.xml
-      - uses: actions/upload-artifact@v4
+            build/**/junit.xml
+      - name: Deploy Artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           retention-days: 90
