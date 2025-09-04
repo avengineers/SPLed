@@ -21,7 +21,7 @@ set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
 
 # Include spl-core
-include(".venv/Lib/site-packages/spl_core/spl.cmake")
+include(".venv/lib/python3.11/site-packages/spl_core/spl.cmake")
 
 # Include variant specific parts/components definitions
 include(${PROJECT_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)

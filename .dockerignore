@@ -1,0 +1,46 @@
+# Docker ignore file for SPLed project
+# Ignore build artifacts
+build/
+.venv/
+
+# Ignore Git files
+.git/
+.gitignore
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Ignore documentation build
+doc/_build/
+
+# Ignore test reports
+**/reports/
+
+# Ignore CMake cache
+CMakeCache.txt
+CMakeFiles/
+
+# Ignore coverage files
+*.gcov
+*.gcda
+*.gcno

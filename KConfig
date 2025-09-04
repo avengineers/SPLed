@@ -1,6 +1,6 @@
 mainmenu "SPLed"
 
-source ".venv/Lib/site-packages/spl_core/config/KConfig"
+source ".venv/lib/python3.11/site-packages/spl_core/config/KConfig"
 
 menu "Features"
     config BLINKING

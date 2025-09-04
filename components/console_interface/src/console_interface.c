@@ -2,7 +2,13 @@
 #include "console_interface.h"
 
 #include <stdio.h>
+
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+#endif
 
 void consoleInterface(void)
 {
@@ -19,6 +25,7 @@ void consoleInterface(void)
         // Update the previous light value
         previousLightValue = lightValue;
 
+#ifdef _WIN32
         // Get the handle to the current output buffer ...
         const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -29,11 +36,20 @@ void consoleInterface(void)
             ledConsoleCursorInfo.bVisible = FALSE;
             (void)SetConsoleCursorInfo(hConsole, &ledConsoleCursorInfo);
         }
+#else
+        // Unix/Linux: Hide cursor using ANSI escape sequence
+        (void)printf("\033[?25l");
+#endif
 
-        // and print the LED representation.
+        // Print the LED representation with ANSI color codes (works on both platforms)
         (void)printf("\x1b"
                      "[48;2;%d;%d;%dm",
                      lightValue.rgbRedValue, lightValue.rgbGreenValue, lightValue.rgbBlueValue);
         (void)printf("LED\r");
+
+#ifndef _WIN32
+        // Flush output buffer on Unix/Linux
+        (void)fflush(stdout);
+#endif
     }
 }
