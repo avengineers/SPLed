@@ -5,4 +5,9 @@
 
 bool_t KeyboardInterfaceIsKeyPressed(int32_t keyCode);
 
+#ifndef _WIN32
+// Unix/Linux specific cleanup function
+void KeyboardInterfaceCleanup(void);
+#endif
+
 #endif /* KEYBOARD_INTERFACE_H */

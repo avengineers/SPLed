@@ -1,6 +1,29 @@
 #include "rte.h"
 #include "keyboard_interface.h"
 
+#ifndef _WIN32
+#include <signal.h>
+#include <stdlib.h>
+
+// Signal handler for proper cleanup on Unix systems
+static void cleanup_handler(int sig) {
+    (void)sig;
+    KeyboardInterfaceCleanup();
+    exit(0);
+}
+
+// Initialize cleanup handlers (call this once at startup)
+static void init_cleanup_handlers(void) {
+    static int initialized = 0;
+    if (!initialized) {
+        signal(SIGINT, cleanup_handler);
+        signal(SIGTERM, cleanup_handler);
+        atexit((void(*)(void))KeyboardInterfaceCleanup);
+        initialized = 1;
+    }
+}
+#endif
+
 static PowerState rteCurrentPowerState = POWER_STATE_OFF;
 #ifdef CONFIG_AUTO_OFF
 static bool_t autoOffState = TRUE;
@@ -41,6 +64,9 @@ void RteSetPowerKeyPressedEvent(bool_t powerKeyPressedEvent)
 
 bool_t RteGetPowerKeyPressedEvent(void)
 {
+#ifndef _WIN32
+    init_cleanup_handlers();
+#endif
     return rtePowerKeyPressedEvent;
 }
 

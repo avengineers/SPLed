@@ -1,12 +1,20 @@
 #include "os.h"
 #include "autoconf.h"
 #include "spled.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
-#include <time.h> // For nanosleep and struct timespec
+#include <time.h>
+#endif
 
 static void OsTask(void)
 {
     spled();
+#ifdef _WIN32
+    Sleep(CONFIG_OS_TASK_PERIOD);
+#else
     // Delay in milliseconds using nanosleep
     struct timespec req = {0}, rem = {0};
     req.tv_sec = CONFIG_OS_TASK_PERIOD / 1000;
@@ -15,6 +23,7 @@ static void OsTask(void)
     {
         req = rem; // Retry if interrupted by signal
     }
+#endif
 }
 
 void OsRun(void)
