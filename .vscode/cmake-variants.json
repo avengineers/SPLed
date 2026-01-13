@@ -15,6 +15,13 @@
         },
         "short": "Disco"
       },
+      "IDEA/Sloemada": {
+        "long": "select to build variant 'IDEA/Sloemada'",
+        "settings": {
+          "VARIANT": "IDEA/Sloemada"
+        },
+        "short": "IDEA/Sloemada"
+      },
       "Sleep": {
         "long": "select to build variant 'Sleep'",
         "settings": {

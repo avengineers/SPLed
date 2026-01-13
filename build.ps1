@@ -269,7 +269,7 @@ function Get-User-Menu-Selection {
 
 function Invoke-Bootstrap {
     # Download bootstrap scripts from external repository
-    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.18.0/install.ps1 | Invoke-Expression
+    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.19.0/install.ps1 | Invoke-Expression
     # Execute bootstrap script
     . .\.bootstrap\bootstrap.ps1
 }
@@ -334,6 +334,10 @@ try {
         }
     }
 
+    if ($clean) {
+        Invoke-Clean-Workspace -install $install -selftests $selftests
+    }
+
     if ($install) {
         # bootstrap environment
         Invoke-Bootstrap
@@ -343,10 +347,6 @@ try {
 
     # Load bootstrap's utility functions
     . .\.bootstrap\utils.ps1
-
-    if ($clean) {
-        Invoke-Clean-Workspace -install $install -selftests $selftests
-    }
 
     Invoke-CommandLine ".venv\Scripts\pypeline run --step CollectPRChanges"
 
