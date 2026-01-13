@@ -29,3 +29,12 @@ It is recommended to start VS Code using the `build.ps1` script to make sure all
 ```powershell
 .\build.ps1 -startVSCode
 ```
+
+## Developer Guide
+
+For more information about the architecture, workflows, and conventions, see [AGENTS.md](AGENTS.md). This guide covers:
+
+- Critical developer workflows (environment setup, building, testing)
+- SPL-specific CMake patterns and KConfig feature system
+- VS Code CMake extension configuration
+- Component structure and integration points

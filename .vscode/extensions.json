@@ -4,8 +4,6 @@
         "ms-vscode.cmake-tools",
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-themes",
-        "visualstudioexptteam.intellicode-api-usage-examples",
-        "visualstudioexptteam.vscodeintellicode",
         "haugerbr.project-tasks",
         "avengineers.show-link-list",
         "ms-python.vscode-pylance",
@@ -16,6 +14,8 @@
         "waderyan.gitblame",
         "sandcastle.vscode-open",
         "josetr.cmake-language-support-vscode",
-        "ibm.output-colorizer"
+        "ibm.output-colorizer",
+        "github.copilot-chat",
+        "github.copilot"
     ]
 }

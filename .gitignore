@@ -4,6 +4,9 @@
 # Output directory of test results
 /test/output
 
+# credentials file for polyspace access
+polyspace_credentials.txt
+
 # What: Python: byte-compiled / optimized / DLL files
 # Why: automatically created by Python during script execution
 __pycache__/
@@ -34,3 +37,7 @@ __pycache__/
 
 # Drawio Backup Files
 *.drawio.bkp
+
+# Generated files from sple-static-analysis-extension
+/variants/**/ps_configure_options_file.txt
+/basic_c_file.o

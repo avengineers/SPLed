@@ -1,4 +1,6 @@
 {
+    "chat.useAgentSkills": true,
+    "chat.useAgentsMdFile": true,
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.analysis.include": [
@@ -34,6 +36,7 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "C_Cpp.formatting": "clangFormat",
     "editor.formatOnSave": true,
+    "editor.wordWrap": "on",
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "files.associations": {

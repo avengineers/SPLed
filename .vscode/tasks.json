@@ -19,7 +19,7 @@
             "label": "Configure variant",
             "detail": "Feature configuration using KConfig",
             "type": "shell",
-            "command": ".venv\\Scripts\\poetry run guiconfig",
+            "command": "guiconfig",
             "options": {
                 "env": {
                     "KCONFIG_CONFIG": "variants/${input:variant}/config.txt"
@@ -121,6 +121,7 @@
             "description": "Which variant do you want to select?",
             "options": [
                 "Disco",
+                "IDEA/Sloemada",
                 "Sleep",
                 "Spa",
                 "Base/Dev"
