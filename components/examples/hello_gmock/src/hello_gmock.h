@@ -1,34 +1,34 @@
 #ifndef HELLO_GMOCK_H
 #define HELLO_GMOCK_H
 
-extern int GetData(void);
-extern int CheckGetData(void);
+#include <stdint.h>
 
-extern void GetByPointer(int *data);
-extern int CheckGetByPointer(void);
+extern int32_t GetData(void);
+extern int32_t CheckGetData(void);
 
-extern int GetByPointerAndReturnValue(int *data);
-extern int CheckGetByPointerAndReturnValue(int *data);
+extern void GetByPointer(int32_t *const data);
+extern int32_t CheckGetByPointer(void);
 
-extern void GetByPointer(int *data);
-extern int CheckGetByPointer(void);
+extern int32_t GetByPointerAndReturnValue(int32_t *const data);
+extern int32_t CheckGetByPointerAndReturnValue(int32_t *const data);
 
 typedef struct
 {
-    int a;
-    unsigned char b;
+    int32_t a;
+    char b;
 } MyDataType;
 
-extern void GetDataStructureByPointer(MyDataType *data);
-extern void CheckGetDataStructureByPointer(MyDataType *data);
+extern void InitDataStructure(MyDataType *const data);
+extern void GetDataStructureByPointer(MyDataType *const data);
+extern void CheckGetDataStructureByPointer(MyDataType *const data);
 
-extern void GetDataStructureArray(MyDataType *data);
-extern void CheckGetDataStructureArray(MyDataType *data);
+extern void GetDataStructureArray(MyDataType *const data);
+extern void CheckGetDataStructureArray(MyDataType *const data);
 
-extern void SetData(int data);
-extern void CheckSetData(int data);
+extern void SetData(int32_t data);
+extern void CheckSetData(int32_t data);
 
-extern void SetDataByPointer(int *data);
-extern void CheckSetDataByPointer(int data);
+extern void SetDataByPointer(int32_t *const data);
+extern void CheckSetDataByPointer(int32_t data);
 
 #endif /* HELLO_GMOCK_H */

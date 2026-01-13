@@ -27,5 +27,5 @@ TEST(spled, test_interface_call_order)
    /* Assert */
    ASSERT_EQ(POWER_STATE_ON, RteGetPowerState());
    RteGetLightValue(&lightValue);
-   ASSERT_EQ(lightValue.green, 128);
+   ASSERT_EQ(lightValue.rgbGreenValue, 128);
 }

@@ -1,8 +1,6 @@
 # Software Detailed Design
 
-
 ## Define the behavior of an input interface
-
 
 In this chapter we will see some examples of how to use Google Mock to define the behavior of an input interface (function).
 
@@ -36,6 +34,17 @@ My component gets the data from an interface that requires a pointer to be passe
 :id: SWDD_COMP_A-030
 
 Manipulate the interface to return a value while also putting a value into the provided pointer.
+
+```
+
+### Init data structure
+
+My component initializes a data structure provided by a pointer.
+
+```{spec} Init data structure
+:id: SWDD_COMP_A-035
+
+Manipulate the interface to initialize the data structure pointed to by the provided pointer.
 
 ```
 
@@ -86,4 +95,3 @@ My component sets the data by calling an interface that requires a pointer to be
 Verify that the set interface is called with the expected value through the pointer.
 
 ```
-

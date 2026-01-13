@@ -11,74 +11,80 @@ extern "C"
 {
 #include "flight_controller.h"
 #include "rte.h"
+
+    bool_t CheckAbort(bool_t abort_commanded, bool_t valid_abort_command, bool_t off_course);
 }
 
 #include "mockup_components_examples_flight_controller.h"
 
-struct CheckAbortParam
+struct CheckAbortParams
 {
-    boolean off_course;
-    boolean abort_commanded;
-    boolean valid_abort_command;
-    boolean expected_result;
+    bool_t abort_commanded;
+    bool_t valid_abort_command;
+    bool_t off_course;
+    bool_t expected_result;
     const char *description;
 };
 
-inline std::ostream &operator<<(std::ostream &os, const CheckAbortParam &param)
+inline std::ostream &operator<<(std::ostream &os, const CheckAbortParams &param)
 {
     os << param.description;
     return os;
 }
 
-class CheckAbortParamTest : public TestWithParam<CheckAbortParam>
+class CheckAbortTest : public TestWithParam<CheckAbortParams>
 {
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    CheckAbortCases,
-    CheckAbortParamTest,
+    CheckAbortParamTests,
+    CheckAbortTest,
     Values(
-        CheckAbortParam{true, false, false, true, "Off course triggers abort"},
-        CheckAbortParam{false, true, true, true, "Abort commanded and valid"},
-        CheckAbortParam{false, true, false, false, "Abort commanded but not valid"},
-        CheckAbortParam{false, false, false, false, "No abort, not off course"}));
+        CheckAbortParams{false, false, true, true, "Off course triggers abort"},
+        CheckAbortParams{true, true, false, true, "Abort commanded and valid"},
+        CheckAbortParams{true, false, false, false, "Abort commanded but not valid"},
+        CheckAbortParams{false, false, false, false, "No abort, not off course"}));
 
 /**
  * @rst
- * .. test:: CheckAbortCases/CheckAbortParamTest.ReturnsExpectedResult/*
+ * .. test:: CheckAbortParamTests/CheckAbortTest.ReturnsExpectedResult/*
  *    :id: TS_FC-100
  *    :tests: SWDD_FC-100, SWDD_FC-101, SWDD_FC-102
  * @endrst
  */
-TEST_P(CheckAbortParamTest, ReturnsExpectedResult)
+TEST_P(CheckAbortTest, ReturnsExpectedResult)
 {
+    // Arrange
     const auto &param = GetParam();
-    EXPECT_EQ(CheckAbort(param.off_course, param.abort_commanded, param.valid_abort_command), param.expected_result);
+
+    // Act & Assert
+    EXPECT_EQ(CheckAbort(param.abort_commanded, param.valid_abort_command, param.off_course), param.expected_result);
 }
 
-class FlightControllerParamTest : public TestWithParam<CheckAbortParam>
+class FlightControllerTest : public TestWithParam<CheckAbortParams>
 {
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    FlightControllerCases,
-    FlightControllerParamTest,
+    FlightControllerParamTests,
+    FlightControllerTest,
     Values(
-        CheckAbortParam{true, false, false, true, "Off course triggers abort"},
-        CheckAbortParam{false, true, true, true, "Abort commanded and valid"},
-        CheckAbortParam{false, true, false, false, "Abort commanded but not valid"},
-        CheckAbortParam{false, false, false, false, "No abort, not off course"}));
+        CheckAbortParams{false, false, true, true, "Off course triggers abort"},
+        CheckAbortParams{true, true, false, true, "Abort commanded and valid"},
+        CheckAbortParams{true, false, false, false, "Abort commanded but not valid"},
+        CheckAbortParams{false, false, false, false, "No abort, not off course"}));
 
 /**
  * @rst
- * .. test:: FlightControllerCases/FlightControllerParamTest.SetsExpectedSelfDestructState/*
+ * .. test:: FlightControllerParamTests/FlightControllerTest.SetsExpectedSelfDestructState/*
  *    :id: TS_FC-001
  *    :tests: SWDD_FC-100, SWDD_FC-101, SWDD_FC-102, SWDD_FC-103,
  *            SWDD_FC-200, SWDD_FC-201, SWDD_FC-202, SWDD_FC-203, SWDD_FC-204
  * @endrst
  */
-TEST_P(FlightControllerParamTest, SetsExpectedSelfDestructState)
+TEST_P(FlightControllerTest, SetsExpectedSelfDestructState)
 {
+    // Arrange
     const auto &param = GetParam();
 
     CREATE_MOCK(mymock);
@@ -91,6 +97,6 @@ TEST_P(FlightControllerParamTest, SetsExpectedSelfDestructState)
         .WillOnce(Return(param.valid_abort_command));
     EXPECT_CALL(mymock, RteSetSelfDestructState(param.expected_result)).Times(1);
 
-    // Call the flight controller runnable
+    // Act
     flightController();
 }

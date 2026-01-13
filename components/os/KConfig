@@ -1,6 +1,6 @@
 menu "OS"
     config OS_TASK_PERIOD
-        int "Task period"
+        int "Task period (in milliseconds)"
         default 10
         help
             The period of the task in milliseconds.

@@ -14,12 +14,12 @@ extern "C"
 
 /**
  * @rst
- * .. test:: hello_gmock_suite.get_interface
+ * .. test:: hello_gmock_suite.get_by_value
  *    :id: TS_COMP_A_010
  *    :tests: SWDD_COMP_A-010
  * @endrst
  */
-TEST(hello_gmock_suite, get_interface)
+TEST(hello_gmock_suite, get_by_value)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
@@ -27,7 +27,7 @@ TEST(hello_gmock_suite, get_interface)
         .WillOnce(Return(13));
 
     /* Act and Assert */
-    ASSERT_EQ(13, CheckGetData());
+    ASSERT_EQ(26, CheckGetData());
 }
 
 /**
@@ -45,7 +45,7 @@ TEST(hello_gmock_suite, get_by_pointer)
         .WillOnce(SetArgPointee<0>(42));
 
     /* Act and Assert */
-    ASSERT_EQ(42, CheckGetByPointer());
+    ASSERT_EQ(84, CheckGetByPointer());
 }
 
 /**
@@ -62,11 +62,59 @@ TEST(hello_gmock_suite, get_by_pointer_and_return_value)
     CREATE_MOCK(mymock);
     // Set up the mock to return a value and set the pointed data
     EXPECT_CALL(mymock, GetByPointerAndReturnValue(_))
-        .WillOnce(DoAll(SetArgPointee<0>(42), Return(2)));
+        .WillOnce(
+            DoAll(
+                SetArgPointee<0>(42),
+                Return(2)));
 
     /* Act and Assert */
     ASSERT_EQ(2, CheckGetByPointerAndReturnValue(&value));
     ASSERT_EQ(42, value);
+}
+
+/**
+ * @rst
+ * .. test:: hello_gmock_suite.init_data_structure
+ *    :id: TS_COMP_A_035
+ *    :tests: SWDD_COMP_A-035
+ * @endrst
+ */
+TEST(hello_gmock_suite, init_data_structure)
+{
+    /* Arrange */
+    MyDataType data = {0, 0};
+
+    /* Act */
+    InitDataStructure(&data);
+
+    /* Assert */
+    ASSERT_EQ(data.a, 42);
+    ASSERT_EQ(data.b, 'a');
+}
+
+MATCHER_P(IsMyDataType, expected, "")
+{
+    return (arg.a == expected.a) && (arg.b == expected.b);
+}
+
+/**
+ * @rst
+ * .. test:: hello_gmock_suite.init_data_structure_with_matcher
+ *    :id: TS_COMP_A_036
+ *    :tests: SWDD_COMP_A-035
+ * @endrst
+ */
+TEST(hello_gmock_suite, init_data_structure_with_matcher)
+{
+    /* Arrange */
+    MyDataType data = {0, 0};
+    MyDataType expected_data = {42, 'a'};
+
+    /* Act */
+    InitDataStructure(&data);
+
+    /* Assert */
+    ASSERT_THAT(data, IsMyDataType(expected_data));
 }
 
 /**
@@ -86,10 +134,10 @@ TEST(hello_gmock_suite, get_data_structure_by_pointer)
     EXPECT_CALL(mymock, GetDataStructureByPointer(_))
         .WillOnce(SetArgPointee<0>(input));
 
-    // Act
+    /* Act */
     CheckGetDataStructureByPointer(&result);
 
-    // Assert
+    /* Assert */
     ASSERT_EQ(result.a, 123);
     ASSERT_EQ(result.b, 42);
 }
@@ -115,10 +163,10 @@ TEST(hello_gmock_suite, get_data_structure_by_pointer_1)
             data->a = 100+23;
             data->b = 21*2; }));
 
-    // Act
+    /* Act */
     CheckGetDataStructureByPointer(&result);
 
-    // Assert
+    /* Assert */
     ASSERT_EQ(result.a, 123);
     ASSERT_EQ(result.b, 42);
 }
@@ -140,10 +188,10 @@ TEST(hello_gmock_suite, get_data_structure_array)
     EXPECT_CALL(mymock, GetDataStructureArray(_))
         .WillOnce(SetArrayArgument<0>(input, input + 2));
 
-    // Act
+    /* Act */
     CheckGetDataStructureArray(result);
 
-    // Assert
+    /* Assert */
     ASSERT_EQ(result[0].a, 123);
     ASSERT_EQ(result[0].b, 'a');
     ASSERT_EQ(result[1].a, 456);
@@ -152,16 +200,16 @@ TEST(hello_gmock_suite, get_data_structure_array)
 
 /**
  * @rst
- * .. test:: hello_gmock_suite.set_data
+ * .. test:: hello_gmock_suite.set_by_value
  *    :id: TS_COMP_A_110
  *    :tests: SWDD_COMP_A-110
  * @endrst
  */
-TEST(hello_gmock_suite, set_data)
+TEST(hello_gmock_suite, set_by_value)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    EXPECT_CALL(mymock, SetData(42))
+    EXPECT_CALL(mymock, SetData(84))
         .Times(1);
 
     /* Act */
@@ -179,8 +227,7 @@ TEST(hello_gmock_suite, set_data_by_pointer)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    // Verify that the pointed data is set to 42
-    EXPECT_CALL(mymock, SetDataByPointer(Pointee(42)))
+    EXPECT_CALL(mymock, SetDataByPointer(Pointee(84)))
         .Times(1);
 
     /* Act */

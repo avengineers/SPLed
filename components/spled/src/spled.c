@@ -6,7 +6,10 @@
 #include "light_controller.h"
 #include "console_interface.h"
 #include "main_control_knob.h"
-#if defined(CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED) && CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED == 1
+#ifdef CONFIG_AUTO_OFF
+#include "auto_off.h"
+#endif
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED
 #include "brightness_controller.h"
 #endif
 
@@ -15,7 +18,10 @@ void spled(void)
     powerButton();
     powerSignalProcessing();
     mainControlKnob();
-#if defined(CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED) && CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED == 1
+#ifdef CONFIG_AUTO_OFF
+    autoOff();
+#endif
+#ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_ENABLED
     brightnessController();
 #endif
     lightController();

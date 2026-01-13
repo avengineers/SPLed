@@ -4,39 +4,49 @@
 
 #include "hello_gmock.h"
 
-int CheckGetData(void)
+int32_t CheckGetData(void)
 {
-    return GetData();
-}
-
-int CheckGetByPointer(void)
-{
-    int data = 0;
-    GetByPointer(&data);
+    int32_t data = 0;
+    data = GetData() * 2;
     return data;
 }
 
-int CheckGetByPointerAndReturnValue(int *data)
+int32_t CheckGetByPointer(void)
+{
+    int32_t data = 0;
+    GetByPointer(&data);
+    data *= 2;
+    return data;
+}
+
+int32_t CheckGetByPointerAndReturnValue(int32_t *const data)
 {
     return GetByPointerAndReturnValue(data);
 }
 
-void CheckGetDataStructureByPointer(MyDataType *data)
+void InitDataStructure(MyDataType *const data)
+{
+    data->a = 42;
+    data->b = 'a';
+}
+
+void CheckGetDataStructureByPointer(MyDataType *const data)
 {
     GetDataStructureByPointer(data);
 }
 
-void CheckGetDataStructureArray(MyDataType *data)
+void CheckGetDataStructureArray(MyDataType *const data)
 {
     GetDataStructureArray(data);
 }
 
-void CheckSetData(int data)
+void CheckSetData(int32_t data)
 {
-    SetData(data);
+    SetData(data * 2);
 }
 
-void CheckSetDataByPointer(int data)
+void CheckSetDataByPointer(int32_t data)
 {
-    SetDataByPointer(&data);
+    int32_t localData = data * 2;
+    SetDataByPointer(&localData);
 }

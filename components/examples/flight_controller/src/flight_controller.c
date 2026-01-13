@@ -12,16 +12,18 @@
  *    :implements: SWDD_FC-100, SWDD_FC-101, SWDD_FC-102
  * @endrst
  */
-boolean CheckAbort(boolean off_course, boolean abort_commanded, boolean valid_abort_command)
+SPLE_TESTABLE_STATIC bool_t CheckAbort(bool_t abort_commanded, bool_t valid_abort_command, bool_t off_course)
 {
-    if (off_course || (abort_commanded && valid_abort_command))
+    bool_t result;
+    if (((abort_commanded == TRUE) && (valid_abort_command == TRUE)) || (off_course == TRUE))
     {
-        return TRUE;
+        result = TRUE;
     }
     else
     {
-        return FALSE;
+        result = FALSE;
     }
+    return result;
 }
 
 /**
@@ -33,11 +35,15 @@ boolean CheckAbort(boolean off_course, boolean abort_commanded, boolean valid_ab
  */
 void flightController(void)
 {
-    boolean off_course;
+    /* Get all relevant signals */
+    const bool_t abort_commanded = RteGetAbortCommanded();
+    const bool_t valid_abort_command = RteGetValidAbortCommand();
+    bool_t off_course;
     RteGetOffCourse(&off_course);
-    boolean abort_commanded = RteGetAbortCommanded();
-    boolean valid_abort_command = RteGetValidAbortCommand();
 
-    boolean abort = CheckAbort(off_course, abort_commanded, valid_abort_command);
-    RteSetSelfDestructState(abort);
+    /* Determine if we should abort the mission */
+    const bool_t abort_decision = CheckAbort(abort_commanded, valid_abort_command, off_course);
+
+    /* Set self-destruct state based on abort decision */
+    RteSetSelfDestructState(abort_decision);
 }

@@ -1,17 +1,17 @@
 #ifndef BRIGHTNESS_CONTROLLER_H
 #define BRIGHTNESS_CONTROLLER_H
 
-#include "autoconf.h"
+#include "rte.h"
 
 #ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_AUTOMATIC
 
 typedef struct
 {
-    unsigned int ticksCounter;
-    const unsigned int period;
-    const unsigned int halfPeriod;
-    const unsigned int maxBrightness;
-    const unsigned int minBrightness;
+    uint32_t ticksCounter;
+    const uint32_t period;
+    const uint32_t halfPeriod;
+    const brightness_t maxBrightness;
+    const brightness_t minBrightness;
 } BrightnessAdjustmentData;
 
 #endif /* CONFIG_BRIGHTNESS_ADJUSTMENT_AUTOMATIC */

@@ -1,7 +1,9 @@
 #include "autoconf.h"
 #include "os.h"
+#include <stdint.h>
 
-int main(void) {
+int32_t main(void)
+{
 
     OsRun();
 

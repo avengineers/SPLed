@@ -6,9 +6,9 @@
 #include "main_control_knob.h"
 #include "rte.h"
 
-#define CONTROL_KEY_UP 0x26
-#define CONTROL_KEY_DOWN 0x28
 #define KNOB_UPDATE_INCREMENT 2u
+#define MIN_KNOB_VALUE 0u
+#define MAX_KNOB_VALUE 100u
 
 /**
  * @rst
@@ -20,28 +20,31 @@
 void mainControlKnob(void)
 {
     percentage_t currentValue = RteGetMainKnobValue();
-    if (RteIsKeyPressed(CONTROL_KEY_UP))
+    if (RteIsKeyPressed(CONTROL_KEY_UP) == TRUE)
     {
-        // Increase knob's percentage value by 5 with a maximum of 100.
-        if (currentValue < (100 - KNOB_UPDATE_INCREMENT))
+        // Increase knob's percentage value by KNOB_UPDATE_INCREMENT with a maximum of 100.
+        if (currentValue < (MAX_KNOB_VALUE - KNOB_UPDATE_INCREMENT))
         {
             currentValue += KNOB_UPDATE_INCREMENT;
         }
         else
         {
-            currentValue = 100;
+            currentValue = MAX_KNOB_VALUE;
         }
     }
-    else if (RteIsKeyPressed(CONTROL_KEY_DOWN))
+    else
     {
-        // Decrease knob's percentage value by 5 with a minimum of 0.
-        if (currentValue > KNOB_UPDATE_INCREMENT)
+        if (RteIsKeyPressed(CONTROL_KEY_DOWN) == TRUE)
         {
-            currentValue -= KNOB_UPDATE_INCREMENT;
-        }
-        else
-        {
-            currentValue = 0;
+            // Decrease knob's percentage value by KNOB_UPDATE_INCREMENT with a minimum of 0.
+            if (currentValue > KNOB_UPDATE_INCREMENT)
+            {
+                currentValue -= KNOB_UPDATE_INCREMENT;
+            }
+            else
+            {
+                currentValue = MIN_KNOB_VALUE;
+            }
         }
     }
     RteSetMainKnobValue(currentValue);
