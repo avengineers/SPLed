@@ -6,36 +6,22 @@
 #ifndef RTE_H
 #define RTE_H
 
-#include <stdint.h>
-
 #include "autoconf.h"
+#include "platform_types.h"
 
-/** @brief Boolean type definition. */
-typedef unsigned char boolean;
-
-/** @brief Macro for boolean TRUE. */
-#define TRUE 1
-
-/** @brief Macro for boolean FALSE. */
-#define FALSE 0
-
-#define LOGGING_ENABLED 0
-
-#if LOGGING_ENABLED
 /**
- * @brief Enumerated type for log levels.
+ * @brief Key code definition for Arrow Up
  */
-typedef enum
-{
-    LOG_LEVEL_DEBUG = 0,
-    LOG_LEVEL_INFO = 1,
-    LOG_LEVEL_WARNING = 2,
-    LOG_LEVEL_ERROR = 3
-} LogLevel;
-#endif
+#define CONTROL_KEY_UP 0x26
+/**
+ * @brief Key code definition for Arrow Down
+ */
+#define CONTROL_KEY_DOWN 0x28
 
-/** @brief Configure the brightness adjustment task period use to calculate transition times. */
-#define BRIGHTNESS_TASK_PERIOD CONFIG_OS_TASK_PERIOD
+/**
+ * @brief Key code definition for Power Button 'P'
+ */
+#define POWER_BUTTON_KEY (int32_t)'P'
 
 /**
  * @brief Enumerated type for power states.
@@ -49,12 +35,12 @@ typedef enum
 /**
  * @brief Struct representing an RGB color.
  */
-
 typedef struct
-{
-    uint8_t red;   /**< The red component of the color. */
-    uint8_t green; /**< The green component of the color. */
-    uint8_t blue;  /**< The blue component of the color. */
+{ /* polyspace CERT-C:DCL12-C [Justified:Low] "No difference between getter/setter usage and direct struct member access in this context" polyspace MISRA-C3:D4.8 [Justified:Low] "Type usage independent of pointer usage" */
+
+    uint8_t rgbRedValue;   /**< The red component of the color. */
+    uint8_t rgbGreenValue; /**< The green component of the color. */
+    uint8_t rgbBlueValue;  /**< The blue component of the color. */
 } RGBColor;
 
 /**
@@ -67,14 +53,14 @@ typedef uint8_t percentage_t;
  * @typedef Brightness
  * @brief Represents a brightness value ranging from 0 to 255.
  */
-typedef unsigned int brightness_t;
+typedef uint8_t brightness_t;
 
 /**
  * @brief Set the current power state.
  *
  * @param state The desired power state.
  */
-void RteSetPowerState(PowerState state);
+void RteSetPowerState(PowerState currentPowerState);
 
 /**
  * @brief Retrieve the current power state.
@@ -88,23 +74,23 @@ PowerState RteGetPowerState(void);
  *
  * @return TRUE if the power key was pressed, FALSE otherwise.
  */
-boolean RteGetPowerKeyPressedEvent(void);
+bool_t RteGetPowerKeyPressedEvent(void);
 
 /**
  * @brief Set the state of the power key being pressed.
  *
  * @param value The state to set for the power key press.
  */
-void RteSetPowerKeyPressedEvent(boolean value);
+void RteSetPowerKeyPressedEvent(bool_t powerKeyPressedEvent);
 
 /**
  * @brief Sets the value of the RGB light.
  *
  * This function sets the value of the RGB light to the specified color.
  *
- * @param value The RGB color to set the light to.
+ * @param lightValue The RGB color to set the light to.
  */
-void RteSetLightValue(RGBColor value);
+void RteSetLightValue(const RGBColor lightValue);
 
 /**
  * @brief Gets the current value of the RGB light.
@@ -113,7 +99,7 @@ void RteSetLightValue(RGBColor value);
  *
  * @param value A pointer to an RGBColor struct to store the current light value in.
  */
-void RteGetLightValue(RGBColor *value);
+void RteGetLightValue(RGBColor *const lightValue);
 
 /**
  * @brief Check if the given key is currently pressed.
@@ -124,7 +110,7 @@ void RteGetLightValue(RGBColor *value);
  * @param key The virtual-key code of the key to be checked.
  * @return TRUE if the key is pressed, FALSE otherwise.
  */
-boolean RteIsKeyPressed(int key);
+bool_t RteIsKeyPressed(int32_t keyCode);
 
 /**
  * @brief Sets the value of the main knob.
@@ -136,7 +122,7 @@ boolean RteIsKeyPressed(int key);
  *
  * @note Values greater than 100 will be clamped to 100.
  */
-void RteSetMainKnobValue(percentage_t value);
+void RteSetMainKnobValue(percentage_t mainKnobValue);
 
 /**
  * @brief Gets the value of the main knob.
@@ -157,7 +143,7 @@ percentage_t RteGetMainKnobValue(void);
  *
  * @note Values greater than 255 will be clamped to 255.
  */
-void RteSetBrightnessValue(brightness_t value);
+void RteSetBrightnessValue(brightness_t brightnessValue);
 
 /**
  * @brief Gets the value of the brightness.
@@ -176,7 +162,7 @@ brightness_t RteGetBrightnessValue(void);
  *
  * @param[in] counter The value to set for the brightness adjustment counter.
  */
-void RteSetBrightnessAdjustmentCounter(unsigned int counter);
+void RteSetBrightnessAdjustmentCounter(uint32_t counter);
 
 /**
  * @brief Gets the brightness adjustment counter.
@@ -185,47 +171,79 @@ void RteSetBrightnessAdjustmentCounter(unsigned int counter);
  *
  * @param[out] counter A pointer to an integer where the current brightness adjustment counter will be stored.
  */
-void RteGetBrightnessAdjustmentCounter(unsigned int *counter);
+void RteGetBrightnessAdjustmentCounter(uint32_t *const counter);
 #endif // CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD
 
-#if LOGGING_ENABLED
 /**
- * @brief Prints a message to the console.
+ * @brief Sets the off course state.
  *
- * This function prints a message to the console with the given log level.
- *
- * @param[in] level The log level of the message.
- * @param[in] message The message to print.
+ * @param value TRUE to indicate off course, FALSE otherwise.
  */
-void RteLoggerPrintToConsole(LogLevel level, const char *message, ...);
-#endif
+void RteSetOffCourse(bool_t offCourse);
 
 /**
  * @brief Retrieves whether the system is off course.
  *
  * @return TRUE if off course, FALSE otherwise.
  */
-void RteGetOffCourse(boolean *value);
+void RteGetOffCourse(bool_t *const offCourse);
+
+/**
+ * @brief Sets whether an abort has been commanded.
+ *
+ * @param commanded TRUE to indicate abort commanded, FALSE otherwise.
+ */
+void RteSetAbortCommanded(bool_t commanded);
 
 /**
  * @brief Retrieves whether an abort has been commanded.
  *
  * @return TRUE if abort is commanded, FALSE otherwise.
  */
-boolean RteGetAbortCommanded(void);
+bool_t RteGetAbortCommanded(void);
+
+/**
+ * @brief Sets whether the abort command is valid.
+ */
+void RteSetValidAbortCommand(bool_t valid);
 
 /**
  * @brief Retrieves whether the abort command is valid.
  *
  * @return TRUE if abort command is valid, FALSE otherwise.
  */
-boolean RteGetValidAbortCommand(void);
+bool_t RteGetValidAbortCommand(void);
 
 /**
  * @brief Sets the SelfDestruct state.
  *
  * @param state TRUE to trigger SelfDestruct, FALSE otherwise.
  */
-void RteSetSelfDestructState(boolean state);
+void RteSetSelfDestructState(bool_t selfDestructState);
+
+/**
+ * @brief Retrieves the SelfDestruct state.
+ *
+ * @return TRUE if SelfDestruct is triggered, FALSE otherwise.
+ */
+bool_t RteGetSelfDestructState(void);
+
+#ifdef CONFIG_AUTO_OFF
+/**
+ * @brief Get the state of the auto off event.
+ *
+ * @return TRUE if the auto off event occurred, FALSE otherwise.
+ */
+bool_t RteGetAutoOffState(void);
+#endif // CONFIG_AUTO_OFF
+
+#ifdef CONFIG_AUTO_OFF
+/**
+ * @brief Set the state of the auto off event.
+ *
+ * @param value The state to set for the auto off event.
+ */
+void RteSetAutoOffState(bool_t state);
+#endif // CONFIG_AUTO_OFF
 
 #endif // RTE_H

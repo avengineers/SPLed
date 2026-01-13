@@ -18,10 +18,12 @@ The light can be in one of two states: ON or OFF. The state transitions are trig
 ```
 
 {% if config.BLINKING %}
+
 ```{spec} Blinking Behavior
 :id: SWDD_LC-101
 When the light is ON, it may exhibit a blinking behavior. The blinking rate is configurable and is determined based on an external input (main knob value).
 ```
+
 {% endif %}
 
 ```{spec} Color Management
@@ -42,7 +44,7 @@ The color of the light shall be fixed but configurable.
 ```{spec} Runnable
 :id: SWDD_LC-200
 
-The Light Controller is be called by its runnable `lightController()`.
+The Light Controller is called by its runnable `lightController()`.
 ```
 
 ```{spec} Power State Input
@@ -58,17 +60,21 @@ The Light Controller uses the RTE interface `RteSetLightValue()` to set the ligh
 ```
 
 {% if config.BLINKING %}
+
 ```{spec} Main Knob Input
 :id: SWDD_LC-203
 The Light Controller uses the RTE interface `RteGetMainKnobValue()` to get the main knob value for controlling the blinking rate.
 ```
+
 {% endif %}
 
-{% if config.BRIGHTNESS_ADJUSTMENT %}
+{% if config.BRIGHTNESS_ADJUSTMENT_ENABLED %}
+
 ```{spec} Brightness Adjustment
 :id: SWDD_LC-204
 The Light Controller uses the RTE interface `RteGetBrightnessValue()` to get the required brightness value for the light.
 ```
+
 {% endif %}
 
 ## Internal Behavior

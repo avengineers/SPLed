@@ -17,9 +17,9 @@ typedef enum
     RELEASED /**< Key has been debounced as released. */
 } KeyState;
 
-static KeyState currentState = INIT;    /**< Current state of the debouncing state machine. */
-static unsigned int pressCounter = 0;   /**< Counter for key presses. */
-static unsigned int releaseCounter = 0; /**< Counter for key releases. */
+static KeyState currentState = INIT; /**< Current state of the debouncing state machine. */
+static uint8_t pressCounter = 0;     /**< Counter for key presses. */
+static uint8_t releaseCounter = 0;   /**< Counter for key releases. */
 
 void powerButtonInit(void)
 {
@@ -39,11 +39,11 @@ void powerButtonInit(void)
  */
 void powerButton(void)
 {
-    boolean powerKeyPressed = FALSE;
-    boolean keyStatus = RteIsKeyPressed(POWER_BUTTON_KEY);
+    bool_t powerKeyPressed = FALSE;
+    const bool_t keyStatus = RteIsKeyPressed(POWER_BUTTON_KEY);
 
     // Update the counters
-    if (keyStatus)
+    if (keyStatus == TRUE)
     {
         pressCounter++;
         releaseCounter = 0; // reset release counter if key is pressed
@@ -64,11 +64,14 @@ void powerButton(void)
             releaseCounter = 0; // reset the counter after transition
             pressCounter = 0;   // reset the counter after transition
         }
-        else if (releaseCounter >= POWER_BUTTON_RELEASE_DEBOUNCE)
+        else
         {
-            currentState = RELEASED;
-            releaseCounter = 0; // reset the counter after transition
-            pressCounter = 0;   // reset the counter after transition
+            if (releaseCounter >= POWER_BUTTON_RELEASE_DEBOUNCE)
+            {
+                currentState = RELEASED;
+                releaseCounter = 0; // reset the counter after transition
+                pressCounter = 0;   // reset the counter after transition
+            }
         }
         break;
 
@@ -81,7 +84,7 @@ void powerButton(void)
         pressCounter = 0; // reset the counter after transition
         break;
 
-    case RELEASED:
+    default: /* RELEASED */
         if (pressCounter >= POWER_BUTTON_PRESS_DEBOUNCE)
         {
             powerKeyPressed = TRUE;

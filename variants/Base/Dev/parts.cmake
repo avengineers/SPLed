@@ -1,4 +1,7 @@
+spl_add_component(components/platform_types)
 spl_add_component(components/rte)
 spl_add_component(components/keyboard_interface)
 spl_add_component(components/examples/hello_gmock)
 spl_add_component(components/examples/flight_controller)
+spl_add_component(components/examples/sca_bad_code)
+spl_add_component(components/examples/adc)

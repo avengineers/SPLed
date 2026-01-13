@@ -31,6 +31,19 @@ menu "Features"
             This option allows you to set the period for brightness adjustment.
             The value is in seconds and can be set between 1 and 60 seconds.
 
+    config AUTO_OFF
+        bool "Auto Off Feature"
+        default n
+
+    config AUTO_OFF_PERIOD_SECONDS
+        int "Auto Off Period (in seconds)"
+        depends on AUTO_OFF
+        default 3600
+        range 5 7200
+        help
+            This option allows you to set the period for the auto off feature.
+            The value is in seconds and can be set between 5 and 7200 seconds.
+
     source "components/os/KConfig"
     source "components/light_controller/KConfig"
 

@@ -63,3 +63,51 @@ TEST(power_signal_processing, test_power_toggles)
     EXPECT_CALL(mymock, RteSetPowerState(POWER_STATE_ON));
     powerSignalProcessing();
 }
+
+#ifdef CONFIG_AUTO_OFF
+/*!
+ * @rst
+ *
+ * .. test:: power_signal_processing.test_auto_off_event_powers_down
+ *    :id: TS_PSP-003
+ *    :tests: SWDD_PSP-004
+ *
+ * Test that when auto off event occurs, the system is powered down.
+ *
+ * @endrst
+ */
+TEST(power_signal_processing, test_auto_off_event_powers_down)
+{
+    CREATE_MOCK(mymock);
+
+    // Auto off event triggered, no power key pressed
+    EXPECT_CALL(mymock, RteGetPowerKeyPressedEvent()).WillOnce(Return(FALSE));
+    EXPECT_CALL(mymock, RteGetAutoOffState()).WillOnce(Return(TRUE));
+    EXPECT_CALL(mymock, RteSetPowerState(POWER_STATE_OFF));
+
+    powerSignalProcessing();
+}
+
+/*!
+ * @rst
+ *
+ * .. test:: power_signal_processing.test_no_auto_off_event_no_action
+ *    :id: TS_PSP-004
+ *    :tests: SWDD_PSP-005
+ *
+ * Test that when no auto off event occurs and no power key is pressed, no action is taken.
+ *
+ * @endrst
+ */
+TEST(power_signal_processing, test_no_auto_off_event_no_action)
+{
+    CREATE_MOCK(mymock);
+
+    // No power key pressed and no auto off event
+    EXPECT_CALL(mymock, RteGetPowerKeyPressedEvent()).WillOnce(Return(FALSE));
+    EXPECT_CALL(mymock, RteGetAutoOffState()).WillOnce(Return(FALSE));
+    EXPECT_CALL(mymock, RteSetPowerState(_)).Times(0);
+
+    powerSignalProcessing();
+}
+#endif // CONFIG_AUTO_OFF

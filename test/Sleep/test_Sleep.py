@@ -8,12 +8,12 @@ from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
 class Test_Sleep:
     variant: str = "Sleep"
-    components = [
-        "components/power_signal_processing",
-        "components/light_controller",
-        "components/power_button",
-        "components/main_control_knob",
+    components: list[str] = [
         "components/brightness_controller",
+        "components/light_controller",
+        "components/main_control_knob",
+        "components/power_button",
+        "components/power_signal_processing",
     ]
 
     @pytest.fixture(scope="class")
@@ -89,13 +89,17 @@ class Test_Sleep:
             build_type="Debug",
             target="reports",
         )
-        archiver.register(artifacts=[spl_build.build_dir / "reports/html"])
+        artifacts_to_be_archived = [spl_build.build_dir / "reports/html"]
+        for component in self.components:
+            artifacts_to_be_archived.append(spl_build.build_dir / component / "junit.xml")
+            artifacts_to_be_archived.append(spl_build.build_dir / component / "coverage.json")
+        archiver.register(artifacts=artifacts_to_be_archived)
 
         # Act
         result = spl_build.execute()
 
         # Assert
         assert result == 0, "Building reports failed"
-        artifacts = spl_build.get_components_artifacts(self.components)
-        for artifact in artifacts:
+        expected_artifacts = spl_build.get_components_artifacts(self.components) + artifacts_to_be_archived
+        for artifact in expected_artifacts:
             assert artifact.exists(), f"Artifact {artifact} does not exist"

@@ -16,9 +16,9 @@ extern "C"
 
 bool areRGBColorsEqual(const RGBColor *color1, const RGBColor *color2)
 {
-    return color1->red == color2->red &&
-           color1->green == color2->green &&
-           color1->blue == color2->blue;
+    return color1->rgbRedValue == color2->rgbRedValue &&
+           color1->rgbGreenValue == color2->rgbGreenValue &&
+           color1->rgbBlueValue == color2->rgbBlueValue;
 }
 
 MATCHER_P(RGBColorEq, expected, "")
@@ -33,31 +33,31 @@ MATCHER_P(RGBColorEq, expected, "")
 #endif
 
 #if CONFIG_COLOR_BLUE
-const RGBColor onColor = {.red = 0, .green = 0, .blue = LED_BRIGHTNESS};
+const RGBColor onColor = {.rgbRedValue = 0, .rgbGreenValue = 0, .rgbBlueValue = LED_BRIGHTNESS};
 #elif CONFIG_COLOR_GREEN
-const RGBColor onColor = {.red = 0, .green = LED_BRIGHTNESS, .blue = 0};
+const RGBColor onColor = {.rgbRedValue = 0, .rgbGreenValue = LED_BRIGHTNESS, .rgbBlueValue = 0};
 #elif CONFIG_COLOR_RED
-const RGBColor onColor = {.red = LED_BRIGHTNESS, .green = 0, .blue = 0};
+const RGBColor onColor = {.rgbRedValue = LED_BRIGHTNESS, .rgbGreenValue = 0, .rgbBlueValue = 0};
 #elif CONFIG_COLOR_PURPLE
-const RGBColor onColor = {.red = LED_BRIGHTNESS / 2, .green = 0, .blue = LED_BRIGHTNESS};
+const RGBColor onColor = {.rgbRedValue = LED_BRIGHTNESS / 2, .rgbGreenValue = 0, .rgbBlueValue = LED_BRIGHTNESS};
 #endif /* CONFIG_COLOR_BLUE */
 
 #if CONFIG_COLOR_1_BLUE
-const RGBColor onColor1 = {.red = 0, .green = 0, .blue = LED_BRIGHTNESS};
+const RGBColor onColor1 = {.rgbRedValue = 0, .rgbGreenValue = 0, .rgbBlueValue = LED_BRIGHTNESS};
 #elif CONFIG_COLOR_1_GREEN
-const RGBColor onColor1 = {.red = 0, .green = LED_BRIGHTNESS, .blue = 0};
+const RGBColor onColor1 = {.rgbRedValue = 0, .rgbGreenValue = LED_BRIGHTNESS, .rgbBlueValue = 0};
 #elif CONFIG_COLOR_1_RED
-const RGBColor onColor1 = {.red = LED_BRIGHTNESS, .green = 0, .blue = 0};
+const RGBColor onColor1 = {.rgbRedValue = LED_BRIGHTNESS, .rgbGreenValue = 0, .rgbBlueValue = 0};
 #elif CONFIG_COLOR_1_PURPLE
-const RGBColor onColor1 = {.red = LED_BRIGHTNESS / 2, .green = 0, .blue = LED_BRIGHTNESS};
+const RGBColor onColor1 = {.rgbRedValue = LED_BRIGHTNESS / 2, .rgbGreenValue = 0, .rgbBlueValue = LED_BRIGHTNESS};
 #endif /* CONFIG_COLOR_1_BLUE */
 
-const RGBColor offColor = {.red = 0, .green = 0, .blue = 0};
+const RGBColor offColor = {.rgbRedValue = 0, .rgbGreenValue = 0, .rgbBlueValue = 0};
 
 // Override the cout operator for RGBColor so that it can be printed in the test output
 std::ostream &operator<<(std::ostream &os, const RGBColor &color)
 {
-    os << "RGBColor(" << color.red << ", " << color.green << ", " << color.blue << ")";
+    os << "RGBColor(" << color.rgbRedValue << ", " << color.rgbGreenValue << ", " << color.rgbBlueValue << ")";
     return os;
 }
 

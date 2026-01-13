@@ -1,6 +1,7 @@
+spl_add_component(components/platform_types)
+spl_add_component(components/rte)
 spl_add_component(components/main)
 spl_add_component(components/os)
-spl_add_component(components/rte)
 spl_add_component(components/spled)
 spl_add_component(components/power_signal_processing)
 spl_add_component(components/light_controller)

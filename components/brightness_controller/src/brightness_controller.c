@@ -4,11 +4,11 @@
  */
 
 #include "brightness_controller.h"
-#include "rte.h"
 
 #ifdef CONFIG_BRIGHTNESS_ADJUSTMENT_AUTOMATIC
 
-#define BRIGHTNESS_PERIOD_TICKS ((unsigned int)((CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD * 1000) / BRIGHTNESS_TASK_PERIOD))
+/** @brief Calculate the number of ticks for the brightness adjustment period. */
+#define BRIGHTNESS_PERIOD_TICKS ((uint32_t)((CONFIG_BRIGHTNESS_ADJUSTMENT_PERIOD * 1000) / CONFIG_OS_TASK_PERIOD))
 
 /**
  * @rst
@@ -17,19 +17,19 @@
  *    :implements: SWDD_BC-100, SWDD_BC-102
  * @endrst
  */
-SPLE_TESTABLE_STATIC brightness_t periodicBrightnessAdjustment(BrightnessAdjustmentData *data)
+SPLE_TESTABLE_STATIC brightness_t periodicBrightnessAdjustment(BrightnessAdjustmentData *const data)
 {
     brightness_t brightnessValue = 0;
 
     if (data->ticksCounter < data->halfPeriod)
     {
         // Ramp up linearly from min to max
-        brightnessValue = data->minBrightness + ((data->maxBrightness - data->minBrightness) * data->ticksCounter) / data->halfPeriod;
+        brightnessValue = (brightness_t)(data->minBrightness + ((((uint32_t)data->maxBrightness - (uint32_t)data->minBrightness) * data->ticksCounter) / data->halfPeriod));
     }
     else
     {
         // Ramp down linearly from max to min
-        brightnessValue = data->maxBrightness - ((data->maxBrightness - data->minBrightness) * (data->ticksCounter - data->halfPeriod)) / data->halfPeriod;
+        brightnessValue = (brightness_t)(data->maxBrightness - ((((uint32_t)data->maxBrightness - (uint32_t)data->minBrightness) * (data->ticksCounter - data->halfPeriod)) / data->halfPeriod));
     }
 
     // Increment and reset ticksCounter based on the period
@@ -49,7 +49,7 @@ SPLE_TESTABLE_STATIC brightness_t periodicBrightnessAdjustment(BrightnessAdjustm
  */
 static brightness_t manualBrightnessAdjustment(void)
 {
-    percentage_t mainKnobValue = RteGetMainKnobValue();
+    const percentage_t mainKnobValue = RteGetMainKnobValue();
     brightness_t brightnessValue = 0;
 
     if (mainKnobValue == 0)
@@ -58,7 +58,7 @@ static brightness_t manualBrightnessAdjustment(void)
     }
     else
     {
-        brightnessValue = (mainKnobValue * 255) / 100;
+        brightnessValue = (brightness_t)(((uint32_t)mainKnobValue * 255) / 100);
     }
     return brightnessValue;
 }
