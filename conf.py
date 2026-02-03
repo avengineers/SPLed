@@ -26,10 +26,11 @@ exclude_patterns = [
     "build/deps",
     ".venv",
     ".git",
+    ".md",
     "**/test_results.rst",  # We renamed this file, but nobody deletes it.
 ]
 
-include_patterns = ["index.md", "doc/**"]
+include_patterns = ["index.rst", "doc/**"]
 
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html
@@ -76,6 +77,10 @@ extensions.append("sphinxcontrib.mermaid")
 
 extensions.append("sphinx_needs")
 
+# Let Sphinx-Needs load configuration from TOML
+# See: https://sphinx-needs.readthedocs.io/en/latest/configuration.html#needs-from-toml
+needs_from_toml = "ubproject.toml"
+
 extensions.append("sphinxcontrib.test_reports")
 tr_report_template = "doc/test_report_template.txt"
 
@@ -119,39 +124,7 @@ extensions.append("sphinx.ext.todo")
 extensions.append("sphinxcontrib.datatemplates")
 
 # needs_types - this option allows the setup of own need types like bugs, user_stories and more.
-needs_types = [
-    dict(directive="req", title="Requirement", prefix="R_", color="#BFD8D2", style="node"),
-    dict(
-        directive="spec",
-        title="Specification",
-        prefix="S_",
-        color="#FEDCD2",
-        style="node",
-    ),
-    dict(
-        directive="impl",
-        title="Implementation",
-        prefix="I_",
-        color="#DF744A",
-        style="node",
-    ),
-    dict(directive="test", title="Test Case", prefix="T_", color="#DCB239", style="node"),
-]
-
-# Define own options
-needs_extra_options = ["integrity"]
-
-# Define own link types
-needs_extra_links = [
-    # SWE.3 BP.5: link from Implementation (Software unit) to Specification (Software detailed design)
-    # AND
-    # SWE.2 BP.7: link from Requirements (Software Requirement) to Architecture (Software Architecture)
-    {"option": "implements", "incoming": "is implemented by", "outgoing": "implements"},
-    # SWE.4 BP.5: link from Test Case (Unit test specification) to Specification (Software detailed design)
-    {"option": "tests", "incoming": "is tested by", "outgoing": "tests"},
-    # SWE.4 BP.5: link from Test Case (Unit test specification) to Test Result (Unit test result)
-    {"option": "results", "incoming": "is resulted from", "outgoing": "results"},
-]
+# Needs types/links/options are defined in ubproject.toml via needs_from_toml
 
 # Link tests results to the test cases
 needs_global_options = {

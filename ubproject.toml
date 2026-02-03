@@ -1,0 +1,66 @@
+"$schema" = "https://ubcode.useblocks.com/ubproject.schema.json"
+
+[project]
+name = "SPLed"
+
+[source]
+# Include all RST sources in the repo
+include = ["**/*.rst"]
+# Exclude common build and VCS folders, plus virtual env
+extend_exclude = [".git", ".venv", "build/**", "_build/**"]
+
+[needs]
+# Use defaults for id generation; types/links/options are defined below
+
+# Types mapped from Sphinx-Needs in conf.py
+[[needs.types]]
+directive = "req"
+title = "Requirement"
+prefix = "R_"
+color = "#BFD8D2"
+style = "node"
+
+[[needs.types]]
+directive = "spec"
+title = "Specification"
+prefix = "S_"
+color = "#FEDCD2"
+style = "node"
+
+[[needs.types]]
+directive = "impl"
+title = "Implementation"
+prefix = "I_"
+color = "#DF744A"
+style = "node"
+
+[[needs.types]]
+directive = "test"
+title = "Test Case"
+prefix = "T_"
+color = "#DCB239"
+style = "node"
+
+# Extra link types mapped from conf.py
+[[needs.extra_links]]
+option = "implements"
+incoming = "is implemented by"
+outgoing = "implements"
+
+[[needs.extra_links]]
+option = "tests"
+incoming = "is tested by"
+outgoing = "tests"
+
+[[needs.extra_links]]
+option = "results"
+incoming = "is resulted from"
+outgoing = "results"
+
+# Extra options mapped from conf.py
+extra_options = ["integrity"]
+
+# Optional: Sphinx-friendly formatter defaults (can be tuned later)
+[format_rst]
+validate = true
+paragraph_line_length = 88
