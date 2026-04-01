@@ -1,0 +1,53 @@
+name: CI
+
+on:
+    push:
+        branches: [develop]
+    pull_request:
+        branches: [develop]
+
+    workflow_dispatch:
+
+jobs:
+    test-on-windows:
+        name: Build and Test on Windows
+        runs-on: windows-latest
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Installation of Dependencies and Execute Tests
+              env:
+                  # Workaround to force usage of scoop apps installed in $env:USERPROFILE
+                  USER_PATH_FIRST: 1
+              run: |
+                  .\build.ps1 -install
+                  .\build.ps1 -selftests -marker "build_debug or reports"
+              shell: powershell
+
+            - name: Deploy Test Results
+              if: always()
+              uses: mikepenz/action-junit-report@v6
+              with:
+                  report_paths: |
+                      test/output/test-report.xml
+                      build/**/variant-junit.xml
+                  detailed_summary: true
+                  include_passed: true
+                  fail_on_failure: true
+                  fail_on_parse_error: true
+                  require_tests: true
+                  check_name: "Test Results (Windows)"
+
+            - name: Deploy Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: artifacts
+                  retention-days: 90
+                  path: |
+                      build/**/*.7z
+                      build/**/pr_changes.json
+                  if-no-files-found: error
