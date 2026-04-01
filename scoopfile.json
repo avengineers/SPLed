@@ -3,22 +3,9 @@
         {
             "Name": "sple",
             "Source": "https://github.com/avengineers/spl-bucket"
-        },
-        {
-            "Name": "main",
-            "Source": "https://github.com/ScoopInstaller/Main"
         }
     ],
     "apps": [
-        {
-            "Source": "main",
-            "Name": "graphviz"
-        },
-        {
-            "Source": "main",
-            "Name": "cppcheck",
-            "Version": "2.19.0"
-        },
         {
             "Source": "sple",
             "Name": "mingw-winlibs-llvm-ucrt",

@@ -1,0 +1,19 @@
+[ubconnect.from_reqif]
+reqif_path = "Demo-SPL.reqifz"      # Optional: Relative to the location of this TOML file
+reqifz = true
+outdir = "./output"                               # Optional: Output directory for generated files
+id_prefix = "REQ_"                                # Prefix for need IDs (default: "REQ_")
+back_links = false                                # Optional: Enable/disable backlink generation (default: false)
+uuid_target = "reqif_uuid"                        # Optional: The target field for the UUID of ReqIF Spec-Object (default: "reqif_uuid")
+origin_field = "origin"      
+
+[ubconnect.from_reqif.mapping]
+id = "ReqIF.ForeignID"                   # Maps to need ID (default: "Re-qIF.ForeignID")
+title = "ReqIF.ChapterName"                     # Maps to need title (default: "ReqIF.Name")
+content = "ReqIF.Text"                   # Maps to need content (default: "Re-qIF.Text")
+reqif_type = "Type"   
+
+[ubconnect.from_reqif.static_fields]
+type = "spec"                             # Type of needs (default: "req")
+# additional static_fields
+priority = "high"       

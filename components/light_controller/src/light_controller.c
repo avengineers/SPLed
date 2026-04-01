@@ -24,6 +24,7 @@ typedef enum
  * .. impl:: Light state
  *    :id: SWIMPL_LC-001
  *    :implements: SWDD_LC-100
+ *    :fulfills: REQ_42
  * @endrst
  *
  * @enum LightState
@@ -122,6 +123,7 @@ static RGBColor getRGBColorWithBrightness(LightColor colorEnum, brightness_t bri
  * .. impl:: Turn light off
  *    :id: SWIMPL_LC-002
  *    :implements: SWDD_LC-102
+ *    :fulfills: REQ_43
  * @endrst
  */
 static void turnLightOff(void)
@@ -137,6 +139,7 @@ static void turnLightOff(void)
  * .. impl:: Turn light on
  *    :id: SWIMPL_LC-003
  *    :implements: SWDD_LC-102
+ *    :fulfills: REQ_43
  * @endrst
  */
 static void turnLightOn(void)
@@ -176,6 +179,7 @@ static void turnLightOn(void)
  * .. impl:: Calculate blink period
  *    :id: SWIMPL_LC-004
  *    :implements: SWDD_LC-101
+ *    :fulfills: REQ_44
  * @endrst
  */
 SPLE_TESTABLE_STATIC percentage_t calculateBlinkPeriod(percentage_t mainKnobValue)
@@ -195,6 +199,7 @@ SPLE_TESTABLE_STATIC percentage_t calculateBlinkPeriod(percentage_t mainKnobValu
  * .. impl:: Light Controller's main function
  *    :id: SWIMPL_LC-006
  *    :implements: SWDD_LC-100
+ *    :fulfills: REQ_44
  * @endrst
  *
  * @brief Controls the light state.

@@ -30,6 +30,20 @@ It is recommended to start VS Code using the `build.ps1` script to make sure all
 .\build.ps1 -startVSCode
 ```
 
+## Testing & Quality Gates
+
+Tests are executed using pytest with a two-dimensional marker strategy combining *type markers* (WHAT to test) and *gate markers* (WHEN to test). The CI pipeline automatically selects the right quality gate based on the build context.
+
+For the full testing strategy, marker definitions, and the gate assignment matrix, see [Testing Strategy](doc/testing_strategy.md).
+
+```powershell
+# Run all tests for a specific gate
+.\build.ps1 -selftests -marker "gate_develop_pr"
+
+# Filter by variant
+.\build.ps1 -selftests -filter "Disco" -marker "gate_develop_push"
+```
+
 ## Developer Guide
 
 For more information about the architecture, workflows, and conventions, see [AGENTS.md](AGENTS.md). This guide covers:

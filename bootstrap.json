@@ -1,5 +1,8 @@
 {
     "python_version": "3.11",
     "python_package_manager": "poetry>=2.1.0",
+    "bootstrap_packages": [
+        "pip-system-certs>=4.0,<5.0"
+    ],
     "scoop_ignore_scoopfile": true
 }

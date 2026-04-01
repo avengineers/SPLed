@@ -11,5 +11,5 @@ spl_add_component(components/keyboard_interface)
 spl_add_component(components/main_control_knob)
 
 if(BUILD_KIT STREQUAL test)
-    spl_add_component(test/integrations/spled)
+    spl_add_component(test/spled_integration)
 endif()

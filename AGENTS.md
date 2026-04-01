@@ -105,7 +105,7 @@ Features defined in `KConfig` (menuconfig syntax) generate CMake variables via `
 - `CONFIG_BLINKING=y` → CMake variable `BLINKING="True"`
 - `# CONFIG_AUTO_OFF is not set` → CMake variable `AUTO_OFF="False"`
 
-Edit feature config: `.\build.ps1 -command "guiconfig"` (requires KCONFIG_CONFIG env var set to variant's config.txt).
+Edit feature config: `.\build.ps1 -command ".venv\Scripts\poetry run guiconfig"` (requires KCONFIG_CONFIG env var set to variant's config.txt).
 
 Check feature values in source code via generated `autoconf.h` header.
 

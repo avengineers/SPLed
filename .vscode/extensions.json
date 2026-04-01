@@ -5,7 +5,6 @@
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-themes",
         "haugerbr.project-tasks",
-        "avengineers.show-link-list",
         "ms-python.vscode-pylance",
         "ms-python.python",
         "donjayamanne.python-environment-manager",
@@ -16,6 +15,6 @@
         "josetr.cmake-language-support-vscode",
         "ibm.output-colorizer",
         "github.copilot-chat",
-        "github.copilot"
+        "shd101wyy.markdown-preview-enhanced"
     ]
 }

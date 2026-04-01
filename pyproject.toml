@@ -6,11 +6,12 @@ authors = [{ name = "Avengineers" }]
 requires-python = "<3.12,>=3.11"
 
 dependencies = [
-    "spl-core (>=7.11,<8)",
-    "pypeline-runner>=1,<2",
+    "spl-core>=8.0,<9",
+    "pypeline-runner>=1.29,<2",
     "pytest>=8,<9",
     "myst-parser>=4.0,<5",
-    "pypeline-semantic-release (>=0.4.1,<0.5.0)",
+    "pypeline-semantic-release>=0,<1",
+    "poks>=0.9.4,<1"
 ]
 
 [tool.poetry]
