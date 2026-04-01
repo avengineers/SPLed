@@ -19,7 +19,7 @@
             "label": "Configure variant",
             "detail": "Feature configuration using KConfig",
             "type": "shell",
-            "command": "guiconfig",
+            "command": ".venv\\Scripts\\poetry run guiconfig",
             "options": {
                 "env": {
                     "KCONFIG_CONFIG": "variants/${input:variant}/config.txt"

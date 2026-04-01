@@ -1,0 +1,30 @@
+{
+    "buckets": [
+        {
+            "name": "poks-bucket",
+            "url": "https://github.com/cuinixam/poks-bucket.git"
+        }
+    ],
+    "apps": [
+        {
+            "name": "clang",
+            "version": "20.1.8-1",
+            "bucket": "poks-bucket"
+        },
+        {
+            "name": "gcc",
+            "version": "15.2.0-1",
+            "bucket": "poks-bucket"
+        },
+        {
+            "name": "cmake",
+            "version": "4.2.3",
+            "bucket": "poks-bucket"
+        },
+        {
+            "name": "ninja",
+            "version": "1.13.1-1",
+            "bucket": "poks-bucket"
+        }
+    ]
+}

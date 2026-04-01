@@ -7,7 +7,7 @@ extern "C"
 #include "spled.h"
 }
 
-#include "mockup_test_integrations_spled.h"
+#include "mockup_test_spled_integration.h"
 
 TEST(spled, test_interface_call_order)
 {

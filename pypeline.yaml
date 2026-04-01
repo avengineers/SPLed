@@ -3,7 +3,10 @@ pipeline:
     module: pypeline.steps.create_venv
     config:
       bootstrap_script: .bootstrap/bootstrap.py
-      python_executable: python311
+      python_version: 3.11
+      python_package_manager: poetry>=2.2
+  - step: PoksInstall
+    module: pypeline.steps.poks_install
   - step: ScoopInstall
     module: pypeline.steps.scoop_install
   - step: GenerateEnvSetupScript

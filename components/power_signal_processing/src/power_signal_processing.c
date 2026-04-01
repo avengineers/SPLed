@@ -11,7 +11,8 @@
  *
  * .. impl:: Power signal processing
  *    :id: SWIMPL_PSP-001
- *    :implements: SWDD_PSP-001, SWDD_PSP-002, SWDD_PSP-003, SWDD_PSP-004, SWDD_PSP-005
+ *    :implements: SWDD_PSP-001, SWDD_PSP-002, SWDD_PSP-003
+ *    :fulfills: REQ_38
  * @endrst
  */
 void powerSignalProcessing(void)

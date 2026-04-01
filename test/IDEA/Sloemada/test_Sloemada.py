@@ -6,8 +6,8 @@ from spl_core.test_utils.spl_build import SplBuild
 from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
 
-class Test_Spa:
-    variant: str = "Spa"
+class Test_IDEA__Sloemada:
+    variant: str = "IDEA/Sloemada"
     components: list[str] = [
         "components/brightness_controller",
         "components/light_controller",
@@ -21,20 +21,14 @@ class Test_Spa:
         archiver_instance = ArtifactsArchiver()
         out_dir = Path("build", self.variant)
         archiver_instance.add_archive(
-            archive_name="prod",
             out_dir=out_dir,
-            archive_filename=self.variant.replace("/", "__") + "_prod.7z",
-        )
-        archiver_instance.add_archive(
-            archive_name="test",
-            out_dir=out_dir,
-            archive_filename=self.variant.replace("/", "__") + "_test.7z",
+            archive_filename=self.variant.replace("/", "__") + ".7z",
         )
         # Create artifacts catalog
         archiver_instance.create_artifacts_json(self.variant, out_dir)
         yield archiver_instance
         # Create archive and RT upload JSON after all tests in the class have completed
-        archiver_instance.create_all_archives()
+        archiver_instance.create_archive()
 
     @pytest.mark.parametrize(
         ("build_type"),
@@ -58,7 +52,7 @@ class Test_Spa:
                 spl_build.build_dir / "kconfig",
             ]
         )
-        archiver.register(artifacts=artifacts, archive_name="prod")
+        archiver.register(artifacts=artifacts)
 
         # Act
         result = spl_build.execute()
@@ -109,7 +103,7 @@ class Test_Spa:
         # add variant-level reports
         artifacts_to_be_archived.append(spl_build.build_dir / "variant-coverage.json")
         artifacts_to_be_archived.append(spl_build.build_dir / "variant-junit.xml")
-        archiver.register(artifacts=artifacts_to_be_archived, archive_name="test")
+        archiver.register(artifacts=artifacts_to_be_archived)
 
         # Act
         result = spl_build.execute()

@@ -13,12 +13,14 @@ The Auto Off Controller is responsible for monitoring user activity and automati
 
 ```{spec} Timer Resolution
 :id: SWDD_AO-100
+:refines: SWARCH_001
 
 The auto off timer operates with millisecond precision, converting the configured period from seconds to milliseconds for internal timing calculations.
 ```
 
 ```{spec} Inactivity Detection
 :id: SWDD_AO-101
+:refines: SWARCH_001
 
 The Auto Off Controller monitors three types of user input to determine system activity:
 - Power button presses (POWER_BUTTON_KEY)
@@ -32,6 +34,7 @@ Any of these inputs will reset the inactivity timer.
 
 ```{spec} Configurable Timeout Period
 :id: SWDD_AO-102
+:refines: SWARCH_001
 
 The auto off timeout period is configurable through CONFIG_AUTO_OFF_PERIOD_SECONDS, with a valid range of 5 to 7200 seconds (5 seconds to 2 hours).
 ```
@@ -40,18 +43,21 @@ The auto off timeout period is configurable through CONFIG_AUTO_OFF_PERIOD_SECON
 
 ```{spec} Timer Countdown Behavior
 :id: SWDD_AO-103
+:refines: SWARCH_001
 
 The internal timer decrements by CONFIG_OS_TASK_PERIOD (typically 10ms) on each execution cycle. When the timer reaches zero or below, the auto off state is triggered.
 ```
 
 ```{spec} Timer Reset Logic
 :id: SWDD_AO-104
+:refines: SWARCH_001
 
 When user activity is detected, the timer is reset to (CONFIG_AUTO_OFF_PERIOD_SECONDS * 1000) + CONFIG_OS_TASK_PERIOD milliseconds. The additional task period ensures proper timing alignment with the execution cycle.
 ```
 
 ```{spec} Auto Off State Management
 :id: SWDD_AO-105
+:refines: SWARCH_001
 
 The component manages two distinct states:
 - Active state (FALSE): System is active, timer is counting down
@@ -62,18 +68,21 @@ The component manages two distinct states:
 
 ```{spec} Initialization Function
 :id: SWDD_AO-200
+:refines: SWARCH_001
 
 The Auto Off Controller provides an initialization function `autoOffInit()` that resets the internal timer to zero, establishing a clean initial state.
 ```
 
 ```{spec} Main Runnable
 :id: SWDD_AO-201
+:refines: SWARCH_001
 
 The Auto Off Controller shall be called by its runnable `autoOff()`. This function executes the main auto off logic including activity detection, timer management, and state updates.
 ```
 
 ```{spec} Key Activity Monitoring
 :id: SWDD_AO-202
+:refines: SWARCH_001
 
 The Auto Off Controller shall use the RTE interface `RteIsKeyPressed()` to monitor user activity from multiple input sources for timer reset purposes:
 - Power button activity via `RteIsKeyPressed(POWER_BUTTON_KEY)`
@@ -87,6 +96,7 @@ Any activity detected from these monitored keys will reset the inactivity timer.
 
 ```{spec} Auto Off State Output
 :id: SWDD_AO-205
+:refines: SWARCH_001
 
 The Auto Off Controller shall use the RTE interface `RteSetAutoOffState()` to communicate the current auto off state to other system components. The state is set to FALSE when the system is active and TRUE when the timeout period has elapsed.
 ```
@@ -97,12 +107,14 @@ The Auto Off Controller shall use the RTE interface `RteSetAutoOffState()` to co
 
 ```{spec} Execution Frequency
 :id: SWDD_AO-300
+:refines: SWARCH_001
 
 The auto off function executes every CONFIG_OS_TASK_PERIOD milliseconds (typically 10ms), providing consistent timer resolution and responsive key detection.
 ```
 
 ```{spec} Timer Calculation
 :id: SWDD_AO-301
+:refines: SWARCH_001
 
 The internal timer calculation follows the formula:
 - Reset value: (CONFIG_AUTO_OFF_PERIOD_SECONDS * 1000) + CONFIG_OS_TASK_PERIOD
@@ -112,6 +124,7 @@ The internal timer calculation follows the formula:
 
 ```{spec} Activity Response Time
 :id: SWDD_AO-302
+:refines: SWARCH_001
 
 Key press detection and timer reset occur within one execution cycle (CONFIG_OS_TASK_PERIOD), ensuring immediate response to user activity.
 ```

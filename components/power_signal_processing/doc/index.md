@@ -21,6 +21,7 @@ void powerSignalProcessing(void)
 
 ```{spec} Read power key press
 :id: SWDD_PSP-001
+:refines: SWARCH_001
 :integrity: QM
 
 The function must check for the press of the power key.
@@ -28,6 +29,7 @@ The function must check for the press of the power key.
 
 ```{spec} Set power state to ON
 :id: SWDD_PSP-002
+:refines: SWARCH_001
 :integrity: B
 
 If the retrieved power state is POWER_STATE_OFF, the function shall set the power state to POWER_STATE_ON.
@@ -35,6 +37,7 @@ If the retrieved power state is POWER_STATE_OFF, the function shall set the powe
 
 ```{spec} Set power state to OFF
 :id: SWDD_PSP-003
+:refines: SWARCH_001
 :integrity: C
 
 If the retrieved power state is not POWER_STATE_OFF, the function shall set the power state to POWER_STATE_OFF.
@@ -44,6 +47,7 @@ If the retrieved power state is not POWER_STATE_OFF, the function shall set the 
 
 ```{spec} Auto off event handling
 :id: SWDD_PSP-004
+:refines: SWARCH_001
 :integrity: B
 
 When no power key is pressed and the auto off state is TRUE, the function shall set the power state to POWER_STATE_OFF to initiate system shutdown.
@@ -51,6 +55,7 @@ When no power key is pressed and the auto off state is TRUE, the function shall 
 
 ```{spec} No action on inactive state
 :id: SWDD_PSP-005
+:refines: SWARCH_001
 :integrity: QM
 
 When no power key is pressed and the auto off state is FALSE, the function shall take no action regarding power state changes.

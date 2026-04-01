@@ -1,0 +1,635 @@
+{
+  "created": "2026-01-30T11:49:14.868188",
+  "current_version": "",
+  "project": "SPLED-SoftwareRequirements",
+  "versions": {
+    "": {
+      "created": "2026-01-30T11:49:14.868188",
+      "creator": {
+        "program": "ubConnect",
+        "version": "0.7.2"
+      },
+      "needs": {
+        "REQ_2": {
+          "id": "REQ_2",
+          "title": "Purpose",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>This document specifies the Software Requirements for the SPLED system.<br/>SPLED stands for &quot;Software Product Line Engineering Demonstrator&quot;.<br/>This SPL is intended to serve as a demonstrator for the usage of the methods, tools and processes.<br/>The SPLED system is a configurable LED lighting system that supports multiple variants for different customer needs (Disco, Sleep, Spa)</div></div>",
+          "reqif_uuid": "_2_506d9183-0702-44ed-8439-1b0f1a7b85ca",
+          "sections": [
+            "Introduction"
+          ],
+          "section_name": "Introduction",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_3": {
+          "id": "REQ_3",
+          "title": "Scope",
+          "reqif_uuid": "_3_74fb9dc6-a045-4213-b186-8c0a406b6cf3",
+          "sections": [
+            "Introduction"
+          ],
+          "section_name": "Introduction",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_4": {
+          "id": "REQ_4",
+          "title": "Definitions, Acronyms, and Abbreviations",
+          "reqif_uuid": "_4_5670e85e-5822-47e3-a55f-7ee8abfdb420",
+          "sections": [
+            "Introduction"
+          ],
+          "section_name": "Introduction",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_5": {
+          "id": "REQ_5",
+          "title": "References",
+          "reqif_uuid": "_5_3dc473fe-f385-4273-83cb-411b1c016caf",
+          "sections": [
+            "Introduction"
+          ],
+          "section_name": "Introduction",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_6": {
+          "id": "REQ_6",
+          "title": "Overview",
+          "reqif_uuid": "_6_90ff6c4a-b7d5-45ed-8c16-c1247bb08234",
+          "sections": [
+            "Introduction"
+          ],
+          "section_name": "Introduction",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_8": {
+          "id": "REQ_8",
+          "title": "Product Perspective",
+          "reqif_uuid": "_8_c34b3021-9e7d-4302-8329-9f3d07627c45",
+          "sections": [
+            "General Description"
+          ],
+          "section_name": "General Description",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_9": {
+          "id": "REQ_9",
+          "title": "Product Functions",
+          "reqif_uuid": "_9_ceb4a0a9-008a-4d3e-b89e-8b3618c196e4",
+          "sections": [
+            "General Description"
+          ],
+          "section_name": "General Description",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_10": {
+          "id": "REQ_10",
+          "title": "User Characteristics",
+          "reqif_uuid": "_10_06ad8c5d-5095-449b-b994-558f54dcad12",
+          "sections": [
+            "General Description"
+          ],
+          "section_name": "General Description",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_11": {
+          "id": "REQ_11",
+          "title": "General Constraints",
+          "reqif_uuid": "_11_383c7053-7e97-4bda-b9c6-eeb3616191d5",
+          "sections": [
+            "General Description"
+          ],
+          "section_name": "General Description",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_12": {
+          "id": "REQ_12",
+          "title": "Assumptions and Dependencies",
+          "reqif_uuid": "_12_4451a2a2-8095-4e88-9c86-2733929ab1bd",
+          "sections": [
+            "General Description"
+          ],
+          "section_name": "General Description",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_33": {
+          "id": "REQ_33",
+          "title": "Introduction",
+          "reqif_uuid": "_33_3e3a9d59-e2d2-4015-9c40-287a602dc38a",
+          "sections": [
+            "Appendixes"
+          ],
+          "section_name": "Appendixes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_34": {
+          "id": "REQ_34",
+          "title": "Data Elements",
+          "reqif_uuid": "_34_99fd1297-0e7a-4167-9ad3-13d7597809e4",
+          "sections": [
+            "Appendixes"
+          ],
+          "section_name": "Appendixes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_16": {
+          "id": "REQ_16",
+          "title": "User Interfaces",
+          "reqif_uuid": "_16_1b6d1544-ac9c-45f1-8822-bf4cdde7d826",
+          "sections": [
+            "External Interface Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "External Interface Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_17": {
+          "id": "REQ_17",
+          "title": "Hardware Interfaces",
+          "reqif_uuid": "_17_23b01d3f-51f1-46b7-ab1d-c560c64ee3b9",
+          "sections": [
+            "External Interface Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "External Interface Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_18": {
+          "id": "REQ_18",
+          "title": "Software Interfaces",
+          "reqif_uuid": "_18_20c4c096-c75a-4e72-8e1e-de43fa15f5e2",
+          "sections": [
+            "External Interface Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "External Interface Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_19": {
+          "id": "REQ_19",
+          "title": "Communications Interfaces",
+          "reqif_uuid": "_19_d8ee9d16-5f96-4ced-9de3-0551abb52311",
+          "sections": [
+            "External Interface Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "External Interface Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_22": {
+          "id": "REQ_22",
+          "title": "Standards Compliance",
+          "reqif_uuid": "_22_534d1215-c7fa-4230-85c5-bcaf6457bf85",
+          "sections": [
+            "Design Constraints",
+            "Specific Requirements"
+          ],
+          "section_name": "Design Constraints",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_23": {
+          "id": "REQ_23",
+          "title": "Hardware Limitations",
+          "reqif_uuid": "_23_0e9b3efc-11c2-434b-8327-c6b61a32d9e1",
+          "sections": [
+            "Design Constraints",
+            "Specific Requirements"
+          ],
+          "section_name": "Design Constraints",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_25": {
+          "id": "REQ_25",
+          "title": "Availability",
+          "reqif_uuid": "_25_19014768-c6ed-4082-8b51-445bb7012f04",
+          "sections": [
+            "Attributes",
+            "Specific Requirements"
+          ],
+          "section_name": "Attributes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_26": {
+          "id": "REQ_26",
+          "title": "Security",
+          "reqif_uuid": "_26_213ff75e-980a-4e08-959c-90b89030fd81",
+          "sections": [
+            "Attributes",
+            "Specific Requirements"
+          ],
+          "section_name": "Attributes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_27": {
+          "id": "REQ_27",
+          "title": "Maintainability",
+          "reqif_uuid": "_27_64bfc46a-7e8a-477d-b420-a6ec819240f2",
+          "sections": [
+            "Attributes",
+            "Specific Requirements"
+          ],
+          "section_name": "Attributes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_28": {
+          "id": "REQ_28",
+          "title": "Transferability/Conversion",
+          "reqif_uuid": "_28_6c66cb81-fda8-473e-a962-d0f49339d30b",
+          "sections": [
+            "Attributes",
+            "Specific Requirements"
+          ],
+          "section_name": "Attributes",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_30": {
+          "id": "REQ_30",
+          "title": "Operations",
+          "reqif_uuid": "_30_8800ec71-cac3-4d6f-8af8-5e421e6ddc0d",
+          "sections": [
+            "Other Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Other Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_31": {
+          "id": "REQ_31",
+          "title": "Site Adaptation",
+          "reqif_uuid": "_31_58a29c12-f018-4784-8547-54a2bd58e0dc",
+          "sections": [
+            "Other Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Other Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_37": {
+          "id": "REQ_37",
+          "reqif_uuid": "_37_3c506a8f-a512-48f9-be68-d87647bfe2bc",
+          "sections": [
+            "Power Management",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Power Management",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_36": {
+          "id": "REQ_36",
+          "title": "Power Button Input Processing",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide a debounced power button input to prevent spurious signals. A key press shall only be registered after its state is consistently detected for a configurable debounce period.</div></div>",
+          "reqif_uuid": "_36_a8228a3b-b6e8-4eb0-b0e0-e20e35553a0d",
+          "sections": [
+            "Power Management",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Power Management",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_38": {
+          "id": "REQ_38",
+          "title": "Power State Control",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall toggle the power state between ON and OFF when the power button is pressed.</div></div>",
+          "reqif_uuid": "_38_ddd93c7f-fac8-4079-a140-e0eb2a8dec6c",
+          "sections": [
+            "Power Management",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Power Management",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_39": {
+          "id": "REQ_39",
+          "configuration": "AUTO_OFF",
+          "title": "Automatic Power Off",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall automatically turn off after a configurable period of user inactivity. The timeout period shall be configurable between 5 and 7200 seconds.</div></div>",
+          "reqif_uuid": "_39_ddfd62bb-664b-4a27-bac8-cac642230146",
+          "sections": [
+            "Power Management",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Power Management",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_40": {
+          "id": "REQ_40",
+          "title": "Inactivity Detection",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall detect user activity from the following inputs and reset the auto-off timer accordingly:<br/>- Power button presses<br/>- Up control key presses<br/>- Down control key presses</div></div>",
+          "reqif_uuid": "_40_0d214405-bc18-4155-9ffc-130fc1eeddee",
+          "sections": [
+            "Power Management",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Power Management",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_42": {
+          "id": "REQ_42",
+          "title": "Light State Management",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The light shall be in one of two states: ON or OFF. The light state shall follow the system&#x27;s power state.</div></div>",
+          "reqif_uuid": "_42_8623f81b-9fc1-45d9-bdc1-577a01596d9e",
+          "sections": [
+            "Light Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Light Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_43": {
+          "id": "REQ_43",
+          "title": "Light Color Configuration",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The light color shall be specified as an RGB value. The color shall be fixed but configurable at build time.</div></div>",
+          "reqif_uuid": "_43_c7194451-44c5-4587-a1b9-94c128cdaaa0",
+          "sections": [
+            "Light Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Light Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_44": {
+          "id": "REQ_44",
+          "configuration": "BLINKING",
+          "title": "Blinking Behavior",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>When the light is ON, it may exhibit a blinking behavior. The blinking rate shall be determined based on the main knob value.</div></div>",
+          "reqif_uuid": "_44_45e57d01-bbe7-4506-9c91-4bb6229bac75",
+          "sections": [
+            "Light Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Light Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_46": {
+          "id": "REQ_46",
+          "title": "Brightness Value Range",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The brightness of the light shall be represented by an integer value from 0 to 255.</div></div>",
+          "reqif_uuid": "_46_0464a7c0-d7da-47aa-a2ad-4b91bec820b1",
+          "sections": [
+            "Brightness Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Brightness Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_47": {
+          "id": "REQ_47",
+          "configuration": "BRIGHTNESS_ADJUSTMENT_MANUAL",
+          "title": "Manual Brightness Adjustment",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The brightness of the light shall be adjustable by the user via the main control knob (percentage input).</div></div>",
+          "reqif_uuid": "_47_f69d54b7-c756-4fba-8f0c-e26f9c4df07c",
+          "sections": [
+            "Brightness Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Brightness Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_48": {
+          "id": "REQ_48",
+          "configuration": "BRIGHTNESS_ADJUSTMENT_AUTOMATIC",
+          "title": "Automatic Brightness Adjustment",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The brightness of the light shall be automatically adjusted based on a configurable period.</div></div>",
+          "reqif_uuid": "_48_5706e0db-b1fb-43a5-9d0f-0d88909628ea",
+          "sections": [
+            "Brightness Control",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Brightness Control",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_50": {
+          "id": "REQ_50",
+          "title": "Main Control Knob",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide a main control knob that allows the user to adjust a percentage value (0-100%) using Arrow Up and Arrow Down keys.</div></div>",
+          "reqif_uuid": "_50_db2a156c-13da-45bf-8571-418abc633699",
+          "sections": [
+            "User Input",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "User Input",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_51": {
+          "id": "REQ_51",
+          "title": "Knob Value Persistence",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The main control knob value shall be stored and retrievable through the RTE interfaces.</div></div>",
+          "reqif_uuid": "_51_e5a3b4f5-61be-4d45-9b52-51d0953704ac",
+          "sections": [
+            "User Input",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "User Input",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_53": {
+          "id": "REQ_53",
+          "title": "Power State Interface",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide an RTE interface `RteGetPowerState()` to retrieve the current power state.</div></div>",
+          "reqif_uuid": "_53_213a4363-e949-49ac-8037-2a9f5e4104f6",
+          "sections": [
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "RTE Interfaces",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_54": {
+          "id": "REQ_54",
+          "title": "Light Value Interface",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide an RTE interface `RteSetLightValue()` to set the light color.</div></div>",
+          "reqif_uuid": "_54_e13490cd-274b-4514-8b3d-544f34b79ebd",
+          "sections": [
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "RTE Interfaces",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_55": {
+          "id": "REQ_55",
+          "title": "Brightness Value Interface",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide an RTE interface `RteSetBrightnessValue()` to set the brightness value.</div></div>",
+          "reqif_uuid": "_55_ee451abf-5c47-4eae-86f5-17b4de1ca86a",
+          "sections": [
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "RTE Interfaces",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_56": {
+          "id": "REQ_56",
+          "title": "Key Press Interface",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide an RTE interface `RteIsKeyPressed()` to check the state of input keys.</div></div>",
+          "reqif_uuid": "_56_6347a6b4-6f09-45c2-b674-61b5bbe3450f",
+          "sections": [
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "RTE Interfaces",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_59": {
+          "id": "REQ_59",
+          "configuration": "AUTO_OFF",
+          "title": "Auto Off State Interface",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system shall provide an RTE interface `RteSetAutoOffState()` to communicate the auto-off state.</div></div>",
+          "reqif_uuid": "_59_34775117-7179-4645-aa90-59809b674f69",
+          "sections": [
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "RTE Interfaces",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_61": {
+          "id": "REQ_61",
+          "title": "Task Period",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>The system components shall be executed periodically with a configurable task period (typically 10ms).</div></div>",
+          "reqif_uuid": "_61_352c7be5-0bda-4231-bc85-65d560ef5454",
+          "sections": [
+            "Timing Requirements",
+            "Performance Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Timing Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_62": {
+          "id": "REQ_62",
+          "title": "Timer Resolution",
+          "content": ".. raw:: html\n\n   <div style='white-space: pre-wrap;'><div>Time-based functions shall operate with millisecond precision.</div></div>",
+          "reqif_uuid": "_62_347180c0-c835-406a-ab9c-7eee93560001",
+          "sections": [
+            "Timing Requirements",
+            "Performance Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Timing Requirements",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        },
+        "REQ_58": {
+          "id": "REQ_58",
+          "reqif_uuid": "_58_89108347-08fd-4f48-ba7d-313988fefedc",
+          "sections": [
+            "Main Knob Value Interface",
+            "RTE Interfaces",
+            "Functional Requirements",
+            "Specific Requirements"
+          ],
+          "section_name": "Main Knob Value Interface",
+          "origin": "External",
+          "type": "spec",
+          "priority": "high"
+        }
+      },
+      "needs_amount": 45
+    }
+  }
+}

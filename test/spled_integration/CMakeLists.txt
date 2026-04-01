@@ -1,4 +1,4 @@
-set(COMPONENTS_DIR "../../../components")
+set(COMPONENTS_DIR "../../components")
 spl_add_source(${COMPONENTS_DIR}/spled/src/spled.c)
 spl_add_source(${COMPONENTS_DIR}/rte/src/rte.c)
 spl_add_source(${COMPONENTS_DIR}/brightness_controller/src/brightness_controller.c)

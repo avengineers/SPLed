@@ -31,7 +31,7 @@ param(
     [Parameter(Mandatory = $false, HelpMessage = 'filter for self tests, e.g. "Disco or test_Disco.py" (see https://docs.pytest.org/en/stable/usage.html).')]
     [string]$filter = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Marker for self tests, e.g. "static_analysis" (see https://docs.pytest.org/en/stable/how-to/mark.html).')]
-    [string]$marker = "",
+    [string]$marker = "gate_develop_push",
     [Parameter(Mandatory = $false, HelpMessage = 'Additional arguments for pytest, e.g. "--collect-only" (see https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags).')]
     [string]$pytestExtraArgs = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Additional build arguments for Ninja (e.g., "-d explain -d keepdepfile" for debugging purposes)')]
@@ -391,6 +391,9 @@ try {
     }
 }
 finally {
+    # Load bootstrap's utility functions
+    . .\.bootstrap\utils.ps1
+
     Pop-Location
     if (-Not (Test-RunningInCIorTestEnvironment) -and $waitForKey) {
         Read-Host -Prompt "Press Enter to continue ..."

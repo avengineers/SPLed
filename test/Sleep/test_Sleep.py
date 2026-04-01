@@ -22,8 +22,10 @@ class Test_Sleep:
         out_dir = Path("build", self.variant)
         archiver_instance.add_archive(
             out_dir=out_dir,
-            archive_filename=self.variant + ".7z",
+            archive_filename=self.variant.replace("/", "__") + ".7z",
         )
+        # Create artifacts catalog
+        archiver_instance.create_artifacts_json(self.variant, out_dir)
         yield archiver_instance
         # Create archive and RT upload JSON after all tests in the class have completed
         archiver_instance.create_archive()
@@ -31,8 +33,8 @@ class Test_Sleep:
     @pytest.mark.parametrize(
         ("build_type"),
         [
-            pytest.param("Debug", marks=pytest.mark.build_debug),
-            pytest.param("Release", marks=pytest.mark.build_release),
+            pytest.param("Debug", marks=[pytest.mark.build_debug, pytest.mark.gate_develop_pr, pytest.mark.gate_develop_push, pytest.mark.gate_develop_nightly, pytest.mark.gate_release_pr, pytest.mark.gate_release]),
+            pytest.param("Release", marks=[pytest.mark.build_release, pytest.mark.gate_release_pr, pytest.mark.gate_release]),
         ],
     )
     def test_build(self, build_type, archiver: ArtifactsArchiver):
@@ -81,6 +83,11 @@ class Test_Sleep:
             assert artifact.exists(), f"Artifact {artifact} does not exist"
 
     @pytest.mark.reports
+    @pytest.mark.gate_develop_pr
+    @pytest.mark.gate_develop_push
+    @pytest.mark.gate_develop_nightly
+    @pytest.mark.gate_release_pr
+    @pytest.mark.gate_release
     def test_reports(self, archiver: ArtifactsArchiver):
         # Arrange
         spl_build: SplBuild = SplBuild(
@@ -93,6 +100,9 @@ class Test_Sleep:
         for component in self.components:
             artifacts_to_be_archived.append(spl_build.build_dir / component / "junit.xml")
             artifacts_to_be_archived.append(spl_build.build_dir / component / "coverage.json")
+        # add variant-level reports
+        artifacts_to_be_archived.append(spl_build.build_dir / "variant-coverage.json")
+        artifacts_to_be_archived.append(spl_build.build_dir / "variant-junit.xml")
         archiver.register(artifacts=artifacts_to_be_archived)
 
         # Act

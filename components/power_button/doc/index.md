@@ -13,12 +13,14 @@ This module interfaces with the keyboard and debounces the `POWER_BUTTON_KEY` to
 
 ```{spec} State Management
 :id: SWDD_PB-100
+:refines: SWARCH_001
 
 The power button detection is implemented as a state machine with three states: `INIT`, `PRESSED`, and `RELEASED`.
 ```
 
 ```{spec} Debouncing
 :id: SWDD_PB-101
+:refines: SWARCH_001
 
 The key press and release events are debounced to prevent spurious signals. The debounce periods are configurable via `POWER_BUTTON_PRESS_DEBOUNCE` and `POWER_BUTTON_RELEASE_DEBOUNCE`. A key press or release is only registered after its state is consistently detected for the configured number of periodic calls.
 ```
@@ -27,24 +29,28 @@ The key press and release events are debounced to prevent spurious signals. The 
 
 ```{spec} Runnable
 :id: SWDD_PB-200
+:refines: SWARCH_001
 
 The Power Button component shall be called periodically by its runnable `powerButton()`.
 ```
 
 ```{spec} Initialization
 :id: SWDD_PB-201
+:refines: SWARCH_001
 
 The component shall be initialized by calling `powerButtonInit()`.
 ```
 
 ```{spec} Key Input
 :id: SWDD_PB-202
+:refines: SWARCH_001
 
 The component uses the RTE interface `RteIsKeyPressed(POWER_BUTTON_KEY)` to get the current raw state of the power button.
 ```
 
 ```{spec} Key Pressed Event Output
 :id: SWDD_PB-203
+:refines: SWARCH_001
 
 The component uses the RTE interface `RteSetPowerKeyPressedEvent()` to signal a debounced key press event.
 ```
@@ -53,6 +59,7 @@ The component uses the RTE interface `RteSetPowerKeyPressedEvent()` to signal a 
 
 ```{spec} State Machine
 :id: SWDD_PB-300
+:refines: SWARCH_001
 
 The internal state machine manages the debouncing logic. It transitions between states based on counters that track the duration of a consistent key state.
 ```
