@@ -20,8 +20,27 @@ set(FETCHCONTENT_BASE_DIR ${PROJECT_SOURCE_DIR}/build/modules CACHE INTERNAL "")
 set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
 
-# Include spl-core
-include(".venv/lib/python3.11/site-packages/spl_core/spl.cmake")
+# Find spl-core location dynamically (works on both Windows and Linux)
+if(WIN32)
+    set(_VENV_PYTHON "${PROJECT_SOURCE_DIR}/.venv/Scripts/python.exe")
+else()
+    set(_VENV_PYTHON "${PROJECT_SOURCE_DIR}/.venv/bin/python")
+endif()
+execute_process(
+    COMMAND "${_VENV_PYTHON}" -c "import spl_core, os; print(os.path.dirname(spl_core.__file__))"
+    OUTPUT_VARIABLE SPL_CORE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE SPL_CORE_RESULT
+)
+if(NOT SPL_CORE_RESULT EQUAL 0)
+    message(FATAL_ERROR "Could not find spl_core Python package. Make sure the virtual environment is set up.")
+endif()
+# Export SPL_CORE_DIR so KConfig source statements can use $(SPL_CORE_DIR)
+set(ENV{SPL_CORE_DIR} "${SPL_CORE_DIR}")
+# Ensure venv python is found first (spl_core's kconfig.cmake invokes bare 'python')
+cmake_path(GET _VENV_PYTHON PARENT_PATH _VENV_BIN_DIR)
+set(ENV{PATH} "${_VENV_BIN_DIR};$ENV{PATH}")
+include("${SPL_CORE_DIR}/spl.cmake")
 
 # Include variant specific parts/components definitions
 include(${PROJECT_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
