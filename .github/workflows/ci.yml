@@ -2,9 +2,11 @@ name: CI
 
 on:
     push:
-        branches: [develop]
+        branches: [develop, "release/*"]
     pull_request:
-        branches: [develop]
+        branches: [develop, "release/*"]
+    schedule:
+        - cron: "0 0 * * *"
 
     workflow_dispatch:
 
@@ -19,13 +21,37 @@ jobs:
               with:
                   fetch-depth: 0
 
+            - name: Determine Quality Gate
+              id: gate
+              run: |
+                  if ("${{ github.event_name }}" -eq "schedule") {
+                      $marker = "gate_develop_nightly"
+                  } elseif ("${{ github.event_name }}" -eq "pull_request") {
+                      if ("${{ github.base_ref }}" -match "^release/") {
+                          $marker = "gate_release_pr"
+                      } else {
+                          $marker = "gate_develop_pr"
+                      }
+                  } elseif ("${{ github.event_name }}" -eq "push") {
+                      if ("${{ github.ref }}" -match "^refs/heads/release/") {
+                          $marker = "gate_release"
+                      } else {
+                          $marker = "gate_develop_push"
+                      }
+                  } else {
+                      $marker = "gate_develop_push"
+                  }
+                  Write-Host "Selected gate marker: $marker"
+                  echo "marker=$marker" >> $env:GITHUB_OUTPUT
+              shell: powershell
+
             - name: Installation of Dependencies and Execute Tests
               env:
                   # Workaround to force usage of scoop apps installed in $env:USERPROFILE
                   USER_PATH_FIRST: 1
               run: |
                   .\build.ps1 -install
-                  .\build.ps1 -selftests -marker "build_debug or reports"
+                  .\build.ps1 -selftests -marker "${{ steps.gate.outputs.marker }}"
               shell: powershell
 
             - name: Deploy Test Results
