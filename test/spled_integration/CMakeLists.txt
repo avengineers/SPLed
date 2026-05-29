@@ -1,4 +1,5 @@
 set(COMPONENTS_DIR "../../components")
+
 spl_add_source(${COMPONENTS_DIR}/spled/src/spled.c)
 spl_add_source(${COMPONENTS_DIR}/rte/src/rte.c)
 spl_add_source(${COMPONENTS_DIR}/brightness_controller/src/brightness_controller.c)
@@ -6,7 +7,8 @@ spl_add_source(${COMPONENTS_DIR}/light_controller/src/light_controller.c)
 spl_add_source(${COMPONENTS_DIR}/main_control_knob/src/main_control_knob.c)
 spl_add_source(${COMPONENTS_DIR}/power_button/src/power_button.c)
 spl_add_source(${COMPONENTS_DIR}/power_signal_processing/src/power_signal_processing.c)
+
 spl_add_test_source(test_spled.cc)
 spl_add_required_interface(components/rte)
 spl_add_required_interface(components/spled)
-spl_create_component()
+spl_create_component(LONG_NAME "Integration Tests")
