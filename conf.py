@@ -4,7 +4,7 @@ import datetime
 
 from importlib.resources import files
 from spl_core.report_generation.spl_sphinx import SplSphinx
-from spl_core.report_generation.spl_html_settings import html_theme, html_show_sourcelink, html_theme_options  # noqa: F401
+from spl_core.report_generation.spl_html_settings import html_theme, html_show_sourcelink, html_theme_options, html_sidebars, html_last_updated_fmt  # noqa: F401
 
 day = datetime.date.today()
 # meta data #################################################################
@@ -49,7 +49,6 @@ extensions = SplSphinx.default_extensions
 extension_configs = SplSphinx.default_extension_configs
 
 # Apply extension-specific configurations
-sphinx_rtd_size_width = extension_configs["sphinx_rtd_size_width"]
 tr_report_template = extension_configs["tr_report_template"]
 myst_enable_extensions = extension_configs["myst_enable_extensions"]
 source_suffix = extension_configs["source_suffix"]

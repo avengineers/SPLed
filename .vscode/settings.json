@@ -135,5 +135,6 @@
     },
     "peacock.color": "#215732",
     "editor.tabSize": 4,
-    "python-envs.pythonProjects": [],
+    "python-envs.defaultEnvManager": "ms-python.python:poetry",
+    "python-envs.defaultPackageManager": "ms-python.python:poetry",
 }
