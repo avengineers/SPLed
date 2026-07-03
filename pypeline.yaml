@@ -12,6 +12,6 @@ pipeline:
   - step: GenerateEnvSetupScript
     module: pypeline.steps.env_setup_script
   - step: CheckCIContext
-    module: pypeline_semantic_release.steps
+    module: pypeline_semantic_release.check_ci_context
   - step: CollectPRChanges
     module: spl_core.steps.collect_pr_changes
