@@ -42,5 +42,9 @@ cmake_path(GET _VENV_PYTHON PARENT_PATH _VENV_BIN_DIR)
 set(ENV{PATH} "${_VENV_BIN_DIR};$ENV{PATH}")
 include("${SPL_CORE_DIR}/spl.cmake")
 
+if(BUILD_KIT STREQUAL prod)
+    include(".venv/Lib/site-packages/object_deps_report/index.cmake")
+endif()
+
 # Include variant specific parts/components definitions
 include(${PROJECT_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)

@@ -11,7 +11,8 @@ dependencies = [
     "pytest>=8,<9",
     "myst-parser>=4.0,<5",
     "pypeline-semantic-release>=0,<1",
-    "poks>=0.9.4,<1"
+    "poks>=0.9.4,<1",
+    "object-deps-report>=0,<1"
 ]
 
 [tool.poetry]
