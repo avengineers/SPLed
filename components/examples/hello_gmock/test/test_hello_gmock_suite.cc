@@ -23,11 +23,11 @@ TEST(hello_gmock_suite, get_by_value)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    EXPECT_CALL(mymock, GetData())
+    EXPECT_CALL(mymock, ReadSensorValue())
         .WillOnce(Return(13));
 
     /* Act and Assert */
-    ASSERT_EQ(26, CheckGetData());
+    ASSERT_EQ(26, ProcessSensorValue());
 }
 
 /**
@@ -41,11 +41,11 @@ TEST(hello_gmock_suite, get_by_pointer)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    EXPECT_CALL(mymock, GetByPointer(_))
+    EXPECT_CALL(mymock, ReadSensorStatus(_))
         .WillOnce(SetArgPointee<0>(42));
 
     /* Act and Assert */
-    ASSERT_EQ(84, CheckGetByPointer());
+    ASSERT_EQ(84, ProcessSensorStatus());
 }
 
 /**
@@ -61,14 +61,14 @@ TEST(hello_gmock_suite, get_by_pointer_and_return_value)
     int value = 0;
     CREATE_MOCK(mymock);
     // Set up the mock to return a value and set the pointed data
-    EXPECT_CALL(mymock, GetByPointerAndReturnValue(_))
+    EXPECT_CALL(mymock, ReadSensorResult(_))
         .WillOnce(
             DoAll(
                 SetArgPointee<0>(42),
                 Return(2)));
 
     /* Act and Assert */
-    ASSERT_EQ(2, CheckGetByPointerAndReturnValue(&value));
+    ASSERT_EQ(2, ProcessSensorResult(&value));
     ASSERT_EQ(42, value);
 }
 
@@ -82,19 +82,19 @@ TEST(hello_gmock_suite, get_by_pointer_and_return_value)
 TEST(hello_gmock_suite, init_data_structure)
 {
     /* Arrange */
-    MyDataType data = {0, 0};
+    SensorConfig_t data = {0, 0};
 
     /* Act */
-    InitDataStructure(&data);
+    InitSensorConfig(&data);
 
     /* Assert */
-    ASSERT_EQ(data.a, 42);
-    ASSERT_EQ(data.b, 'a');
+    ASSERT_EQ(data.threshold, 42);
+    ASSERT_EQ(data.unit, 'C');
 }
 
-MATCHER_P(IsMyDataType, expected, "")
+MATCHER_P(EqualToSensorConfig, expected, "")
 {
-    return (arg.a == expected.a) && (arg.b == expected.b);
+    return (arg.threshold == expected.threshold) && (arg.unit == expected.unit);
 }
 
 /**
@@ -107,14 +107,14 @@ MATCHER_P(IsMyDataType, expected, "")
 TEST(hello_gmock_suite, init_data_structure_with_matcher)
 {
     /* Arrange */
-    MyDataType data = {0, 0};
-    MyDataType expected_data = {42, 'a'};
+    SensorConfig_t data = {0, 0};
+    SensorConfig_t expected_data = {42, 'C'};
 
     /* Act */
-    InitDataStructure(&data);
+    InitSensorConfig(&data);
 
     /* Assert */
-    ASSERT_THAT(data, IsMyDataType(expected_data));
+    ASSERT_THAT(data, EqualToSensorConfig(expected_data));
 }
 
 /**
@@ -127,19 +127,19 @@ TEST(hello_gmock_suite, init_data_structure_with_matcher)
 TEST(hello_gmock_suite, get_data_structure_by_pointer)
 {
     /* Arrange */
-    MyDataType result = {0, 0};
-    MyDataType input = {123, 42};
+    SensorConfig_t result = {0, 0};
+    SensorConfig_t input = {123, 42};
     CREATE_MOCK(mymock);
     // Set up the mock to fill the data structure
-    EXPECT_CALL(mymock, GetDataStructureByPointer(_))
+    EXPECT_CALL(mymock, ReadSensorConfig(_))
         .WillOnce(SetArgPointee<0>(input));
 
     /* Act */
-    CheckGetDataStructureByPointer(&result);
+    ProcessSensorConfig(&result);
 
     /* Assert */
-    ASSERT_EQ(result.a, 123);
-    ASSERT_EQ(result.b, 42);
+    ASSERT_EQ(result.threshold, 123);
+    ASSERT_EQ(result.unit, 42);
 }
 
 /**
@@ -152,23 +152,23 @@ TEST(hello_gmock_suite, get_data_structure_by_pointer)
 TEST(hello_gmock_suite, get_data_structure_by_pointer_1)
 {
     /* Arrange */
-    MyDataType result = {0, 0};
+    SensorConfig_t result = {0, 0};
     CREATE_MOCK(mymock);
     // Set up the mock to fill the struct fields using a lambda
     // This is an alternative to SetArgPointee that allows more complex logic
     // to be executed when the mock is called.
-    EXPECT_CALL(mymock, GetDataStructureByPointer(_))
-        .WillOnce(Invoke([](MyDataType *data)
+    EXPECT_CALL(mymock, ReadSensorConfig(_))
+        .WillOnce(Invoke([](SensorConfig_t *data)
                          {
-            data->a = 100+23;
-            data->b = 21*2; }));
+            data->threshold = 100+23;
+            data->unit = 21*2; }));
 
     /* Act */
-    CheckGetDataStructureByPointer(&result);
+    ProcessSensorConfig(&result);
 
     /* Assert */
-    ASSERT_EQ(result.a, 123);
-    ASSERT_EQ(result.b, 42);
+    ASSERT_EQ(result.threshold, 123);
+    ASSERT_EQ(result.unit, 42);
 }
 
 /**
@@ -181,21 +181,21 @@ TEST(hello_gmock_suite, get_data_structure_by_pointer_1)
 TEST(hello_gmock_suite, get_data_structure_array)
 {
     /* Arrange */
-    MyDataType result[2] = {{0, 0}, {0, 0}};
-    MyDataType input[2] = {{123, 'a'}, {456, 'b'}};
+    SensorConfig_t result[2] = {{0, 0}, {0, 0}};
+    SensorConfig_t input[2] = {{123, 'a'}, {456, 'b'}};
     CREATE_MOCK(mymock);
     // Set up the mock to fill the data structure array
-    EXPECT_CALL(mymock, GetDataStructureArray(_))
+    EXPECT_CALL(mymock, ReadSensorConfigArray(_))
         .WillOnce(SetArrayArgument<0>(input, input + 2));
 
     /* Act */
-    CheckGetDataStructureArray(result);
+    ProcessSensorConfigArray(result);
 
     /* Assert */
-    ASSERT_EQ(result[0].a, 123);
-    ASSERT_EQ(result[0].b, 'a');
-    ASSERT_EQ(result[1].a, 456);
-    ASSERT_EQ(result[1].b, 'b');
+    ASSERT_EQ(result[0].threshold, 123);
+    ASSERT_EQ(result[0].unit, 'a');
+    ASSERT_EQ(result[1].threshold, 456);
+    ASSERT_EQ(result[1].unit, 'b');
 }
 
 /**
@@ -209,11 +209,11 @@ TEST(hello_gmock_suite, set_by_value)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    EXPECT_CALL(mymock, SetData(84))
+    EXPECT_CALL(mymock, WriteSensorValue(84))
         .Times(1);
 
-    /* Act */
-    CheckSetData(42);
+    /* Act and Assert */
+    ProcessSensorOutput(42);
 }
 
 /**
@@ -227,9 +227,9 @@ TEST(hello_gmock_suite, set_data_by_pointer)
 {
     /* Arrange */
     CREATE_MOCK(mymock);
-    EXPECT_CALL(mymock, SetDataByPointer(Pointee(84)))
+    EXPECT_CALL(mymock, WriteSensorCommand(Pointee(84)))
         .Times(1);
 
     /* Act */
-    CheckSetDataByPointer(42);
+    ProcessSensorCommand(42);
 }

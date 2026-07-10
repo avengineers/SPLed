@@ -4,49 +4,49 @@
 
 #include "hello_gmock.h"
 
-int32_t CheckGetData(void)
+int32_t ProcessSensorValue(void)
 {
     int32_t data = 0;
-    data = GetData() * 2;
+    data = ReadSensorValue() * 2;
     return data;
 }
 
-int32_t CheckGetByPointer(void)
+int32_t ProcessSensorStatus(void)
 {
     int32_t data = 0;
-    GetByPointer(&data);
+    ReadSensorStatus(&data);
     data *= 2;
     return data;
 }
 
-int32_t CheckGetByPointerAndReturnValue(int32_t *const data)
+int32_t ProcessSensorResult(int32_t *const data)
 {
-    return GetByPointerAndReturnValue(data);
+    return ReadSensorResult(data);
 }
 
-void InitDataStructure(MyDataType *const data)
+void InitSensorConfig(SensorConfig_t *const data)
 {
-    data->a = 42;
-    data->b = 'a';
+    data->threshold = 42;
+    data->unit = 'C';
 }
 
-void CheckGetDataStructureByPointer(MyDataType *const data)
+void ProcessSensorConfig(SensorConfig_t *const data)
 {
-    GetDataStructureByPointer(data);
+    ReadSensorConfig(data);
 }
 
-void CheckGetDataStructureArray(MyDataType *const data)
+void ProcessSensorConfigArray(SensorConfig_t *const data)
 {
-    GetDataStructureArray(data);
+    ReadSensorConfigArray(data);
 }
 
-void CheckSetData(int32_t data)
+void ProcessSensorOutput(int32_t data)
 {
-    SetData(data * 2);
+    WriteSensorValue(data * 2);
 }
 
-void CheckSetDataByPointer(int32_t data)
+void ProcessSensorCommand(int32_t data)
 {
     int32_t localData = data * 2;
-    SetDataByPointer(&localData);
+    WriteSensorCommand(&localData);
 }
