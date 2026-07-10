@@ -7,9 +7,10 @@
 #define PLATFORM_TYPES_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /** @brief Boolean type definition. */
-typedef unsigned char bool_t;
+typedef bool bool_t;
 
 /** @brief Macro for boolean TRUE. */
 #define TRUE 1
