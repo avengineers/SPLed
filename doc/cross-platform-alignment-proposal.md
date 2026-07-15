@@ -245,3 +245,37 @@ CI: `lint` → `test-on-windows` + `test-on-linux` (thin wrappers over the same 
 
 The package managers (uv vs Poetry+poks) and the C-build depth differ **behind** these commands —
 which is exactly the boundary this proposal preserves.
+
+---
+
+## 8. Implementation status
+
+### Phase 1 — done (branch `116-linux-build`)
+
+Implemented and pushed as the working basis:
+
+- **`spl-core` (cross-repo):** `SplBuild.execute()` was hard-wired to `build.bat`, so the pytest
+  self tests could only build on Windows. It is now **platform-aware** — `build.bat` on Windows,
+  `bash ./build.sh` on Linux/macOS — with unit tests covering both. Pushed on branch
+  `feat/platform-aware-splbuild` (avengineers/spl-core).
+- **`SPLed/build.sh`:** rewritten as a true peer of `build.ps1` (aligned flags, JUnit report at
+  `test/output/test-report.xml`, executable bit set); removed the stray `cd ../../..` and the
+  duplicated reconfigure block.
+- **`SPLed/CMakeLists.txt`:** use `:` as the `PATH` separator on non-Windows so the venv Python
+  (`kconfig.cmake`) is found on Linux.
+- **`SPLed/.github/workflows/ci.yml`:** added a `test-on-linux` job (`ubuntu-24.04`) that mirrors the
+  Windows quality-gate selection and runs `./build.sh --install` + `--selftests`.
+- Removed `test/Disco/test_Disco_linux.py` — the standard `test_Disco.py` is now cross-platform.
+
+> **Temporary dependency pin:** `SPLed` sources `spl-core` from the
+> `feat/platform-aware-splbuild` git branch so the Linux job is self-consistent today. Replace it
+> with a released `spl-core` version once the platform-aware `SplBuild` is published.
+
+> **Verification note:** the local WSL environment has no network access to PyPI/GitHub, so the full
+> Linux build could not be exercised locally; the `spl-core` unit tests, `bash -n`, and argument
+> smoke tests pass, and the GitHub-hosted `test-on-linux` job is the end-to-end gate.
+
+### Phases 2–4 — pending
+
+Lint job + `.pre-commit-config.yaml`, devcontainer convergence, and flag-vocabulary polish remain as
+described in §6.
