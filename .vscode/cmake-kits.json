@@ -1,11 +1,9 @@
 [
   {
-    "name": "prod",
-    "environmentSetupScript": "${workspaceFolder}/build/env_setup.bat"
+    "name": "prod"
   },
   {
     "name": "test",
-    "toolchainFile": "tools/toolchains/gcc/toolchain.cmake",
-    "environmentSetupScript": "${workspaceFolder}/build/env_setup.bat"
+    "toolchainFile": "tools/toolchains/gcc/toolchain.cmake"
   }
 ]
