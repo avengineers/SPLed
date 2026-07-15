@@ -78,40 +78,6 @@
                 "kind": "build",
                 "isDefault": false
             }
-        },
-        {
-            "label": "Generate PAYC options file",
-            "detail": "Generate Polyspace-As-You-Code options file for the selected variant",
-            "command": "./build.ps1",
-            "args": [
-                "-command",
-                "sple_static_analysis.exe generate-ps-options-file --project-root-dir ${workspaceFolder} --variant ${input:variant} --build-kit prod --build-type ${input:buildType} --payc --output-folder ./build"
-            ],
-            "type": "shell",
-            "presentation": {
-                "reveal": "always"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
-        },
-        {
-            "label": "Generate Polyspace BF options file",
-            "detail": "Generate Polyspace Bug Finder options file for the selected variant",
-            "command": "./build.ps1",
-            "args": [
-                "-command",
-                "sple_static_analysis.exe generate-ps-options-file --project-root-dir ${workspaceFolder} --variant ${input:variant} --build-kit prod --build-type Debug --output-folder ./variants/${input:variant}"
-            ],
-            "type": "shell",
-            "presentation": {
-                "reveal": "always"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            }
         }
     ],
     "inputs": [
