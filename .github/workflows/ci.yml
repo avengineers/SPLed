@@ -147,3 +147,14 @@ jobs:
                   fail_on_parse_error: true
                   require_tests: true
                   check_name: "Test Results (Linux)"
+
+            - name: Upload Test Reports
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-reports-linux
+                  retention-days: 14
+                  path: |
+                      test/output/test-report.xml
+                      build/**/variant-junit.xml
+                  if-no-files-found: warn
