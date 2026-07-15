@@ -3572,41 +3572,44 @@ test = ["pytest"]
 
 [[package]]
 name = "spl-core"
-version = "8.3.0"
+version = "8.5.1"
 description = "Software Product Line Support for CMake"
 optional = false
-python-versions = "<3.14,>=3.10"
+python-versions = ">=3.10,<3.14"
 groups = ["main"]
-files = [
-    {file = "spl_core-8.3.0-py3-none-any.whl", hash = "sha256:06f55e6f435ce6e959d9723ff925a1797f5558c9c2d73fd5dae7d8bbb0a1774f"},
-    {file = "spl_core-8.3.0.tar.gz", hash = "sha256:2cf448869cbb02d128aae5fead898a38ea27aa7eacb8f926680ad247814f2497"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 clanguru = ">=0,<1"
-cookiecutter = "2.7.1"
-gcovr = ">=8.6,<9.0"
-hammocking = ">=1.0,<2.0"
+cookiecutter = "==2.7.1"
+gcovr = "^8.6"
+hammocking = "^1.0"
 junitparser = "*"
-kconfiglib = ">=14.1,<15.0"
+kconfiglib = "^14.1"
 mlx-traceability = ">=10,<12"
 myst-parser = ">=0.16"
-py-app-dev = ">=2.1,<3.0"
-py7zr = ">=1.1.0,<2.0.0"
+py-app-dev = "^2.1"
 pydata-sphinx-theme = ">=0.18,<0.19"
 pypeline-runner = ">=1,<=2"
 pypeline-semantic-release = ">=0.5,<1.0"
 sphinx = ">=8.1,<9.0"
-sphinx-book-theme = ">=1.1,<2.0"
-sphinx-copybutton = ">=0.5,<0.6"
+sphinx-book-theme = "^1.1"
+sphinx-copybutton = "^0.5"
 sphinx-design = ">=0.5,<0.7"
 sphinx-needs = ">=7,<9"
 sphinx-new-tab-link = ">=0.4,<0.9"
-sphinx-test-reports = ">=1.0,<2.0"
-sphinxcontrib-datatemplates = ">=0.11,<0.12"
+sphinx-test-reports = "^1.0"
+sphinxcontrib-datatemplates = "^0.11"
 sphinxcontrib-mermaid = ">=0.9,<2.1"
 sphinxcontrib-plantuml = ">=0.29,<0.32"
 typer = ">=0,<1"
+
+[package.source]
+type = "git"
+url = "https://github.com/avengineers/spl-core.git"
+reference = "feat/platform-aware-splbuild"
+resolved_reference = "2b56ade6e8b0921b2cd26000c5237e1de08ff933"
 
 [[package]]
 name = "text-unidecode"
@@ -3971,4 +3974,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.12,>=3.11"
-content-hash = "0537a3d7f52ae04e3589d520de3e0ef2f3691d7a9bab93fe740a96daee19116c"
+content-hash = "49da24c8ba2f98ceea2b73a9b1286a45861313a7fdcea33b465616250f58d9dc"

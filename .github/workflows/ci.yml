@@ -77,3 +77,73 @@ jobs:
                       build/**/*.7z
                       build/**/pr_changes.json
                   if-no-files-found: error
+
+    test-on-linux:
+        name: Build and Test on Linux
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Determine Quality Gate
+              id: gate
+              shell: bash
+              run: |
+                  if [ "${{ github.event_name }}" = "schedule" ]; then
+                      marker="gate_develop_nightly"
+                  elif [ "${{ github.event_name }}" = "pull_request" ]; then
+                      if [[ "${{ github.base_ref }}" == release/* ]]; then
+                          marker="gate_release_pr"
+                      else
+                          marker="gate_develop_pr"
+                      fi
+                  elif [ "${{ github.event_name }}" = "push" ]; then
+                      if [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+                          marker="gate_release"
+                      else
+                          marker="gate_develop_push"
+                      fi
+                  else
+                      marker="gate_develop_push"
+                  fi
+                  echo "Selected gate marker: $marker"
+                  echo "marker=$marker" >> "$GITHUB_OUTPUT"
+
+            - name: Setup Python
+              uses: actions/setup-python@v6
+              with:
+                  python-version: "3.11"
+
+            - name: Install Poetry
+              run: pipx install poetry
+
+            - name: Install native build tools
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y --no-install-recommends \
+                      build-essential gcc g++ clang \
+                      cmake ninja-build \
+                      graphviz doxygen
+
+            - name: Installation of Dependencies and Execute Tests
+              run: |
+                  ./build.sh --install
+                  ./build.sh --selftests --marker "${{ steps.gate.outputs.marker }}"
+
+            - name: Deploy Test Results
+              if: always()
+              uses: mikepenz/action-junit-report@v6
+              with:
+                  report_paths: |
+                      test/output/test-report.xml
+                      build/**/variant-junit.xml
+                  detailed_summary: true
+                  include_passed: true
+                  fail_on_failure: true
+                  fail_on_parse_error: true
+                  require_tests: true
+                  check_name: "Test Results (Linux)"

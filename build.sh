@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# SPLed build script for Linux/Unix systems
-# This script provides Linux equivalents to the Windows PowerShell build.ps1
+# SPLed build script for Linux/Unix systems.
+# Linux counterpart of the Windows PowerShell build.ps1: installs dependencies,
+# builds variants via CMake/Ninja and runs the pytest self tests.
 
-# Exit on error, but allow some commands to fail gracefully
 set -e
 set -o pipefail
 
@@ -11,88 +11,64 @@ set -o pipefail
 INSTALL=false
 BUILD=false
 CLEAN=false
+SELFTESTS=false
+RECONFIGURE=false
 BUILD_KIT="prod"
 BUILD_TYPE=""
 TARGET="all"
 VARIANT=""
+MARKER="gate_develop_push"
+FILTER=""
 COMMAND=""
-SELFTESTS=false
-RECONFIGURE=false
 
-# Function to show usage
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 show_help() {
-    echo "SPLed build script"
-    echo ""
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  --install              Install dependencies"
-    echo "  --build                Build the project"
-    echo "  --clean                Clean build artifacts"
-    echo "  --selftests            Run self tests"
-    echo "  --build-kit <kit>      Build kit: 'prod' or 'test' (default: prod)"
-    echo "  --build-type <type>    Build type (Debug, Release, etc.)"
-    echo "  --target <target>      Build target (default: all)"
-    echo "  --variant <variant>    Variant to build (default: Disco)"
-    echo "  --command <cmd>        Command to execute"
-    echo "  --reconfigure          Delete CMake cache and reconfigure"
-    echo "  --help                 Show this help message"
-    echo ""
-    echo "Examples:"
-    echo "  $0 --install"
-    echo "  $0 --build --variant Disco"
-    echo "  $0 --build --build-kit test --variant Sleep"
-    echo "  $0 --clean --build --variant Spa"
-    echo "  $0 --build --reconfigure --variant Disco"
+    cat << EOF
+SPLed build script
+
+Usage: $0 [OPTIONS]
+
+Options:
+  --install              Install Python dependencies (creates .venv via Poetry)
+  --build                Build the project
+  --clean                Clean build artifacts (and .venv when combined with --install)
+  --selftests            Run the pytest self tests
+  --build-kit <kit>      Build kit: 'prod' or 'test' (default: prod)
+  --build-type <type>    Build type (Debug, Release, ...)
+  --target <target>      Build target (default: all)
+  --variant <variant>    Variant to build (default: Disco)
+  --marker <marker>      pytest marker for --selftests (default: gate_develop_push)
+  --filter <expr>        pytest -k filter expression for --selftests
+  --reconfigure          Delete CMake cache and reconfigure
+  --command <cmd>        Command to execute in the environment
+  --help                 Show this help message
+
+Examples:
+  $0 --install
+  $0 --build --variant Disco
+  $0 --build --build-kit test --build-type Debug --variant Sleep
+  $0 --clean --build --variant Spa
+  $0 --selftests --marker gate_develop_pr
+EOF
 }
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --install)
-            INSTALL=true
-            shift
-            ;;
-        --build)
-            BUILD=true
-            shift
-            ;;
-        --clean)
-            CLEAN=true
-            shift
-            ;;
-        --selftests)
-            SELFTESTS=true
-            shift
-            ;;
-        --build-kit)
-            BUILD_KIT="$2"
-            shift 2
-            ;;
-        --build-type)
-            BUILD_TYPE="$2"
-            shift 2
-            ;;
-        --target)
-            TARGET="$2"
-            shift 2
-            ;;
-        --variant)
-            VARIANT="$2"
-            shift 2
-            ;;
-        --command)
-            COMMAND="$2"
-            shift 2
-            ;;
-        --reconfigure)
-            RECONFIGURE=true
-            shift
-            ;;
-        --help)
-            show_help
-            exit 0
-            ;;
+        --install) INSTALL=true; shift ;;
+        --build) BUILD=true; shift ;;
+        --clean) CLEAN=true; shift ;;
+        --selftests) SELFTESTS=true; shift ;;
+        --reconfigure) RECONFIGURE=true; shift ;;
+        --build-kit) BUILD_KIT="$2"; shift 2 ;;
+        --build-type) BUILD_TYPE="$2"; shift 2 ;;
+        --target) TARGET="$2"; shift 2 ;;
+        --variant) VARIANT="$2"; shift 2 ;;
+        --marker) MARKER="$2"; shift 2 ;;
+        --filter) FILTER="$2"; shift 2 ;;
+        --command) COMMAND="$2"; shift 2 ;;
+        --help) show_help; exit 0 ;;
         *)
             echo "Unknown option $1"
             echo "Use --help for usage information"
@@ -101,110 +77,139 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Default variant if not specified
-if [ -z "$VARIANT" ]; then
-    VARIANT="Disco"
-fi
-
+cd "$SCRIPT_DIR"
 echo "SPLed build script"
 echo "Working directory: $(pwd)"
 
-# Check if we're in a poetry environment or need to activate it
-if [ -f ".venv/bin/activate" ]; then
-    echo "Activating Python virtual environment..."
-    source .venv/bin/activate
-elif [ -f "pyproject.toml" ] && command -v poetry &> /dev/null; then
-    echo "Using Poetry environment..."
-    # Poetry will handle the virtual environment
-else
-    echo "Warning: No Python virtual environment found"
-fi
-
-if [ "$INSTALL" = true ]; then
-    echo "Installing dependencies..."
-
-    if command -v poetry &> /dev/null; then
-        poetry install
+# Resolve the interpreter from the in-project virtual environment when present.
+venv_python() {
+    if [ -x ".venv/bin/python" ]; then
+        echo ".venv/bin/python"
     else
-        echo "Error: Poetry not found. Please install Poetry first."
+        echo ""
+    fi
+}
+
+# Remove a file or directory if it exists.
+remove_path() {
+    local path="$1"
+    if [ -e "$path" ]; then
+        echo "Deleting '$path' ..."
+        rm -rf "$path"
+    fi
+}
+
+install_dependencies() {
+    echo "Installing dependencies ..."
+    if ! command -v poetry &> /dev/null; then
+        echo "Error: Poetry not found. Please install Poetry first: https://python-poetry.org/docs/#installation"
         exit 1
     fi
-
+    # Keep the virtual environment inside the project (.venv) to match build.ps1.
+    poetry config virtualenvs.in-project true --local &> /dev/null || true
+    poetry install
     echo "Dependencies installed successfully."
-fi
+}
 
-if [ "$CLEAN" = true ]; then
-    echo "Cleaning build artifacts for variant '$VARIANT'..."
-    rm -rf "build/$VARIANT"
-    echo "Clean completed."
-fi
-
-if [ "$BUILD" = true ]; then
-    echo "Building variant '$VARIANT' with build kit '$BUILD_KIT'..."
-
-    # Create build directory
-    BUILD_DIR="build/$VARIANT/$BUILD_KIT"
-    if [ -n "$BUILD_TYPE" ]; then
-        BUILD_DIR="build/$VARIANT/$BUILD_KIT/$BUILD_TYPE"
+build_variant() {
+    if [ -z "$VARIANT" ]; then
+        VARIANT="Disco"
     fi
 
-    echo "BUILD_DIR:$BUILD_DIR"
+    local build_dir="build/$VARIANT/$BUILD_KIT"
+    if [ -n "$BUILD_TYPE" ]; then
+        build_dir="build/$VARIANT/$BUILD_KIT/$BUILD_TYPE"
+    fi
+    echo "Building variant '$VARIANT' (kit '$BUILD_KIT') into '$build_dir' ..."
 
-    mkdir -p "$BUILD_DIR"
+    mkdir -p "$build_dir"
 
-    # Delete CMake cache and reconfigure
     if [ "$RECONFIGURE" = true ]; then
-        echo "Deleting CMake cache for reconfiguration..."
-        rm -f "$BUILD_DIR/CMakeCache.txt"
-        rm -rf "$BUILD_DIR/CMakeFiles"
+        echo "Deleting CMake cache for reconfiguration ..."
+        rm -f "$build_dir/CMakeCache.txt"
+        rm -rf "$build_dir/CMakeFiles"
     fi
 
-    # CMake configure
-    CMAKE_ARGS="-DVARIANT=$VARIANT -DBUILD_KIT=$BUILD_KIT"
+    local cmake_args=("-DVARIANT=$VARIANT" "-DBUILD_KIT=$BUILD_KIT")
     if [ -n "$BUILD_TYPE" ]; then
-        CMAKE_ARGS="$CMAKE_ARGS -DBUILD_TYPE=$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE"
+        cmake_args+=("-DBUILD_TYPE=$BUILD_TYPE" "-DCMAKE_BUILD_TYPE=$BUILD_TYPE")
     fi
     if [ "$BUILD_KIT" = "test" ]; then
-        CMAKE_ARGS="$CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=tools/toolchains/gcc/toolchain_linux.cmake"
+        cmake_args+=("-DCMAKE_TOOLCHAIN_FILE=tools/toolchains/gcc/toolchain_linux.cmake")
     fi
 
-    if [ "$RECONFIGURE" = true ]; then
-        echo "Reconfiguring: Deleting CMake cache..."
-        rm -rf CMakeCache.txt CMakeFiles
-    fi
-
-    echo "Configuring with CMake..."
+    echo "Configuring with CMake ..."
     if command -v ninja &> /dev/null; then
-        cmake -B $BUILD_DIR -G Ninja $CMAKE_ARGS
+        cmake -B "$build_dir" -G Ninja "${cmake_args[@]}"
     else
-        cmake -B $BUILD_DIR $CMAKE_ARGS
+        cmake -B "$build_dir" "${cmake_args[@]}"
     fi
 
-    echo "BUILD"
-
-    # Build
-    echo "Building target '$TARGET'..."
-    cmake --build $BUILD_DIR --target "$TARGET"
-
-    echo "CD"
-
-    cd ../../..
-    echo "Build completed successfully."
-fi
-
-if [ "$SELFTESTS" = true ]; then
-    echo "Running self tests..."
-
-    if command -v poetry &> /dev/null; then
-        poetry run pytest
-    elif [ -f ".venv/bin/activate" ]; then
-        source .venv/bin/activate
-        pytest
+    echo "Building target '$TARGET' ..."
+    if [ -n "$BUILD_TYPE" ]; then
+        cmake --build "$build_dir" --config "$BUILD_TYPE" --target "$TARGET"
     else
-        pytest
+        cmake --build "$build_dir" --target "$TARGET"
+    fi
+
+    echo "Build completed successfully."
+}
+
+run_selftests() {
+    echo "Running self tests (marker '$MARKER') ..."
+    local junit_xml="test/output/test-report.xml"
+    remove_path "$junit_xml"
+
+    local pytest_args=("--junitxml=$junit_xml")
+    if [ -n "$FILTER" ]; then
+        pytest_args+=("-k" "$FILTER")
+    fi
+    if [ -n "$MARKER" ]; then
+        pytest_args+=("-m" "$MARKER")
+    fi
+
+    # Do not abort the script on test failures; the JUnit report is evaluated by CI.
+    local python
+    python="$(venv_python)"
+    if [ -n "$python" ]; then
+        "$python" -m pytest "${pytest_args[@]}" || true
+    elif command -v poetry &> /dev/null; then
+        poetry run pytest "${pytest_args[@]}" || true
+    else
+        pytest "${pytest_args[@]}" || true
     fi
 
     echo "Self tests completed."
+}
+
+# --- main ---------------------------------------------------------------------
+
+if [ "$CLEAN" = true ]; then
+    echo "Cleaning ..."
+    if [ "$INSTALL" = true ]; then
+        remove_path ".venv"
+    fi
+    if [ "$SELFTESTS" = true ]; then
+        remove_path "build"
+    elif [ "$BUILD" = true ]; then
+        if [ -n "$VARIANT" ]; then
+            remove_path "build/$VARIANT"
+        else
+            remove_path "build"
+        fi
+    fi
+fi
+
+if [ "$INSTALL" = true ]; then
+    install_dependencies
+fi
+
+if [ "$BUILD" = true ]; then
+    build_variant
+fi
+
+if [ "$SELFTESTS" = true ]; then
+    run_selftests
 fi
 
 if [ -n "$COMMAND" ]; then
