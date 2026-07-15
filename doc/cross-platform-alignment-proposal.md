@@ -267,9 +267,8 @@ Implemented and pushed as the working basis:
   Windows quality-gate selection and runs `./build.sh --install` + `--selftests`.
 - Removed `test/Disco/test_Disco_linux.py` — the standard `test_Disco.py` is now cross-platform.
 
-> **Temporary dependency pin:** `SPLed` sources `spl-core` from the
-> `feat/platform-aware-splbuild` git branch so the Linux job is self-consistent today. Replace it
-> with a released `spl-core` version once the platform-aware `SplBuild` is published.
+> **Dependency pin:** `SPLed` pins `spl-core==8.6.0rc1` (the release candidate that first ships the
+> platform-aware `SplBuild`). Bump it to the final `8.6.0` release once that is published.
 
 > **Verification note:** the local WSL environment has no network access to PyPI/GitHub, so the full
 > Linux build could not be exercised locally; the `spl-core` unit tests, `bash -n`, and argument
