@@ -47,7 +47,16 @@ endif()
 include("${SPL_CORE_DIR}/spl.cmake")
 
 if(BUILD_KIT STREQUAL prod)
-    include(".venv/Lib/site-packages/object_deps_report/index.cmake")
+    execute_process(
+        COMMAND "${_VENV_PYTHON}" -c "import object_deps_report, os; print(os.path.dirname(object_deps_report.__file__))"
+        OUTPUT_VARIABLE OBJECT_DEPS_REPORT_DIR
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        RESULT_VARIABLE OBJECT_DEPS_REPORT_RESULT
+    )
+    if(NOT OBJECT_DEPS_REPORT_RESULT EQUAL 0)
+        message(FATAL_ERROR "Could not find object_deps_report Python package. Make sure the virtual environment is set up.")
+    endif()
+    include("${OBJECT_DEPS_REPORT_DIR}/index.cmake")
 endif()
 
 # Include variant specific parts/components definitions

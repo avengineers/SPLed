@@ -121,16 +121,10 @@ jobs:
             - name: Install Poetry
               run: pipx install poetry
 
-            - name: Install native build tools
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y --no-install-recommends \
-                      build-essential gcc g++ clang \
-                      cmake ninja-build \
-                      graphviz doxygen
-
             - name: Installation of Dependencies and Execute Tests
               run: |
+                  # The build toolchain (gcc/clang/cmake/ninja) is provisioned in an
+                  # OS-independent way by poks via ./build.sh --install (no apt).
                   ./build.sh --install
                   ./build.sh --selftests --marker "${{ steps.gate.outputs.marker }}"
 
