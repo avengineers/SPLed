@@ -38,18 +38,18 @@ void consoleInterface(void)
         }
 #else
         // Unix/Linux: Hide cursor using ANSI escape sequence
-        (void)printf("\033[?25l");
+        (void)printf("\033[?25l"); /* polyspace MISRA-C3:21.6 [Justified:Low] "Console demonstration application; standard output via printf is the intended user-facing output mechanism" */
 #endif
 
         // Print the LED representation with ANSI color codes (works on both platforms)
-        (void)printf("\x1b"
+        (void)printf("\x1b" /* polyspace MISRA-C3:21.6 [Justified:Low] "Console demonstration application; standard output via printf is the intended user-facing output mechanism" */
                      "[48;2;%d;%d;%dm",
                      lightValue.rgbRedValue, lightValue.rgbGreenValue, lightValue.rgbBlueValue);
-        (void)printf("LED\r");
+        (void)printf("LED\r"); /* polyspace MISRA-C3:21.6 [Justified:Low] "Console demonstration application; standard output via printf is the intended user-facing output mechanism" */
 
 #ifndef _WIN32
         // Flush output buffer on Unix/Linux
-        (void)fflush(stdout);
+        (void)fflush(stdout); /* polyspace MISRA-C3:21.6 [Justified:Low] "Console demonstration application; flushing standard output is required for timely user-facing output" */
 #endif
     }
 }

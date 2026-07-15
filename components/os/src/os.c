@@ -1,3 +1,4 @@
+/* polyspace MISRA-C3:1.1 [Justified:Low] "External header windows.h not modifiable, but number of macro definitions acceptable for current compiler" */
 #include "os.h"
 #include "autoconf.h"
 #include "spled.h"

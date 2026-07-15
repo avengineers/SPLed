@@ -12,16 +12,16 @@
 /**
  * @brief Key code definition for Arrow Up
  */
-#define CONTROL_KEY_UP 0x26
+#define CONTROL_KEY_UP 0x26 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob, auto_off); not unused at project level" */
 /**
  * @brief Key code definition for Arrow Down
  */
-#define CONTROL_KEY_DOWN 0x28
+#define CONTROL_KEY_DOWN 0x28 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob, auto_off); not unused at project level" */
 
 /**
  * @brief Key code definition for Power Button 'P'
  */
-#define POWER_BUTTON_KEY (int32_t)'P'
+#define POWER_BUTTON_KEY (int32_t)'P' /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (power_button, auto_off); not unused at project level" */
 
 /**
  * @brief Enumerated type for power states.
