@@ -42,5 +42,3 @@ Details
    :auto_cases:
 
    {content}
-
-
