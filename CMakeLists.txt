@@ -46,7 +46,12 @@ else()
 endif()
 include("${SPL_CORE_DIR}/spl.cmake")
 
-if(BUILD_KIT STREQUAL prod)
+# The object_deps_report extension is currently Windows-only: its index.cmake
+# hardcodes the runner as "object_deps_report.exe", which does not exist on
+# Linux/macOS (the console script is "object_deps_report"). Guard the include to
+# Windows until the upstream .exe hardcoding is fixed (tracked upstream in the
+# object_deps_report package).
+if(BUILD_KIT STREQUAL prod AND WIN32)
     execute_process(
         COMMAND "${_VENV_PYTHON}" -c "import object_deps_report, os; print(os.path.dirname(object_deps_report.__file__))"
         OUTPUT_VARIABLE OBJECT_DEPS_REPORT_DIR
