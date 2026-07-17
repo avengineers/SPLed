@@ -13,7 +13,7 @@ on:
 jobs:
     determine-gate:
         name: Determine Quality Gate
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         outputs:
             marker: ${{ steps.gate.outputs.marker }}
         steps:
@@ -43,7 +43,7 @@ jobs:
 
     test-on-windows:
         name: Build and Test on Windows
-        runs-on: windows-latest
+        runs-on: windows-2025
         needs: determine-gate
 
         steps:
