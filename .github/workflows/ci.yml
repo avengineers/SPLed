@@ -11,9 +11,40 @@ on:
     workflow_dispatch:
 
 jobs:
+    determine-gate:
+        name: Determine Quality Gate
+        runs-on: ubuntu-latest
+        outputs:
+            marker: ${{ steps.gate.outputs.marker }}
+        steps:
+            - name: Determine Quality Gate
+              id: gate
+              shell: bash
+              run: |
+                  if [ "${{ github.event_name }}" = "schedule" ]; then
+                      marker="gate_develop_nightly"
+                  elif [ "${{ github.event_name }}" = "pull_request" ]; then
+                      if [[ "${{ github.base_ref }}" == release/* ]]; then
+                          marker="gate_release_pr"
+                      else
+                          marker="gate_develop_pr"
+                      fi
+                  elif [ "${{ github.event_name }}" = "push" ]; then
+                      if [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+                          marker="gate_release"
+                      else
+                          marker="gate_develop_push"
+                      fi
+                  else
+                      marker="gate_develop_push"
+                  fi
+                  echo "Selected gate marker: $marker"
+                  echo "marker=$marker" >> "$GITHUB_OUTPUT"
+
     test-on-windows:
         name: Build and Test on Windows
         runs-on: windows-latest
+        needs: determine-gate
 
         steps:
             - name: Checkout Code
@@ -21,37 +52,13 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Determine Quality Gate
-              id: gate
-              run: |
-                  if ("${{ github.event_name }}" -eq "schedule") {
-                      $marker = "gate_develop_nightly"
-                  } elseif ("${{ github.event_name }}" -eq "pull_request") {
-                      if ("${{ github.base_ref }}" -match "^release/") {
-                          $marker = "gate_release_pr"
-                      } else {
-                          $marker = "gate_develop_pr"
-                      }
-                  } elseif ("${{ github.event_name }}" -eq "push") {
-                      if ("${{ github.ref }}" -match "^refs/heads/release/") {
-                          $marker = "gate_release"
-                      } else {
-                          $marker = "gate_develop_push"
-                      }
-                  } else {
-                      $marker = "gate_develop_push"
-                  }
-                  Write-Host "Selected gate marker: $marker"
-                  echo "marker=$marker" >> $env:GITHUB_OUTPUT
-              shell: powershell
-
             - name: Installation of Dependencies and Execute Tests
               env:
                   # Workaround to force usage of scoop apps installed in $env:USERPROFILE
                   USER_PATH_FIRST: 1
               run: |
                   .\build.ps1 -install
-                  .\build.ps1 -selftests -marker "${{ steps.gate.outputs.marker }}"
+                  .\build.ps1 -selftests -marker "${{ needs.determine-gate.outputs.marker }}"
               shell: powershell
 
             - name: Deploy Test Results
@@ -82,36 +89,13 @@ jobs:
         name: Build and Test on Linux
         runs-on: ubuntu-24.04
         timeout-minutes: 30
+        needs: determine-gate
 
         steps:
             - name: Checkout Code
               uses: actions/checkout@v6
               with:
                   fetch-depth: 0
-
-            - name: Determine Quality Gate
-              id: gate
-              shell: bash
-              run: |
-                  if [ "${{ github.event_name }}" = "schedule" ]; then
-                      marker="gate_develop_nightly"
-                  elif [ "${{ github.event_name }}" = "pull_request" ]; then
-                      if [[ "${{ github.base_ref }}" == release/* ]]; then
-                          marker="gate_release_pr"
-                      else
-                          marker="gate_develop_pr"
-                      fi
-                  elif [ "${{ github.event_name }}" = "push" ]; then
-                      if [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
-                          marker="gate_release"
-                      else
-                          marker="gate_develop_push"
-                      fi
-                  else
-                      marker="gate_develop_push"
-                  fi
-                  echo "Selected gate marker: $marker"
-                  echo "marker=$marker" >> "$GITHUB_OUTPUT"
 
             - name: Setup Python
               uses: actions/setup-python@v6
@@ -126,7 +110,7 @@ jobs:
                   # The build toolchain (gcc/clang/cmake/ninja) is provisioned in an
                   # OS-independent way by poks via ./build.sh --install (no apt).
                   ./build.sh --install
-                  ./build.sh --selftests --marker "${{ steps.gate.outputs.marker }}"
+                  ./build.sh --selftests --marker "${{ needs.determine-gate.outputs.marker }}"
 
             - name: Deploy Test Results
               if: always()
