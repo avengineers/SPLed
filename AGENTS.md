@@ -22,6 +22,8 @@ Each variant (Disco, Sleep, Spa, etc.) compiles into separate binaries using sha
 - Switching branches (dependencies may have changed)
 - After pulling updates
 
+On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --install`. `build.sh` is a true peer of `build.ps1` with the same steps and flag names (Bash uses `--flag`, PowerShell uses `-flag`), so every workflow below has a `build.sh` equivalent.
+
 **Always** start VS Code with: `.\build.ps1 -startVSCode` to ensure proper environment variables and Python virtual environment activation (`.venv` with Poetry dependencies).
 
 ### VS Code CMake Extension Configuration
@@ -69,6 +71,18 @@ Tests are **Python-based** using pytest for build validation and report checks:
 Component unit tests: GTest/GMock in `components/*/test/*.cc` files, run via `test` build kit.
 
 View reports: Use tasks "Open variant test report" / "Open variant coverage report" from VS Code.
+
+## Continuous Integration
+
+CI runs on **GitHub Actions** (`.github/workflows/ci.yml`) for every push/PR to `develop` and `release/*`, plus a nightly schedule. **A PR only merges when all checks are green** — branch protection enforces this, so a red build blocks the merge by definition. Don't add manual "remember to check CI" notes to docs or PRs; the gate is automatic.
+
+Jobs:
+
+- `determine-gate` — computes the `gate_*` quality-gate marker once (by event/branch) and shares it with both build jobs via `needs`.
+- `test-on-windows` (`windows-2025`) — `build.ps1 -install` then `-selftests -marker <gate>`.
+- `test-on-linux` (`ubuntu-24.04`) — `build.sh --install` then `--selftests --marker <gate>`.
+
+CI is a **thin wrapper**: it only sets up the OS and calls the build scripts, so "green in CI" ⇔ "works locally". Runners are pinned to explicit images (never `*-latest`), so an OS/toolchain bump is always a reviewable change rather than a surprise.
 
 ## SPL-Specific CMake Patterns
 
@@ -127,7 +141,9 @@ Components communicate via RTE signals/runnable interfaces (see `rte.h` for patt
 
 ## Key Files for Understanding
 
-- [build.ps1](build.ps1) - Entry point for all build/test operations
+- [build.ps1](build.ps1) - Entry point for all build/test operations (Windows)
+- [build.sh](build.sh) - Peer entry point for Linux/macOS/devcontainer
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) - Windows + Linux CI, thin wrapper over the build scripts
 - [CMakeLists.txt](CMakeLists.txt#L8) - Includes variant config and spl-core framework
 - [KConfig](KConfig) - Feature model definition
 - [variants/Disco/parts.cmake](variants/Disco/parts.cmake) - Example component selection
