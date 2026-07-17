@@ -184,40 +184,43 @@ Concrete changes:
 
 ## 5. Concrete alignment matrix
 
-| Item | Action | Repo(s) | Effort | Priority |
-|---|---|---|---|---|
-| Fix SPLed `build.sh` (bugs + go through bootstrap/pypeline, not raw Poetry) | Rewrite | SPLed | M | **High** |
-| Align build-script flag vocabulary (§4.1) | Edit | both | S | High |
-| Add `test-on-linux` CI job | Add | SPLed | S | **High** |
-| Add `lint` CI job + `.pre-commit-config.yaml` | Add | SPLed | S | High |
-| Migrate devcontainer to Dockerfile+features schema | Rewrite | SPLed | M | Medium |
-| Adopt CA-cert env vars in devcontainer | Edit | SPLed | S | Medium |
-| Replace `dos2unix`/`sed` with `.gitattributes` (`*.sh text eol=lf`) | Edit | SPLed | S | Medium |
-| Add `concurrency` block to CI | Edit | SPLed | S | Medium |
-| Non-root devcontainer user | Edit | SPLed | S | Low |
-| Enable semantic-release job (if releasing) | Add | SPLed | M | Low |
-| Document the shared contract in both `README`/`AGENTS.md` | Edit | both | S | Medium |
+Status legend: ✅ done · 🟡 partial · ⬜ pending.
+
+| Item | Action | Repo(s) | Effort | Priority | Status |
+|---|---|---|---|---|---|
+| Fix SPLed `build.sh` (bugs + go through bootstrap/pypeline, not raw Poetry) | Rewrite | SPLed | M | **High** | ✅ done — rewritten; Linux install now provisions the toolchain via poks (§8.1) |
+| Align build-script flag vocabulary (§4.1) | Edit | both | S | High | 🟡 partial — SPLed `build.sh` aligned to `build.ps1` for the CI contract; full four-script sweep is Phase 4 |
+| Add `test-on-linux` CI job | Add | SPLed | S | **High** | ✅ done |
+| Add `lint` CI job + `.pre-commit-config.yaml` | Add | SPLed | S | High | ⬜ pending — Phase 2 |
+| Migrate devcontainer to Dockerfile+features schema | Rewrite | SPLed | M | Medium | ⬜ pending — Phase 3 |
+| Adopt CA-cert env vars in devcontainer | Edit | SPLed | S | Medium | ⬜ pending — Phase 3 |
+| Replace `dos2unix`/`sed` with `.gitattributes` (`*.sh text eol=lf`) | Edit | SPLed | S | Medium | 🟡 partial — `.gitattributes` LF policy in place; devcontainer hack removal is Phase 3 |
+| Add `concurrency` block to CI | Edit | SPLed | S | Medium | ⬜ pending — Phase 2 |
+| Non-root devcontainer user | Edit | SPLed | S | Low | ⬜ pending — Phase 3 |
+| Enable semantic-release job (if releasing) | Add | SPLed | M | Low | ⬜ pending — Phase 4 (optional) |
+| Document the shared contract in both `README`/`AGENTS.md` | Edit | both | S | Medium | ⬜ pending — Phase 4 |
 
 ---
 
 ## 6. Suggested rollout (phased)
 
-**Phase 1 — Make Linux real for SPLed (highest value)**
-1. Fix `SPLed/build.sh`: same install path as `build.ps1`, remove bugs, honour `--selftests
+**Phase 1 — Make Linux real for SPLed (highest value)** — ✅ done (see §8.1)
+1. ✅ Fix `SPLed/build.sh`: same install path as `build.ps1`, remove bugs, honour `--selftests
    --marker`.
-2. Add `test-on-linux` job to `SPLed/.github/workflows/ci.yml`.
-3. Verify locally in a Linux container before pushing.
+2. ✅ Add `test-on-linux` job to `SPLed/.github/workflows/ci.yml`.
+3. 🟡 Verify locally in a Linux container before pushing — not possible (local WSL has no
+   PyPI/GitHub access); the GitHub-hosted `test-on-linux` job is the end-to-end gate instead.
 
-**Phase 2 — Align quality gates**
+**Phase 2 — Align quality gates** — ⬜ next up
 4. Add `.pre-commit-config.yaml` + `lint` job to SPLed.
 5. Standardize CI conventions (checkout, concurrency, junit-report options) across both repos.
 
-**Phase 3 — Converge DevContainers**
+**Phase 3 — Converge DevContainers** — ⬜ pending
 6. Rewrite `SPLed/.devcontainer` to Dockerfile+features; retire compose + line-ending hacks; adopt
    cert env vars; non-root user.
 7. Confirm both open cleanly in DevPod and VS Code Dev Containers.
 
-**Phase 4 — Polish**
+**Phase 4 — Polish** — ⬜ pending
 8. Align flag vocabulary in all four build scripts.
 9. Document the shared 3-command contract in both READMEs/`AGENTS.md`.
 10. Optionally enable the SPLed release job.
@@ -250,7 +253,7 @@ which is exactly the boundary this proposal preserves.
 
 ## 8. Implementation status
 
-### Phase 1 — done (branch `116-linux-build`)
+### Phase 1 — ✅ done (branch `116-linux-build`)
 
 Implemented and pushed as the working basis:
 
@@ -261,20 +264,41 @@ Implemented and pushed as the working basis:
 - **`SPLed/build.sh`:** rewritten as a true peer of `build.ps1` (aligned flags, JUnit report at
   `test/output/test-report.xml`, executable bit set); removed the stray `cd ../../..` and the
   duplicated reconfigure block.
-- **`SPLed/CMakeLists.txt`:** use `:` as the `PATH` separator on non-Windows so the venv Python
-  (`kconfig.cmake`) is found on Linux.
-- **`SPLed/.github/workflows/ci.yml`:** added a `test-on-linux` job (`ubuntu-24.04`) that mirrors the
-  Windows quality-gate selection and runs `./build.sh --install` + `--selftests`.
+- **`SPLed` Linux toolchain via poks:** `build.sh --install` now provisions the OS-independent
+  toolchain (gcc/clang/cmake/ninja) through **poks** — the same path Windows uses — and the `apt`
+  toolchain install was dropped from CI. (This supersedes the "Linux native deps = apt" row in §2.1.)
+- **`SPLed/CMakeLists.txt`:** (a) use `:` as the `PATH` separator on non-Windows so the venv Python
+  (`kconfig.cmake`) is found on Linux; (b) guard the `object_deps_report` extension to `WIN32` — its
+  `index.cmake` hardcodes an `object_deps_report.exe` runner that does not exist on Linux/macOS, so
+  prod builds failed at CMake configure. **Temporary workaround** pending an upstream fix to the
+  `.exe` hardcoding (track before closing Phase 4).
+- **`SPLed/.github/workflows/ci.yml`:** added a `test-on-linux` job that mirrors the Windows
+  quality-gate selection and runs `./build.sh --install` + `--selftests`; the Linux test reports
+  upload as an artifact for diagnostics. **CI hygiene:** the `gate_*` marker selection is computed
+  once in a shared `determine-gate` job (consumed by both OS jobs via `needs`) instead of being
+  duplicated in PowerShell and bash; all runners are pinned to explicit images (`ubuntu-24.04`,
+  `windows-2025`) rather than the moving `*-latest` labels.
 - Removed `test/Disco/test_Disco_linux.py` — the standard `test_Disco.py` is now cross-platform.
 
-> **Dependency pin:** `SPLed` pins `spl-core==8.6.0` (the final release that ships the
-> platform-aware `SplBuild` plus the cross-platform `gcov_maid` fix).
+> **Dependency pin:** `SPLed` pins `spl-core==8.6.0` (progressed `8.6.0rc1` → `rc2` → final during
+> this branch) — the release that ships the platform-aware `SplBuild` plus the cross-platform
+> `gcov_maid` fix.
 
 > **Verification note:** the local WSL environment has no network access to PyPI/GitHub, so the full
 > Linux build could not be exercised locally; the `spl-core` unit tests, `bash -n`, and argument
-> smoke tests pass, and the GitHub-hosted `test-on-linux` job is the end-to-end gate.
+> smoke tests pass. The GitHub-hosted `test-on-linux` job is the end-to-end gate — a red build blocks
+> the merge.
 
-### Phases 2–4 — pending
+### Next up — Phase 2 (start here)
 
-Lint job + `.pre-commit-config.yaml`, devcontainer convergence, and flag-vocabulary polish remain as
-described in §6.
+The next PR picks up **Phase 2 — Align quality gates** (§6):
+
+1. Add a **`.pre-commit-config.yaml`** to SPLed (hammocking's is a good template — commitizen, ruff,
+   mypy, codespell; drop `uv-lock`, add a poetry/poks-appropriate hook if wanted).
+2. Add a **`lint` job** to `ci.yml` (`pre-commit` + `wagoid/commitlint-github-action`).
+3. Add a **`concurrency` block** to `ci.yml` and reconcile the remaining shared conventions with
+   hammocking (checkout options, junit-report options).
+
+**Carry-over debt from Phase 1:** remove the `object_deps_report` `WIN32` guard once the upstream
+`.exe` hardcoding is fixed. Phases 3 (devcontainer convergence) and 4 (flag-vocabulary polish,
+README/`AGENTS.md` docs, optional release job) remain as described in §5–§6.
