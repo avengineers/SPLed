@@ -78,7 +78,7 @@ jobs:
             - name: Deploy Artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: artifacts
+                  name: artifacts_windows
                   retention-days: 90
                   path: |
                       build/**/*.7z
@@ -97,18 +97,14 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Setup Python
-              uses: actions/setup-python@v6
-              with:
-                  python-version: "3.11"
-
-            - name: Install Poetry
-              run: pipx install poetry
+            - name: Provision via bootstrap scripts
+              run: |
+                  sudo ./bootstrap_ubuntu.sh
+                  ./bootstrap_python.sh
+                  echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
             - name: Installation of Dependencies and Execute Tests
               run: |
-                  # The build toolchain (gcc/clang/cmake/ninja) is provisioned in an
-                  # OS-independent way by poks via ./build.sh --install (no apt).
                   ./build.sh --install
                   ./build.sh --selftests --marker "${{ needs.determine-gate.outputs.marker }}"
 
@@ -126,13 +122,55 @@ jobs:
                   require_tests: true
                   check_name: "Test Results (Linux)"
 
-            - name: Upload Test Reports
-              if: always()
+            - name: Deploy Artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: test-reports-linux
-                  retention-days: 14
+                  name: artifacts_linux
+                  retention-days: 90
                   path: |
+                      build/**/*.7z
+                      build/**/pr_changes.json
+                  if-no-files-found: error
+
+    test-devcontainer:
+        name: Build and Test in DevContainer
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        needs: determine-gate
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Installation of Dependencies and Execute Tests
+              uses: devcontainers/ci@v0.3
+              with:
+                  push: never
+                  runCmd: |
+                      ./build.sh --selftests --marker "${{ needs.determine-gate.outputs.marker }}"
+
+            - name: Deploy Test Results
+              if: always()
+              uses: mikepenz/action-junit-report@v6
+              with:
+                  report_paths: |
                       test/output/test-report.xml
                       build/**/variant-junit.xml
-                  if-no-files-found: warn
+                  detailed_summary: true
+                  include_passed: true
+                  fail_on_failure: true
+                  fail_on_parse_error: true
+                  require_tests: true
+                  check_name: "Test Results (DevContainer)"
+
+            - name: Deploy Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: artifacts_devcon
+                  retention-days: 90
+                  path: |
+                      build/**/*.7z
+                      build/**/pr_changes.json
+                  if-no-files-found: error
