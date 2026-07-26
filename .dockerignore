@@ -1,46 +1,17 @@
-# Docker ignore file for SPLed project
-# Ignore build artifacts
+# Build context is the repo root (devcontainer.json build.context ".."). None of
+# these are COPYed into the image; excluding the large/churny trees only speeds up
+# the repo-root context walk on rebuilds.
+#
+# Two rules, both learned the hard way — do NOT add a path that breaks either:
+#  - Never list anything the Dockerfile COPYs (.devcontainer/certs/,
+#    bootstrap_ubuntu.sh, bootstrap_python.sh) — the COPY would find nothing.
+#  - Never list a build tool's own scratch dir (.devpod-internal/) — DevPod COPYs
+#    it into its feature-injection stage; filtering it exits the build with 125.
+.git/
 build/
 .venv/
-
-# Ignore Git files
-.git/
-.gitignore
-
-# Ignore IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Ignore OS files
-.DS_Store
-Thumbs.db
-
-# Ignore temporary files
-*.tmp
-*.temp
-*.log
-
-# Ignore Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-
-# Ignore documentation build
-doc/_build/
-
-# Ignore test reports
-**/reports/
-
-# Ignore CMake cache
-CMakeCache.txt
-CMakeFiles/
-
-# Ignore coverage files
-*.gcov
-*.gcda
-*.gcno
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.mypy_cache/
+test/output/
