@@ -156,6 +156,12 @@ Recommendation: **migrate SPLed to the Dockerfile+features model** and retire `d
 the `dos2unix`/`sed` hacks (solve line endings via `.gitattributes` instead), and `remoteUser: root`
 (prefer non-root, matching hammocking).
 
+The new `Dockerfile` must also install the three packages a bare Ubuntu/WSL host was found to be
+missing during Phase 1/2 bring-up validation — `libc6-dev`, `build-essential`, and `7zip` (see §8.2
+for the root-cause investigation). Baking these into the image is the whole point of a devcontainer:
+a contributor (or DevPod) should get a working C toolchain and passing selftests on first boot,
+without discovering these gaps by hand the way this investigation did.
+
 ### 4.3 Aligned GitHub workflow structure
 
 Standardize on a **common job skeleton**; keep project-specific steps inside.
@@ -191,12 +197,14 @@ Status legend: ✅ done · 🟡 partial · ⬜ pending.
 | Fix SPLed `build.sh` (bugs + go through bootstrap/pypeline, not raw Poetry) | Rewrite | SPLed | M | **High** | ✅ done — rewritten; Linux install now provisions the toolchain via poks (§8.1) |
 | Align build-script flag vocabulary (§4.1) | Edit | both | S | High | 🟡 partial — SPLed `build.sh` aligned to `build.ps1` for the CI contract; full four-script sweep is Phase 4 |
 | Add `test-on-linux` CI job | Add | SPLed | S | **High** | ✅ done |
-| Add `lint` CI job + `.pre-commit-config.yaml` | Add | SPLed | S | High | ⬜ pending — Phase 2 |
-| Migrate devcontainer to Dockerfile+features schema | Rewrite | SPLed | M | Medium | ⬜ pending — Phase 3 |
-| Adopt CA-cert env vars in devcontainer | Edit | SPLed | S | Medium | ⬜ pending — Phase 3 |
-| Replace `dos2unix`/`sed` with `.gitattributes` (`*.sh text eol=lf`) | Edit | SPLed | S | Medium | 🟡 partial — `.gitattributes` LF policy in place; devcontainer hack removal is Phase 3 |
-| Add `concurrency` block to CI | Edit | SPLed | S | Medium | ⬜ pending — Phase 2 |
-| Non-root devcontainer user | Edit | SPLed | S | Low | ⬜ pending — Phase 3 |
+| Migrate devcontainer to Dockerfile+features schema | Rewrite | SPLed | M | **High** | ✅ done — §8.3 |
+| Bake missing OS packages (`libc6-dev`, `build-essential`, `7zip`) into the devcontainer/DevPod image (§8.2) | Edit | SPLed | S | **High** | ✅ done — via `bootstrap_ubuntu.sh`, shared with the bare-host path |
+| Adopt CA-cert env vars in devcontainer | Edit | SPLed | S | Medium | ✅ done |
+| Replace `dos2unix`/`sed` with `.gitattributes` (`*.sh text eol=lf`) | Edit | SPLed | S | Medium | ✅ done — `.gitattributes` LF policy in place; the devcontainer hacks went with `docker-compose.yml` |
+| Non-root devcontainer user | Edit | SPLed | S | Low | ✅ done — runs as `vscode` |
+| Confirm DevPod opens the devcontainer cleanly, not just VS Code | Verify | SPLed | S | Medium | ✅ done — validated with the podman provider and VS Code over SSH |
+| Add `lint` CI job + `.pre-commit-config.yaml` | Add | SPLed | S | High | ⬜ pending — Phase 3 |
+| Add `concurrency` block to CI | Edit | SPLed | S | Medium | ⬜ pending — Phase 3 |
 | Enable semantic-release job (if releasing) | Add | SPLed | M | Low | ⬜ pending — Phase 4 (optional) |
 | Document the shared contract in both `README`/`AGENTS.md` | Edit | both | S | Medium | ⬜ pending — Phase 4 |
 
@@ -211,19 +219,22 @@ Status legend: ✅ done · 🟡 partial · ⬜ pending.
 3. 🟡 Verify locally in a Linux container before pushing — not possible (local WSL has no
    PyPI/GitHub access); the GitHub-hosted `test-on-linux` job is the end-to-end gate instead.
 
-**Phase 2 — Align quality gates** — ⬜ next up
-4. Add `.pre-commit-config.yaml` + `lint` job to SPLed.
-5. Standardize CI conventions (checkout, concurrency, junit-report options) across both repos.
+**Phase 2 — Converge DevContainers & add DevPod support** — ✅ done (see §8.3)
+4. ✅ Rewrote `SPLed/.devcontainer` to Dockerfile+features; retired compose + line-ending hacks;
+   adopted cert env vars; non-root `vscode` user.
+5. ✅ Baked the three OS packages found missing during manual Linux/WSL bring-up
+   (`libc6-dev`, `build-essential`, `7zip` — see §8.2) into `bootstrap_ubuntu.sh`, which the image
+   `RUN`s — so a fresh container has a working toolchain without manual `apt` steps.
+6. ✅ Confirmed both open cleanly in DevPod and VS Code Dev Containers.
 
-**Phase 3 — Converge DevContainers** — ⬜ pending
-6. Rewrite `SPLed/.devcontainer` to Dockerfile+features; retire compose + line-ending hacks; adopt
-   cert env vars; non-root user.
-7. Confirm both open cleanly in DevPod and VS Code Dev Containers.
+**Phase 3 — Align quality gates** — ⬜ next up
+7. Add `.pre-commit-config.yaml` + `lint` job to SPLed.
+8. Standardize CI conventions (checkout, concurrency, junit-report options) across both repos.
 
 **Phase 4 — Polish** — ⬜ pending
-8. Align flag vocabulary in all four build scripts.
-9. Document the shared 3-command contract in both READMEs/`AGENTS.md`.
-10. Optionally enable the SPLed release job.
+9. Align flag vocabulary in all four build scripts.
+10. Document the shared 3-command contract in both READMEs/`AGENTS.md`.
+11. Optionally enable the SPLed release job.
 
 ---
 
@@ -289,9 +300,62 @@ Implemented and pushed as the working basis:
 > smoke tests pass. The GitHub-hosted `test-on-linux` job is the end-to-end gate — a red build blocks
 > the merge.
 
-### Next up — Phase 2 (start here)
+### 8.2 — Finding: a bare Linux/WSL host is missing three OS packages the toolchain needs
 
-The next PR picks up **Phase 2 — Align quality gates** (§6):
+While validating the Phase 1 Linux build by hand on a local WSL/Ubuntu host (no devcontainer), the
+build failed even though `build.sh --install` had already provisioned the `.poks` toolchain
+(clang/gcc/cmake/ninja) and `build/env_setup.sh` sourced cleanly. Root-causing the failures surfaced
+three OS-level packages missing from the bare host — none of which `poks` or Poetry install, because
+they're expected to already exist at the system level:
+
+1. **`libc6-dev`** — the host had *no* glibc development files at all: no `crt1.o`/`Scrt1.o`/
+   `crti.o`/`crtn.o`, no `libc.so`, no headers. CMake's compiler sanity check
+   (`CMakeTestCCompiler.cmake`) failed immediately, before any SPLed source was touched, because the
+   `.poks`-provisioned Clang 20.1.8 could not link even a trivial test program
+   (`ld: cannot find Scrt1.o`, `cannot find -lc`, …).
+2. **`build-essential`** — after fixing (1), linking still failed on `crtbeginS.o`/`-lgcc`/
+   `-lgcc_s`. The host had *no system GCC at all* (`which gcc` found nothing). Clang normally
+   auto-detects a system GCC's runtime objects at the standard multiarch path
+   (`/usr/lib/gcc/x86_64-linux-gnu/`), which didn't exist; the `.poks`-provisioned GCC 15.2.0 uses a
+   non-standard triple (`x86_64-pc-linux-gnu`) that Clang's auto-detection doesn't scan for. Installing
+   `build-essential` (which provides a real `gcc`/`g++`) gave Clang something to auto-detect, and
+   `./build.sh --build --variant Disco` then compiled and linked `spled.exe` cleanly.
+3. **`7zip`** — with the build fixed, `./build.sh --selftests` still produced 5 errors: every
+   variant's `test_reports` case failed with `FileNotFoundError: ... '7z'`. The pytest suite's
+   `ArtifactsArchiver` shells out to the `7z` CLI to archive build artifacts (`<variant>.7z`), and no
+   `7z`/`7za`/`p7zip` binary existed on the host. Installing the `7zip` apt package (provides
+   `/usr/bin/7z`) fixed all 5 errors — final result: 9 passed, 9 deselected, 0 errors.
+
+**Why this matters for Phase 2:** none of these three gaps are bugs in SPLed's code or build
+scripts — they're host-provisioning gaps that a from-scratch Ubuntu/WSL machine can hit even after
+following `AGENTS.md` exactly. A devcontainer/DevPod image is the natural place to close this gap
+permanently: bake `libc6-dev`, `build-essential`, and `7zip` into the `Dockerfile` (§4.2) so every
+contributor — and CI, if it ever moves off `ubuntu-24.04` runners with their own preinstalled
+toolchains — gets a host that just works, instead of rediscovering this investigation.
+
+### 8.3 — Phase 2 implemented: devcontainer, DevPod and bare-Linux bootstrap
+
+Delivered on `feat/devcontainer-devpod-support`. Full rationale, decisions and validation evidence
+live in [`doc/devcontainer-and-bootstrap-design.md`](devcontainer-and-bootstrap-design.md); the
+summary:
+
+- `.devcontainer/` moved to the Dockerfile+features schema on
+  `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`, running as the non-root `vscode` user.
+  `docker-compose.yml`, the old root `Dockerfile`, `DOCKER.md` and the `dos2unix`/`sed` line-ending
+  hacks are retired.
+- The §8.2 packages are baked in via a new **`bootstrap_ubuntu.sh`**, paired with
+  **`bootstrap_python.sh`** (uv → CPython 3.11 → Poetry into `~/.local`). Both live at the repo root
+  and are the single source of truth shared by the image build, a bare WSL host, and CI.
+- `test-on-linux` now provisions through those same scripts instead of `actions/setup-python` +
+  `pipx install poetry`, so CI exercises the documented bare-host path. A new `test-devcontainer`
+  job (`devcontainers/ci@v0.3`) is the gate on the image itself.
+- Validated for real: `devpod up --recreate` completes, and a DevPod with VS Code attached over SSH
+  builds `Disco` from a terminal, from direct `cmake`, and via the CMake Tools extension with no
+  manual environment steps.
+
+### Next up — Phase 3 (start here)
+
+The next PR picks up **Phase 3 — Align quality gates** (§6):
 
 1. Add a **`.pre-commit-config.yaml`** to SPLed (hammocking's is a good template — commitizen, ruff,
    mypy, codespell; drop `uv-lock`, add a poetry/poks-appropriate hook if wanted).
@@ -300,5 +364,5 @@ The next PR picks up **Phase 2 — Align quality gates** (§6):
    hammocking (checkout options, junit-report options).
 
 **Carry-over debt from Phase 1:** remove the `object_deps_report` `WIN32` guard once the upstream
-`.exe` hardcoding is fixed. Phases 3 (devcontainer convergence) and 4 (flag-vocabulary polish,
-README/`AGENTS.md` docs, optional release job) remain as described in §5–§6.
+`.exe` hardcoding is fixed. Phase 4 (flag-vocabulary polish, README/`AGENTS.md` docs, optional
+release job) remains as described in §5–§6.
