@@ -22,7 +22,16 @@ Each variant (Disco, Sleep, Spa, etc.) compiles into separate binaries using sha
 - Switching branches (dependencies may have changed)
 - After pulling updates
 
-On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --install`. `build.sh` is a true peer of `build.ps1` with the same steps and flag names (Bash uses `--flag`, PowerShell uses `-flag`), so every workflow below has a `build.sh` equivalent.
+On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --install`. `build.sh` performs the same steps as `build.ps1`, so every build/test workflow below has a `build.sh` equivalent. The flag *vocabulary* is close but not identical (Bash uses `--flag`, PowerShell uses `-flag`):
+
+| `build.ps1` | `build.sh` |
+| --- | --- |
+| `-install`, `-build`, `-clean`, `-selftests`, `-marker`, `-filter`, `-target`, `-command`, `-reconfigure` | same names, `--` prefixed |
+| `-variants <v>` | `--variant <v>` (single variant; default `Disco`) |
+| `-buildKit <k>` / `-buildType <t>` | `--build-kit <k>` / `--build-type <t>` |
+| `-startVSCode`, `-installVSCode`, `-installOptional`, `-configureOnly`, `-pytestExtraArgs`, `-ninjaArgs`, `-waitForKey` | *no equivalent* |
+
+`./build.sh --help` is authoritative for the Bash side.
 
 On a **bare Linux host (e.g. WSL Ubuntu) that is not a devcontainer**, `build.sh --install` assumes some OS-level prerequisites already exist. Provision them once per machine with the two bootstrap scripts — the devcontainer image runs the same scripts, so this is a single source of truth (see [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md)):
 
@@ -89,9 +98,10 @@ CI runs on **GitHub Actions** (`.github/workflows/ci.yml`) for every push/PR to 
 
 Jobs:
 
-- `determine-gate` — computes the `gate_*` quality-gate marker once (by event/branch) and shares it with both build jobs via `needs`.
+- `determine-gate` — computes the `gate_*` quality-gate marker once (by event/branch) and shares it with all three build jobs via `needs`.
 - `test-on-windows` (`windows-2025`) — `build.ps1 -install` then `-selftests -marker <gate>`.
-- `test-on-linux` (`ubuntu-24.04`) — `build.sh --install` then `--selftests --marker <gate>`.
+- `test-on-linux` (`ubuntu-24.04`) — bare-runner path: `bootstrap_ubuntu.sh` + `bootstrap_python.sh`, then `build.sh --install` and `--selftests --marker <gate>`.
+- `test-devcontainer` (`ubuntu-24.04`) — builds `.devcontainer/` via `devcontainers/ci` (which runs `onCreateCommand`, i.e. `build.sh --install`) and runs `build.sh --selftests --marker <gate>` inside the container.
 
 CI is a **thin wrapper**: it only sets up the OS and calls the build scripts, so "green in CI" ⇔ "works locally". Runners are pinned to explicit images (never `*-latest`), so an OS/toolchain bump is always a reviewable change rather than a surprise.
 
