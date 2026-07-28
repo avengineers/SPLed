@@ -133,9 +133,13 @@ rule 1.
 pure duplication. `github-cli` is kept because it is actually used inside the container — which is
 also why D6's `.devpod-internal/` fix (not feature removal) is the real build fix.
 
-### D8 — Corporate-proxy accommodations degrade gracefully
+### D8 — Corporate-proxy accommodations are deliberate and committed
 
-The proxy accommodations are all no-ops outside the corporate network:
+SPLed is a public repository developed from behind a corporate proxy. The proxy accommodations below
+are **intentional committed defaults, not leftovers** — they are recorded here so a future reviewer
+does not "clean them up" as accidental. They split into two groups.
+
+#### Group 1 — no-ops outside the corporate network
 
 - **CA certs** — an `initializeCommand` copies the host's `/usr/local/share/ca-certificates/*.crt`
   into `.devcontainer/certs/`, which the Dockerfile `COPY`s before running `update-ca-certificates`.
@@ -147,10 +151,57 @@ The proxy accommodations are all no-ops outside the corporate network:
   > `mkdir -p` creates a directory named `-p` and `cp` does not exist. Windows contributors using
   > Dev Containers locally should copy the CA `.crt` into `.devcontainer/certs/` by hand instead.
 
-- **`UBUNTU_ARCHIVE_MIRROR` build arg** — `archive.ubuntu.com` is blocked by the corporate proxy; the
-  uni-stuttgart mirror is allowed. It is a public mirror, so it works anywhere.
 - **`SSL_*` / `*_CA_BUNDLE` env vars** — belt-and-suspenders TLS trust for `curl`/`pip`/`requests`/
   `node`; harmless where the system CA already suffices.
+
+- **`UBUNTU_ARCHIVE_MIRROR` build arg** — `archive.ubuntu.com` is blocked by the corporate proxy; the
+  uni-stuttgart mirror is allowed.
+
+  The Dockerfile's `ARG` default is the canonical `archive.ubuntu.com`, and `devcontainer.json`
+  **deliberately overrides it** with `https://ftp.uni-stuttgart.de/ubuntu` as the committed default.
+  That is a conscious choice, not an oversight: every regular contributor to this repo is behind the
+  corporate proxy, so the value that works for everyone belongs in the file rather than in each
+  person's local override. It costs an outside contributor nothing functional — uni-stuttgart is a
+  public, well-maintained Ubuntu mirror that serves the identical archive, so a build off the
+  corporate network resolves the same packages, just from a different host. Anyone who prefers a
+  closer mirror overrides the build arg locally.
+
+  **Do not "fix" this back to `archive.ubuntu.com`** — that breaks the image build for the people who
+  actually maintain this repo.
+
+#### Group 2 — `--network=host`: an accepted trade-off, not a no-op
+
+`--network=host` is set **twice on purpose** in `devcontainer.json`, and both are required:
+
+- `build.options` — so the image build (apt, pipx, uv, PyPI) reaches the corporate proxy.
+- `runArgs` — so the *running* container does too. `build.sh --install` performs the bulk of the
+  network access (Poetry resolving `poetry.lock`, poks downloading the clang/gcc/cmake/ninja
+  archives) at `onCreateCommand`, i.e. at **runtime**, not at image-build time. A build-time-only
+  `--network=host` therefore does not help: the container would build fine and then fail to
+  provision.
+
+Unlike Group 1 this is **not** a no-op off the corporate network — it is a real change for every
+user, so it is worth stating what is being traded away:
+
+- The container shares the host's network namespace, so it is not network-isolated from the host.
+  Acceptable here: this is a developer container for a public demo repo, running the user's own
+  code on the user's own machine.
+- `forwardPorts` / `appPort` have no effect under host networking — container ports are already host
+  ports. SPLed builds C binaries and runs pytest; it serves nothing, so nothing is lost today. A
+  future job that needs port forwarding would have to revisit this.
+- Host networking is a Linux-container feature. It is fine on the paths SPLed actually uses
+  (DevPod on Linux, Codespaces, the `ubuntu-24.04` CI runners) but is not regularly supported by
+  Docker Desktop on Windows/macOS. Consistent with D8's Windows-host limitation, running the
+  container from a Windows host is out of scope.
+
+**Keep both.** If the runtime flag is ever removed, `onCreateCommand` breaks behind the proxy — and
+the symptom (poks downloads timing out) points nowhere near `devcontainer.json`.
+
+> **To be filled in by the author:** the exact reason the bridge network cannot reach the proxy is
+> not recorded. The usual cause is a proxy bound to the *host's* loopback (a local CNTLM/px-style
+> forwarder), which a bridged container cannot reach at `127.0.0.1`. Naming the actual mechanism here
+> would let a future reader judge whether a narrower fix (e.g. `HTTP_PROXY` pointing at the gateway
+> address plus `extra_hosts`) has become viable.
 
 **Known limitation (not fixed):** a *cache-cold* image build behind the corporate proxy needs
 `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` for build-time egress (apt/pipx/uv). Rather than baking proxy
@@ -162,6 +213,33 @@ config into a portable image, pass them as build args on demand:
 "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}",
 "NO_PROXY":    "${localEnv:NO_PROXY}"
 ```
+
+### D9 — uv and Poetry are version-pinned
+
+`bootstrap_python.sh` pins `UV_VERSION` and `POETRY_VERSION` at the top of the script. Everything else
+in this project's toolchain is already pinned — the C compilers via poks, mingw via `scoopfile.json`,
+the Python dependency tree via `poetry.lock` — so a floating uv/Poetry was the one place an upstream
+release could turn CI red with no commit having changed. The nightly job would then report a
+regression that is not one, on a day nobody touched the repo.
+
+Poetry is the concrete case, not a hypothetical: the 2.x line is what introduced the bare-`python`
+PATH probe that D5 works around. A pin makes the next such change arrive as a reviewable commit.
+
+The pinned values are the ones validated end-to-end (uv `0.11.32`, Poetry `2.4.1`, installed against
+uv's CPython 3.11.15) — read off the green `test-on-linux` run, not chosen freshly.
+
+Two deliberate non-pins:
+
+- **The CPython patch level** stays at minor granularity (`3.11`), so security fixes are picked up.
+  `pyproject`'s `requires-python >=3.11,<3.12` is the actual contract, and any 3.11.x satisfies it.
+- **The apt packages** in `bootstrap_ubuntu.sh` are unpinned. Within an Ubuntu release the archive is
+  already version-stable, and pinning apt versions would break the moment a security update lands.
+
+Both `pipx install` calls use `--force`. pipx keys on the package *name*, not the version spec: if the
+package is already present it prints "already seems to be installed" and exits 0 **without**
+comparing versions. Without `--force`, bumping a pin above would be silently ignored on any host that
+had run the script before — the worst kind of pin, one that looks enforced and isn't. `--force` also
+makes re-running the script idempotent.
 
 ## Why `bootstrap_ubuntu.sh` installs those four packages
 
