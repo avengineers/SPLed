@@ -104,10 +104,9 @@ stateDiagram-v2
     LIGHT_OFF --> LIGHT_ON : Power State != OFF
     LIGHT_ON --> LIGHT_OFF : Power State == OFF
 {% if config.BLINKING %}
-    LIGHT_ON --> BlinkON : Blink Counter >= Blink Period
-    BlinkON --> BlinkOFF : Blink State == TRUE
-    BlinkOFF --> BlinkON : Blink State == FALSE
-    BlinkON --> LIGHT_ON : Reset Blink Counter
-    BlinkOFF --> LIGHT_ON : Reset Blink Counter
+    state LIGHT_ON {
+        BlinkON --> BlinkOFF : Blink half-period elapsed
+        BlinkOFF --> BlinkON : Blink half-period elapsed
+    }
 {% endif %}
 ```
