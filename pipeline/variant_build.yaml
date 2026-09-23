@@ -1,0 +1,40 @@
+# The environment and the build of one variant, a comma separated list, or all.
+#
+#   pypeline run --config-file pipeline/variant_build.yaml -i variant=Disco -i build_type=Debug
+#
+# `build.ps1 -build` runs this file, and so does every test build through spl-core's SplBuild.
+inputs:
+  variant:
+    type: string
+  build_kit:
+    type: string
+    required: false
+  build_type:
+    type: string
+    required: false
+  target:
+    type: string
+    required: false
+  reconfigure:
+    type: string
+    required: false
+  configure_only:
+    type: string
+    required: false
+  ninja_args:
+    type: string
+    required: false
+
+pipeline:
+  - include: bootstrap.yaml
+
+  - step: CheckCIContext
+    module: pypeline_semantic_release.check_ci_context
+
+  - step: CollectPRChanges
+    module: spl_core.steps.collect_pr_changes
+
+  - step: CMakeBuild
+    file: pipeline/steps.py
+    config:
+      target: all

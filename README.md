@@ -9,8 +9,19 @@ This demo repository contains a tiny but fully fledged [SPL](https://en.wikipedi
 
 ## Start developing
 
-SPLed builds on **Windows** (`build.ps1`) and **Linux** (`build.sh`). The two scripts are peers —
-same steps, same outputs — so pick the path that matches your environment.
+SPLed builds on **Windows** (`build.ps1`) and **Linux** (`build.sh`). Both are thin wrappers: every
+option prints and runs one `pypeline` command, and the build logic lives in `pipeline/*.yaml`.
+
+| You type | Which runs |
+| --- | --- |
+| `-install` | the bootstrap creates `.venv`, then `pypeline run --config-file pipeline/bootstrap.yaml` |
+| `-build` | `pypeline run --config-file pipeline/variant_build.yaml -i variant=<v> ...` |
+| `-selftests` | `.venv/.../pytest -m <gate> -k <filter>` |
+
+The pytest self tests build through `build.bat`/`build.sh` (spl-core `SplBuild`), so a test build
+runs the same `variant_build.yaml` as a developer build. The JUnit report path is in `pytest.ini`,
+so every caller writes `test/output/test-report.xml`. On a `release/<Variant>/...` branch
+`-selftests` without `-filter` tests only that variant.
 
 ### Windows
 
@@ -52,9 +63,10 @@ provisioned from one source of truth.
 ## Building a variant
 
 ```powershell
-.\build.ps1 -build                       # interactive variant selection
+.\build.ps1 -build                       # asks which variant
 .\build.ps1 -build -variants Disco
-.\build.ps1 -build -buildKit test -buildType Debug
+.\build.ps1 -build -variants Disco,Spa -buildType Debug
+.\build.ps1 -build -variants all -buildKit test -target unittests
 ```
 
 ```bash
@@ -63,15 +75,15 @@ provisioned from one source of truth.
 ./build.sh --help                        # full flag list
 ```
 
-Note the flag vocabulary differs slightly between the two scripts (`-variants` / `--variant`,
-`-buildKit` / `--build-kit`); `--help` is authoritative for Bash.
+Both scripts take the same options; PowerShell spells them `-buildKit`, Bash `--build-kit`.
+`-reconfigure` and `-configureOnly` start from an empty CMake cache.
 
 ## Testing & Quality Gates
 
 Tests are executed using pytest with a two-dimensional marker strategy combining *type markers*
 (WHAT to test) and *gate markers* (WHEN to test). The CI pipeline automatically selects the right
-quality gate based on the build context and runs the suite on Windows, Linux, and inside the
-devcontainer.
+quality gate based on the build context and runs one job per variant (`python pipeline/variants.py`)
+on Windows, Linux, and inside the devcontainer. A `release/<Variant>/...` branch builds that variant only.
 
 For the full testing strategy, marker definitions, and the gate assignment matrix, see
 [Testing Strategy](doc/testing_strategy.md).
@@ -80,14 +92,16 @@ For the full testing strategy, marker definitions, and the gate assignment matri
 # Run all tests for a specific gate
 .\build.ps1 -selftests -marker "gate_develop_pr"
 
-# Filter by variant
-.\build.ps1 -selftests -filter "Disco" -marker "gate_develop_push"
+# One variant; a variant with a slash is spelled IDEA__Sloemada, as its test class
+.\build.ps1 -selftests -filter Disco -marker "gate_develop_pr"
 ```
 
 ```bash
 ./build.sh --selftests --marker gate_develop_pr
-./build.sh --selftests --filter Disco --marker gate_develop_push
+./build.sh --selftests --filter IDEA__Sloemada --marker gate_develop_pr
 ```
+
+Each CI job runs `pytest -k <variant> -m <gate>` for its own variant.
 
 ## Developer Guide
 

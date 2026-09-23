@@ -41,11 +41,29 @@ jobs:
                   echo "Selected gate marker: $marker"
                   echo "marker=$marker" >> "$GITHUB_OUTPUT"
 
+    discover:
+        name: Discover Variants
+        runs-on: ubuntu-24.04
+        outputs:
+            variants: ${{ steps.list.outputs.variants }}
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v6
+
+            # The variant list comes from the project, so each job below builds one variant.
+            - name: List Variants
+              id: list
+              run: echo "variants=$(python3 pipeline/variants.py)" >> "$GITHUB_OUTPUT"
+
     test-on-windows:
-        name: Build and Test on Windows
+        name: Build and Test on Windows (${{ matrix.variant }})
         runs-on: windows-2025
         timeout-minutes: 30
-        needs: determine-gate
+        needs: [determine-gate, discover]
+        strategy:
+            fail-fast: false
+            matrix:
+                variant: ${{ fromJSON(needs.discover.outputs.variants) }}
 
         steps:
             - name: Checkout Code
@@ -53,13 +71,21 @@ jobs:
               with:
                   fetch-depth: 0
 
+            # Test classes spell IDEA/Sloemada as Test_IDEA__Sloemada, and artifact names cannot contain a slash.
+            - name: Name the Variant
+              id: names
+              shell: bash
+              run: echo "variant=${VARIANT//\//__}" >> "$GITHUB_OUTPUT"
+              env:
+                  VARIANT: ${{ matrix.variant }}
+
             - name: Installation of Dependencies and Execute Tests
               env:
                   # Workaround to force usage of scoop apps installed in $env:USERPROFILE
                   USER_PATH_FIRST: 1
               run: |
                   .\build.ps1 -install
-                  .\build.ps1 -selftests -marker "${{ needs.determine-gate.outputs.marker }}"
+                  .\.venv\Scripts\pytest -k "${{ steps.names.outputs.variant }}" -m "${{ needs.determine-gate.outputs.marker }}"
               shell: powershell
 
             - name: Deploy Test Results
@@ -74,12 +100,13 @@ jobs:
                   fail_on_failure: true
                   fail_on_parse_error: true
                   require_tests: true
-                  check_name: "Test Results (Windows)"
+                  check_name: "Test Results (Windows, ${{ matrix.variant }})"
 
             - name: Deploy Artifacts
+              if: always()
               uses: actions/upload-artifact@v4
               with:
-                  name: artifacts_windows
+                  name: artifacts_windows_${{ steps.names.outputs.variant }}
                   retention-days: 90
                   path: |
                       build/**/*.7z
@@ -87,16 +114,28 @@ jobs:
                   if-no-files-found: error
 
     test-on-linux:
-        name: Build and Test on Linux
+        name: Build and Test on Linux (${{ matrix.variant }})
         runs-on: ubuntu-24.04
         timeout-minutes: 30
-        needs: determine-gate
+        needs: [determine-gate, discover]
+        strategy:
+            fail-fast: false
+            matrix:
+                variant: ${{ fromJSON(needs.discover.outputs.variants) }}
 
         steps:
             - name: Checkout Code
               uses: actions/checkout@v6
               with:
                   fetch-depth: 0
+
+            # Test classes spell IDEA/Sloemada as Test_IDEA__Sloemada, and artifact names cannot contain a slash.
+            - name: Name the Variant
+              id: names
+              shell: bash
+              run: echo "variant=${VARIANT//\//__}" >> "$GITHUB_OUTPUT"
+              env:
+                  VARIANT: ${{ matrix.variant }}
 
             - name: Provision via bootstrap scripts
               run: |
@@ -107,7 +146,7 @@ jobs:
             - name: Installation of Dependencies and Execute Tests
               run: |
                   ./build.sh --install
-                  ./build.sh --selftests --marker "${{ needs.determine-gate.outputs.marker }}"
+                  .venv/bin/pytest -k "${{ steps.names.outputs.variant }}" -m "${{ needs.determine-gate.outputs.marker }}"
 
             - name: Deploy Test Results
               if: always()
@@ -121,12 +160,13 @@ jobs:
                   fail_on_failure: true
                   fail_on_parse_error: true
                   require_tests: true
-                  check_name: "Test Results (Linux)"
+                  check_name: "Test Results (Linux, ${{ matrix.variant }})"
 
             - name: Deploy Artifacts
+              if: always()
               uses: actions/upload-artifact@v4
               with:
-                  name: artifacts_linux
+                  name: artifacts_linux_${{ steps.names.outputs.variant }}
                   retention-days: 90
                   path: |
                       build/**/*.7z
@@ -134,10 +174,14 @@ jobs:
                   if-no-files-found: error
 
     test-devcontainer:
-        name: Build and Test in DevContainer
+        name: Build and Test in DevContainer (${{ matrix.variant }})
         runs-on: ubuntu-24.04
         timeout-minutes: 30
-        needs: determine-gate
+        needs: [determine-gate, discover]
+        strategy:
+            fail-fast: false
+            matrix:
+                variant: ${{ fromJSON(needs.discover.outputs.variants) }}
 
         steps:
             - name: Checkout Code
@@ -145,12 +189,20 @@ jobs:
               with:
                   fetch-depth: 0
 
+            # Test classes spell IDEA/Sloemada as Test_IDEA__Sloemada, and artifact names cannot contain a slash.
+            - name: Name the Variant
+              id: names
+              shell: bash
+              run: echo "variant=${VARIANT//\//__}" >> "$GITHUB_OUTPUT"
+              env:
+                  VARIANT: ${{ matrix.variant }}
+
             - name: Installation of Dependencies and Execute Tests
               uses: devcontainers/ci@v0.3
               with:
                   push: never
                   runCmd: |
-                      ./build.sh --selftests --marker "${{ needs.determine-gate.outputs.marker }}"
+                      .venv/bin/pytest -k "${{ steps.names.outputs.variant }}" -m "${{ needs.determine-gate.outputs.marker }}"
 
             - name: Deploy Test Results
               if: always()
@@ -164,12 +216,13 @@ jobs:
                   fail_on_failure: true
                   fail_on_parse_error: true
                   require_tests: true
-                  check_name: "Test Results (DevContainer)"
+                  check_name: "Test Results (DevContainer, ${{ matrix.variant }})"
 
             - name: Deploy Artifacts
+              if: always()
               uses: actions/upload-artifact@v4
               with:
-                  name: artifacts_devcon
+                  name: artifacts_devcon_${{ steps.names.outputs.variant }}
                   retention-days: 90
                   path: |
                       build/**/*.7z
