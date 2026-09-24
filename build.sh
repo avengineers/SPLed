@@ -1,240 +1,88 @@
 #!/bin/bash
+#
+# Wrapper: every option prints and runs one pypeline command, listed in README.md. The Linux
+# counterpart of build.ps1. The logic lives in pipeline/*.yaml and pytest.ini. CI calls pytest directly.
 
-# SPLed build script for Linux/Unix systems.
-# Linux counterpart of the Windows PowerShell build.ps1: installs dependencies,
-# builds variants via CMake/Ninja and runs the pytest self tests.
+set -euo pipefail
 
-set -e
-set -o pipefail
-
-# Default values
-INSTALL=false
-BUILD=false
-CLEAN=false
-SELFTESTS=false
-RECONFIGURE=false
-BUILD_KIT="prod"
-BUILD_TYPE=""
-TARGET="all"
-VARIANT=""
-MARKER="gate_develop_push"
-FILTER=""
-COMMAND=""
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-show_help() {
-    cat << EOF
-SPLed build script
-
-Usage: $0 [OPTIONS]
-
-Options:
-  --install              Install Python dependencies (creates .venv via Poetry)
-  --build                Build the project
-  --clean                Clean build artifacts (and .venv when combined with --install)
-  --selftests            Run the pytest self tests
-  --build-kit <kit>      Build kit: 'prod' or 'test' (default: prod)
-  --build-type <type>    Build type (Debug, Release, ...)
-  --target <target>      Build target (default: all)
-  --variant <variant>    Variant to build (default: Disco)
-  --marker <marker>      pytest marker for --selftests (default: gate_develop_push)
-  --filter <expr>        pytest -k filter expression for --selftests
-  --reconfigure          Delete CMake cache and reconfigure
-  --command <cmd>        Command to execute in the environment
-  --help                 Show this help message
-
-Examples:
-  $0 --install
-  $0 --build --variant Disco
-  $0 --build --build-kit test --build-type Debug --variant Sleep
-  $0 --clean --build --variant Spa
-  $0 --selftests --marker gate_develop_pr
-EOF
+usage() {
+    echo "Usage: ./build.sh --install | --build | --selftests"
+    echo "  --build accepts --variant <name|a,b|all>, --build-kit <prod|test>, --build-type <name>, --target <name>,"
+    echo "          --reconfigure, --configure-only and --ninja-args <args>;"
+    echo "  --selftests accepts --filter <expr>, --marker <expr> and --pytest-extra-args <args>."
 }
 
-# Parse arguments
+run() {
+    echo "Executing: $*"
+    "$@"
+}
+
+# `if`, not `[ -n "$2" ] && ...`: the latter returns non-zero for an empty value, which `set -e` turns into an exit.
+add_arg() { if [ -n "$2" ]; then args+=("$1" "$2"); fi; }
+add_input() { if [ -n "$2" ]; then args+=(-i "$1=$2"); fi; }
+
+INSTALL=false
+BUILD=false
+SELFTESTS=false
+VARIANTS=""
+BUILD_KIT=""
+BUILD_TYPE=""
+TARGET=""
+RECONFIGURE=""
+CONFIGURE_ONLY=""
+NINJA_ARGS=""
+FILTER=""
+MARKER="gate_develop_push"
+PYTEST_EXTRA_ARGS=""
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         --install) INSTALL=true; shift ;;
         --build) BUILD=true; shift ;;
-        --clean) CLEAN=true; shift ;;
         --selftests) SELFTESTS=true; shift ;;
-        --reconfigure) RECONFIGURE=true; shift ;;
+        --variant|--variants) VARIANTS="$2"; shift 2 ;;
         --build-kit) BUILD_KIT="$2"; shift 2 ;;
         --build-type) BUILD_TYPE="$2"; shift 2 ;;
         --target) TARGET="$2"; shift 2 ;;
-        --variant) VARIANT="$2"; shift 2 ;;
-        --marker) MARKER="$2"; shift 2 ;;
+        --reconfigure) RECONFIGURE=true; shift ;;
+        --configure-only|--configureOnly) CONFIGURE_ONLY=true; shift ;;
+        --ninja-args) NINJA_ARGS="$2"; shift 2 ;;
         --filter) FILTER="$2"; shift 2 ;;
-        --command) COMMAND="$2"; shift 2 ;;
-        --help) show_help; exit 0 ;;
+        --marker) MARKER="$2"; shift 2 ;;
+        --pytest-extra-args) PYTEST_EXTRA_ARGS="$2"; shift 2 ;;
+        --help) usage; exit 0 ;;
         *)
-            echo "Unknown option $1"
-            echo "Use --help for usage information"
+            echo "Unknown argument: $1" >&2
+            case $1 in -[!-]*) echo "This script's options take two dashes: --marker, not -marker." >&2 ;; esac
+            usage >&2
             exit 1
             ;;
     esac
 done
 
-cd "$SCRIPT_DIR"
-echo "SPLed build script"
-echo "Working directory: $(pwd)"
-
-# Resolve the interpreter from the in-project virtual environment when present.
-venv_python() {
-    if [ -x ".venv/bin/python" ]; then
-        echo ".venv/bin/python"
-    else
-        echo ""
-    fi
-}
-
-# Remove a file or directory if it exists.
-remove_path() {
-    local path="$1"
-    if [ -e "$path" ]; then
-        echo "Deleting '$path' ..."
-        rm -rf "$path"
-    fi
-}
-
-install_dependencies() {
-    echo "Installing dependencies ..."
-    if ! command -v poetry &> /dev/null; then
-        echo "Error: Poetry not found. Please install Poetry first: https://python-poetry.org/docs/#installation"
-        exit 1
-    fi
-    # Keep the virtual environment inside the project (.venv) to match build.ps1.
-    poetry config virtualenvs.in-project true --local &> /dev/null || true
-    poetry install
-    # Provision the OS-independent toolchain (gcc/clang/cmake/ninja) via poks and
-    # generate build/env_setup.sh. This runs the same pypeline pipeline as Windows;
-    # the Windows-only ScoopInstall step self-skips on Linux/macOS.
-    echo "Provisioning toolchain via poks (pypeline) ..."
-    poetry run pypeline run
-    echo "Dependencies installed successfully."
-}
-
-# Put the poks-provisioned tools (compilers, cmake, ninja) on PATH by sourcing the
-# env setup script generated by pypeline's GenerateEnvSetupScript step.
-load_env_setup() {
-    if [ -f "build/env_setup.sh" ]; then
-        echo "Loading poks environment from build/env_setup.sh ..."
-        # shellcheck disable=SC1091
-        source "build/env_setup.sh"
-    fi
-}
-
-build_variant() {
-    if [ -z "$VARIANT" ]; then
-        VARIANT="Disco"
-    fi
-
-    local build_dir="build/$VARIANT/$BUILD_KIT"
-    if [ -n "$BUILD_TYPE" ]; then
-        build_dir="build/$VARIANT/$BUILD_KIT/$BUILD_TYPE"
-    fi
-    echo "Building variant '$VARIANT' (kit '$BUILD_KIT') into '$build_dir' ..."
-
-    mkdir -p "$build_dir"
-
-    if [ "$RECONFIGURE" = true ]; then
-        echo "Deleting CMake cache for reconfiguration ..."
-        rm -f "$build_dir/CMakeCache.txt"
-        rm -rf "$build_dir/CMakeFiles"
-    fi
-
-    local cmake_args=("-DVARIANT=$VARIANT" "-DBUILD_KIT=$BUILD_KIT")
-    if [ -n "$BUILD_TYPE" ]; then
-        cmake_args+=("-DBUILD_TYPE=$BUILD_TYPE" "-DCMAKE_BUILD_TYPE=$BUILD_TYPE")
-    fi
-    if [ "$BUILD_KIT" = "test" ]; then
-        cmake_args+=("-DCMAKE_TOOLCHAIN_FILE=tools/toolchains/gcc/toolchain_linux.cmake")
-    fi
-
-    echo "Configuring with CMake ..."
-    if command -v ninja &> /dev/null; then
-        cmake -B "$build_dir" -G Ninja "${cmake_args[@]}"
-    else
-        cmake -B "$build_dir" "${cmake_args[@]}"
-    fi
-
-    echo "Building target '$TARGET' ..."
-    if [ -n "$BUILD_TYPE" ]; then
-        cmake --build "$build_dir" --config "$BUILD_TYPE" --target "$TARGET"
-    else
-        cmake --build "$build_dir" --target "$TARGET"
-    fi
-
-    echo "Build completed successfully."
-}
-
-run_selftests() {
-    echo "Running self tests (marker '$MARKER') ..."
-    local junit_xml="test/output/test-report.xml"
-    remove_path "$junit_xml"
-
-    local pytest_args=("--junitxml=$junit_xml")
-    if [ -n "$FILTER" ]; then
-        pytest_args+=("-k" "$FILTER")
-    fi
-    if [ -n "$MARKER" ]; then
-        pytest_args+=("-m" "$MARKER")
-    fi
-
-    # Do not abort the script on test failures; the JUnit report is evaluated by CI.
-    local python
-    python="$(venv_python)"
-    if [ -n "$python" ]; then
-        "$python" -m pytest "${pytest_args[@]}" || true
-    elif command -v poetry &> /dev/null; then
-        poetry run pytest "${pytest_args[@]}" || true
-    else
-        pytest "${pytest_args[@]}" || true
-    fi
-
-    echo "Self tests completed."
-}
-
-# --- main ---------------------------------------------------------------------
-
-if [ "$CLEAN" = true ]; then
-    echo "Cleaning ..."
-    if [ "$INSTALL" = true ]; then
-        remove_path ".venv"
-    fi
-    if [ "$SELFTESTS" = true ]; then
-        remove_path "build"
-    elif [ "$BUILD" = true ]; then
-        if [ -n "$VARIANT" ]; then
-            remove_path "build/$VARIANT"
-        else
-            remove_path "build"
-        fi
-    fi
-fi
+cd "$(dirname "$0")"
 
 if [ "$INSTALL" = true ]; then
-    install_dependencies
+    # There is no pypeline before the virtual environment exists, so poetry creates it first.
+    run poetry config virtualenvs.in-project true --local
+    run poetry install
+    run .venv/bin/pypeline run --config-file pipeline/bootstrap.yaml
 fi
-
-# Make the poks-provisioned toolchain available for building and testing.
-if [ "$BUILD" = true ] || [ "$SELFTESTS" = true ]; then
-    load_env_setup
-fi
-
-if [ "$BUILD" = true ]; then
-    build_variant
-fi
-
 if [ "$SELFTESTS" = true ]; then
-    run_selftests
+    # A release branch names the variant it releases, so test only that one. Empty on every other branch.
+    if [ -z "$FILTER" ]; then FILTER="$(.venv/bin/python pipeline/variants.py --release-filter)"; fi
+    args=(); add_arg -m "$MARKER"; add_arg -k "$FILTER"
+    # shellcheck disable=SC2206 # deliberate word splitting: the value is a list of pytest arguments.
+    if [ -n "$PYTEST_EXTRA_ARGS" ]; then args+=($PYTEST_EXTRA_ARGS); fi
+    # The report file is the verdict, so a failing gate must not stop the wrapper.
+    run .venv/bin/pytest "${args[@]}" || echo "pytest exited with code $?, continuing ..."
+fi
+if [ "$BUILD" = true ]; then
+    args=(); add_input variant "$VARIANTS"; add_input build_kit "$BUILD_KIT"; add_input build_type "$BUILD_TYPE"; add_input target "$TARGET"
+    add_input reconfigure "$RECONFIGURE"; add_input configure_only "$CONFIGURE_ONLY"; add_input ninja_args "$NINJA_ARGS"
+    run .venv/bin/pypeline run --config-file pipeline/variant_build.yaml "${args[@]}"
 fi
 
-if [ -n "$COMMAND" ]; then
-    echo "Executing command: $COMMAND"
-    eval "$COMMAND"
+if [ "$INSTALL" = false ] && [ "$BUILD" = false ] && [ "$SELFTESTS" = false ]; then
+    usage
 fi
-
-echo "Script completed successfully."
