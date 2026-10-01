@@ -21,7 +21,7 @@ void powerSignalProcessing(void)
 
 ```{spec} Read power key press
 :id: SWDD_PSP-001
-:refines: SWARCH_001
+:refines: SWARCH_001, REQ_38
 :integrity: QM
 
 The function must check for the press of the power key.
@@ -29,7 +29,7 @@ The function must check for the press of the power key.
 
 ```{spec} Set power state to ON
 :id: SWDD_PSP-002
-:refines: SWARCH_001
+:refines: SWARCH_001, REQ_38, REQ_53
 :integrity: B
 
 If the retrieved power state is POWER_STATE_OFF, the function shall set the power state to POWER_STATE_ON.
@@ -37,7 +37,7 @@ If the retrieved power state is POWER_STATE_OFF, the function shall set the powe
 
 ```{spec} Set power state to OFF
 :id: SWDD_PSP-003
-:refines: SWARCH_001
+:refines: SWARCH_001, REQ_38, REQ_53
 :integrity: C
 
 If the retrieved power state is not POWER_STATE_OFF, the function shall set the power state to POWER_STATE_OFF.

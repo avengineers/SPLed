@@ -144,6 +144,73 @@ Edit feature config: `.\build.ps1 -command ".venv\Scripts\poetry run guiconfig"`
 
 Check feature values in source code via generated `autoconf.h` header.
 
+## How We Develop
+
+### The traceability chain
+
+`spl-core` declares five need types — `req`, `arch`, `spec`, `impl`, `test` — and the link
+options `fulfills`, `implements`, `realizes`, `refines`, `results`, `tests`, `verifies`. This
+product line uses them like this:
+
+| Artefact | Where | Id | Links to |
+| --- | --- | --- | --- |
+| Requirement | `doc/sw_requirements/index.md`, imported from the DOORS export in `doc/ubconnect/` | `REQ_<n>` | — |
+| Architecture | `doc/software_architecture/index.md` | `SWARCH_001` | `:realizes:` the requirements |
+| Design | `components/<name>/doc/index.md` | `SWDD_<ABBR>-<n>` | `:refines:` `SWARCH_001` **and** the requirements the spec refines |
+| Implementation | `.. impl::` block in the doc comment of the function | `SWIMPL_<ABBR>-<n>` | `:implements:` its design specs, and `:fulfills:` a requirement the function realizes directly |
+| Test | `.. test::` block in the doc comment of the test case | `TS_<ABBR>-<n>` | `:tests:` its design specs |
+
+`<ABBR>` is the component abbreviation. It is the same in all three id kinds: `LC` for
+`light_controller`, `PSP` for `power_signal_processing`.
+
+The traceability matrix in `doc/results/index.md` lists every requirement with its
+*is refined by* and *is fulfilled by* links, per variant.
+
+**A design spec names the requirement it refines, next to `SWARCH_001`.** Reaching a requirement
+only through the `SWARCH_001` hub is not traceability: the hub realizes every requirement, so it
+answers "which requirement does this spec serve?" with "all of them". When the spec names the
+requirement, the link reads in both directions: the spec says what justifies it, and the
+requirement gets an *is refined by* list of the specs that realize it.
+
+```markdown
+:refines: SWARCH_001, REQ_44
+```
+
+A spec with no matching requirement names none. It is a derived design decision, and the reader
+must be able to tell it from a spec that answers a requirement. `SWDD_LC-204` is one: the light
+controller reads the brightness value, but no requirement describes that step. Do not invent a
+link to fill the matrix.
+
+Put `:fulfills:` only on a function that exists only where the requirement applies. A function
+that is compiled in every variant claims the requirement for every variant.
+
+### Reference components
+
+- `components/examples/flight_controller` has the complete chain from `{spec}` blocks through
+  `.. impl::` blocks to `.. test::` blocks. Read it before you write a new component. Its specs
+  have no `:refines:`, because the flight controller is not part of the SPLED product.
+- `components/light_controller` shows the link from spec to requirement, including specs that
+  only some variants select.
+
+### Design documents are built, not just written
+
+`components/<name>/doc/index.md` is rendered into the report by Sphinx, so the build checks it.
+A spec that a variant does not select is guarded with Jinja, with the same KConfig name as the
+code:
+
+````markdown
+{% if config.BLINKING %}
+
+```{spec} Blinking Behavior
+:id: SWDD_LC-101
+:refines: SWARCH_001, REQ_44
+
+When the light is ON, it may exhibit a blinking behavior.
+```
+
+{% endif %}
+````
+
 ## Project-Specific Conventions
 
 1. **No direct CMake invocation**: Always use `build.ps1` wrapper (handles variant selection, environment, Poetry, etc.)
