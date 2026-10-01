@@ -14,6 +14,5 @@ content = "ReqIF.Text"                   # Maps to need content (default: "Re-qI
 reqif_type = "Type"   
 
 [ubconnect.from_reqif.static_fields]
-type = "spec"                             # Type of needs (default: "req")
 # additional static_fields
 priority = "high"       
