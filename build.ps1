@@ -22,7 +22,7 @@ param(
     [switch]$clean = $false,
     [Parameter(Mandatory = $false, HelpMessage = 'Build kit to be used. (String: "prod" or "test", default: "prod")')]
     [string]$buildKit = "prod",
-    [Parameter(Mandatory = $false, HelpMessage = 'Type of build. (String, default: empty)')]
+    [Parameter(Mandatory = $false, HelpMessage = 'Type of build. (String, default: "Debug" for the "test" build kit, else the default in .vscode/cmake-variants.json; empty if that file declares no build types)')]
     [string]$buildType = "",
     [Parameter(Mandatory = $false, HelpMessage = 'Target to be built. (String, default: "all")')]
     [string]$target = "all",
@@ -66,6 +66,32 @@ function Get-ReleaseBranchPytestFilter {
     }
 
     return $filter
+}
+
+# Determine the build type when none was given. A project declares its build types in
+# .vscode/cmake-variants.json, the same file the VS Code CMake extension reads. Without a
+# buildType section the project has no build types and the build type stays empty.
+# Otherwise the test build kit always uses Debug and the prod build kit uses the default.
+function Get-Default-Build-Type {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$buildKit
+    )
+    $cmakeVariantsFile = ".vscode\cmake-variants.json"
+    if (-Not (Test-Path -Path $cmakeVariantsFile -PathType Leaf)) {
+        return ""
+    }
+    $buildTypeConfig = (Get-Content $cmakeVariantsFile -Raw | ConvertFrom-Json).buildType
+    if (-Not $buildTypeConfig) {
+        return ""
+    }
+    if (-Not $buildTypeConfig.default) {
+        throw "'$cmakeVariantsFile' has a 'buildType' section without a 'default'."
+    }
+    if ($buildKit -eq "test") {
+        return "Debug"
+    }
+    return $buildTypeConfig.default
 }
 
 # Call build system with given parameters
@@ -125,6 +151,10 @@ function Invoke-Build-System {
     }
     else {
         $variantsSelected = $Variants.Replace($defaultVariantsFolder, "").Replace("\", "/").Split(',') | ForEach-Object { $_.TrimEnd('/') }
+    }
+
+    if ($buildType -eq "") {
+        $buildType = Get-Default-Build-Type -buildKit $buildKit
     }
 
     Foreach ($variant in $variantsSelected) {

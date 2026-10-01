@@ -63,6 +63,11 @@ provisioned from one source of truth.
 ./build.sh --help                        # full flag list
 ```
 
+Without a build type, both scripts use the default of `.vscode/cmake-variants.json`, the same
+file the VS Code CMake extension reads; the `test` build kit always builds `Debug`. A project
+whose `cmake-variants.json` has no `buildType` section has no build types, and the build type
+stays empty.
+
 Note the flag vocabulary differs slightly between the two scripts (`-variants` / `--variant`,
 `-buildKit` / `--build-kit`); `--help` is authoritative for Bash.
 
