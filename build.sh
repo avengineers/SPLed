@@ -35,7 +35,9 @@ Options:
   --clean                Clean build artifacts (and .venv when combined with --install)
   --selftests            Run the pytest self tests
   --build-kit <kit>      Build kit: 'prod' or 'test' (default: prod)
-  --build-type <type>    Build type (Debug, Release, ...)
+  --build-type <type>    Build type (Debug, Release, ...; default: Debug for the test
+                         build kit, else the default in .vscode/cmake-variants.json;
+                         empty if that file declares no build types)
   --target <target>      Build target (default: all)
   --variant <variant>    Variant to build (default: Disco)
   --marker <marker>      pytest marker for --selftests (default: gate_develop_push)
@@ -126,9 +128,37 @@ load_env_setup() {
     fi
 }
 
+# Build type used when none was given. A project declares its build types in
+# .vscode/cmake-variants.json, the same file the VS Code CMake extension reads. Without a
+# buildType section the project has no build types and the build type stays empty.
+# Otherwise the test build kit always uses Debug and the prod build kit uses the default.
+default_build_type() {
+    local variants_file=".vscode/cmake-variants.json"
+    if [ ! -f "$variants_file" ]; then
+        return
+    fi
+    local python
+    python="$(venv_python)"
+    "${python:-python3}" - "$variants_file" "$BUILD_KIT" << 'PYEOF'
+import json
+import sys
+
+path, build_kit = sys.argv[1], sys.argv[2]
+with open(path) as file:
+    build_type = json.load(file).get("buildType")
+if build_type:
+    if not build_type.get("default"):
+        sys.exit(f"Error: '{path}' has a 'buildType' section without a 'default'.")
+    print("Debug" if build_kit == "test" else build_type["default"])
+PYEOF
+}
+
 build_variant() {
     if [ -z "$VARIANT" ]; then
         VARIANT="Disco"
+    fi
+    if [ -z "$BUILD_TYPE" ]; then
+        BUILD_TYPE="$(default_build_type)"
     fi
 
     local build_dir="build/$VARIANT/$BUILD_KIT"

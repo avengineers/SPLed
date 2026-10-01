@@ -89,12 +89,12 @@ TEST_P(FlightControllerTest, SetsExpectedSelfDestructState)
 
     CREATE_MOCK(mymock);
     // Set expectations for the mock RTE functions
-    EXPECT_CALL(mymock, RteGetOffCourse(_))
-        .WillOnce(SetArgPointee<0>(param.off_course));
     EXPECT_CALL(mymock, RteGetAbortCommanded())
         .WillOnce(Return(param.abort_commanded));
     EXPECT_CALL(mymock, RteGetValidAbortCommand())
         .WillOnce(Return(param.valid_abort_command));
+    EXPECT_CALL(mymock, RteGetOffCourse(_))
+        .WillOnce(SetArgPointee<0>(param.off_course));
     EXPECT_CALL(mymock, RteSetSelfDestructState(param.expected_result)).Times(1);
 
     // Act

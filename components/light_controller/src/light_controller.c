@@ -199,7 +199,6 @@ SPLE_TESTABLE_STATIC percentage_t calculateBlinkPeriod(percentage_t mainKnobValu
  * .. impl:: Light Controller's main function
  *    :id: SWIMPL_LC-006
  *    :implements: SWDD_LC-100
- *    :fulfills: REQ_44
  * @endrst
  *
  * @brief Controls the light state.

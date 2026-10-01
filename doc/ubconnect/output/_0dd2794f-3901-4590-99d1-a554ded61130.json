@@ -20,7 +20,7 @@
           ],
           "section_name": "Introduction",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_3": {
@@ -32,7 +32,7 @@
           ],
           "section_name": "Introduction",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_4": {
@@ -44,7 +44,7 @@
           ],
           "section_name": "Introduction",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_5": {
@@ -56,7 +56,7 @@
           ],
           "section_name": "Introduction",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_6": {
@@ -68,7 +68,7 @@
           ],
           "section_name": "Introduction",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_8": {
@@ -80,7 +80,7 @@
           ],
           "section_name": "General Description",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_9": {
@@ -92,7 +92,7 @@
           ],
           "section_name": "General Description",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_10": {
@@ -104,7 +104,7 @@
           ],
           "section_name": "General Description",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_11": {
@@ -116,7 +116,7 @@
           ],
           "section_name": "General Description",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_12": {
@@ -128,7 +128,7 @@
           ],
           "section_name": "General Description",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_33": {
@@ -140,7 +140,7 @@
           ],
           "section_name": "Appendixes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_34": {
@@ -152,7 +152,7 @@
           ],
           "section_name": "Appendixes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_16": {
@@ -165,7 +165,7 @@
           ],
           "section_name": "External Interface Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_17": {
@@ -178,7 +178,7 @@
           ],
           "section_name": "External Interface Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_18": {
@@ -191,7 +191,7 @@
           ],
           "section_name": "External Interface Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_19": {
@@ -204,7 +204,7 @@
           ],
           "section_name": "External Interface Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_22": {
@@ -217,7 +217,7 @@
           ],
           "section_name": "Design Constraints",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_23": {
@@ -230,7 +230,7 @@
           ],
           "section_name": "Design Constraints",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_25": {
@@ -243,7 +243,7 @@
           ],
           "section_name": "Attributes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_26": {
@@ -256,7 +256,7 @@
           ],
           "section_name": "Attributes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_27": {
@@ -269,7 +269,7 @@
           ],
           "section_name": "Attributes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_28": {
@@ -282,7 +282,7 @@
           ],
           "section_name": "Attributes",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_30": {
@@ -295,7 +295,7 @@
           ],
           "section_name": "Other Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_31": {
@@ -308,7 +308,7 @@
           ],
           "section_name": "Other Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_37": {
@@ -321,7 +321,7 @@
           ],
           "section_name": "Power Management",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_36": {
@@ -336,7 +336,7 @@
           ],
           "section_name": "Power Management",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_38": {
@@ -351,7 +351,7 @@
           ],
           "section_name": "Power Management",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_39": {
@@ -367,7 +367,7 @@
           ],
           "section_name": "Power Management",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_40": {
@@ -382,7 +382,7 @@
           ],
           "section_name": "Power Management",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_42": {
@@ -397,7 +397,7 @@
           ],
           "section_name": "Light Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_43": {
@@ -412,7 +412,7 @@
           ],
           "section_name": "Light Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_44": {
@@ -428,7 +428,7 @@
           ],
           "section_name": "Light Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_46": {
@@ -443,7 +443,7 @@
           ],
           "section_name": "Brightness Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_47": {
@@ -459,7 +459,7 @@
           ],
           "section_name": "Brightness Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_48": {
@@ -475,7 +475,7 @@
           ],
           "section_name": "Brightness Control",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_50": {
@@ -490,7 +490,7 @@
           ],
           "section_name": "User Input",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_51": {
@@ -505,7 +505,7 @@
           ],
           "section_name": "User Input",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_53": {
@@ -520,7 +520,7 @@
           ],
           "section_name": "RTE Interfaces",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_54": {
@@ -535,7 +535,7 @@
           ],
           "section_name": "RTE Interfaces",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_55": {
@@ -550,7 +550,7 @@
           ],
           "section_name": "RTE Interfaces",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_56": {
@@ -565,7 +565,7 @@
           ],
           "section_name": "RTE Interfaces",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_59": {
@@ -581,7 +581,7 @@
           ],
           "section_name": "RTE Interfaces",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_61": {
@@ -596,7 +596,7 @@
           ],
           "section_name": "Timing Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_62": {
@@ -611,7 +611,7 @@
           ],
           "section_name": "Timing Requirements",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         },
         "REQ_58": {
@@ -625,7 +625,7 @@
           ],
           "section_name": "Main Knob Value Interface",
           "origin": "External",
-          "type": "spec",
+          "type": "req",
           "priority": "high"
         }
       },
