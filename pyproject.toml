@@ -12,7 +12,10 @@ dependencies = [
     "myst-parser>=4.0,<5",
     "pypeline-semantic-release>=0,<1",
     "poks>=0.9.4,<1",
-    "object-deps-report>=0,<1"
+    "object-deps-report>=0,<1",
+    # Pinned until the command-string quoting fix is released; without it every
+    # function declared with SPLE_TESTABLE_STATIC is missing from the source docs.
+    "clanguru @ git+https://github.com/avengineers/clanguru.git@cb076efdccdb87c9d87ebc9d2847f32a1a2db8dc"
 ]
 
 [tool.poetry]
