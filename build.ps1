@@ -1,402 +1,91 @@
 <#
 .DESCRIPTION
-    Wrapper for installing dependencies, running and testing the project
+    Wrapper: every option prints and runs one pypeline command, listed in README.md.
+    The logic lives in pipeline/*.yaml and pytest.ini. CI calls pytest directly and must keep doing so.
 #>
 
+# Without it a stray token binds to the next free string parameter, so `--marker x` lands in -filter and the run succeeds with the wrong options.
+[CmdletBinding(PositionalBinding = $false)]
 param(
-    [Parameter(Mandatory = $false, HelpMessage = 'Install all dependencies required to build. (Switch, default: false)')]
-    [switch]$install = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Install optional dependencies. (Switch, default: false)')]
-    [switch]$installOptional = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Install Visual Studio Code. (Switch, default: false)')]
-    [switch]$installVSCode = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Run all CI tests (python tests with pytest) (Switch, default: false)')]
-    [switch]$selftests = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Build the target.')]
-    [switch]$build = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Start Visual Studio Code. (Switch, default: false)')]
-    [switch]$startVSCode = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Command to be executed (String)')]
-    [string]$command = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Clean build, wipe out all build artifacts. (Switch, default: false)')]
-    [switch]$clean = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Build kit to be used. (String: "prod" or "test", default: "prod")')]
-    [string]$buildKit = "prod",
-    [Parameter(Mandatory = $false, HelpMessage = 'Type of build. (String, default: empty)')]
+    [switch]$install,
+    [switch]$build,
+    [switch]$startVSCode,
+    [switch]$selftests,
+    # [string[]], so both `-variants a,b` from PowerShell and `-variants "a,b"` through build.bat arrive as a list.
+    [string[]]$variants = @(),
+    [string]$buildKit = "",
     [string]$buildType = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Target to be built. (String, default: "all")')]
-    [string]$target = "all",
-    [Parameter(Mandatory = $false, HelpMessage = 'Variants (of the product) to be built. (List of strings, leave empty to be asked or "all" for automatic build of all variants)')]
-    [string[]]$variants = $null,
-    [Parameter(Mandatory = $false, HelpMessage = 'filter for self tests, e.g. "Disco or test_Disco.py" (see https://docs.pytest.org/en/stable/usage.html).')]
-    [string]$filter = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Marker for self tests, e.g. "static_analysis" (see https://docs.pytest.org/en/stable/how-to/mark.html).')]
-    [string]$marker = "gate_develop_push",
-    [Parameter(Mandatory = $false, HelpMessage = 'Additional arguments for pytest, e.g. "--collect-only" (see https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags).')]
-    [string]$pytestExtraArgs = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Additional build arguments for Ninja (e.g., "-d explain -d keepdepfile" for debugging purposes)')]
+    [string]$target = "",
+    [switch]$reconfigure,
+    [switch]$configureOnly,
     [string]$ninjaArgs = "",
-    [Parameter(Mandatory = $false, HelpMessage = 'Delete CMake cache and reconfigure. (Switch, default: false)')]
-    [switch]$reconfigure = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Just configure the build and fetch all dependencies. (Switch, default: false)')]
-    [switch]$configureOnly = $false,
-    [Parameter(Mandatory = $false, HelpMessage = 'Wait for a key press before exiting. (Switch, default: false)')]
-    [switch]$waitForKey = $false
+    [string]$filter = "",
+    [string]$marker = "gate_develop_push",
+    [string]$pytestExtraArgs = "",
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$rest
 )
 
-# Consider CI environment variables (e.g. on Jenkins BRANCH_NAME and CHANGE_TARGET) to filter tests in release branch builds
-function Get-ReleaseBranchPytestFilter {
-    $ChangeId = $env:CHANGE_ID
-    $BranchName = $env:BRANCH_NAME
-    $ChangeTarget = $env:CHANGE_TARGET
-
-    $targetBranch = ''
-
-    if (-not $ChangeId -and $BranchName -and $BranchName.StartsWith("release/")) {
-        $targetBranch = $BranchName
-    }
-
-    if ($ChangeId -and $ChangeTarget -and $ChangeTarget.StartsWith("release/") ) {
-        $targetBranch = $ChangeTarget
-    }
-
-    $filter = ''
-    if ($targetBranch -and ($targetBranch -match 'release/([^/]+/[^/]+)(.*)')) {
-        $filter = $Matches[1].Replace('/', ' and ')
-    }
-
-    return $filter
-}
-
-# Call build system with given parameters
-function Invoke-Build-System {
-    param (
-        [Parameter(Mandatory = $false)]
-        [bool]$clean = $false,
-        [Parameter(Mandatory = $false)]
-        [bool]$build = $false,
-        [Parameter(Mandatory = $false)]
-        [string]$buildKit = "prod",
-        [Parameter(Mandatory = $false)]
-        [string]$buildType = "",
-        [Parameter(Mandatory = $true)]
-        [string]$target = "all",
-        [Parameter(Mandatory = $false)]
-        [string[]]$variants = $null,
-        [Parameter(Mandatory = $false)]
-        [string]$ninjaArgs = "",
-        [Parameter(Mandatory = $false)]
-        [bool]$reconfigure = $false,
-        [Parameter(Mandatory = $false)]
-        [bool]$configureOnly = $false
-    )
-    # Determine variants to be built
-    $defaultVariantsFolder = ".\variants\"
-    if ((-Not $variants) -or ($variants -eq 'all')) {
-        $variantConfigs = Get-Childitem -Include config.cmake -Path $defaultVariantsFolder -Recurse | Resolve-Path -Relative
-        $variantsList = @()
-        Foreach ($variantConfig in $variantConfigs) {
-            $variant = ((Get-Item $variantConfig).Directory | Resolve-Path -Relative).Replace($defaultVariantsFolder, "").Replace("\", "/")
-            $variantsList += $variant
-        }
-        $variantsSelected = @()
-        if (-Not $variants) {
-            # variant selection by user if not specified
-            Write-Information -Tags "Info:" -MessageData "no '--variant <variant>' was given, please select from list:"
-            Write-Information -Tags "Info:" -MessageData ("(0) all variants")
-            Foreach ($variant in $variantsList) {
-                Write-Information -Tags "Info:" -MessageData ("(" + ([array]::IndexOf($variantsList, $variant) + 1) + ") " + $variant)
-            }
-            $selection = [int](Read-Host "Please enter selected variant number")
-            if ($selection -eq 0) {
-                # build all variants
-                $variantsSelected = $variantsList
-            }
-            else {
-                # build selected variant
-                $variantsSelected += $variantsList[$selection - 1]
-            }
-            Write-Information -Tags "Info:" -MessageData "Selected variants: $variantsSelected"
-        }
-        else {
-            # otherwise build all variants
-            $variantsSelected = $variantsList
-        }
-    }
-    else {
-        $variantsSelected = $Variants.Replace($defaultVariantsFolder, "").Replace("\", "/").Split(',') | ForEach-Object { $_.TrimEnd('/') }
-    }
-
-    Foreach ($variant in $variantsSelected) {
-        $buildFolder = "build\$variant\$buildKit".Replace("/", "\")
-        if ($buildType -ne "") {
-            $buildFolder = "build\$variant\$buildKit\$buildType".Replace("/", "\")
-        }
-
-        # fresh and clean build
-        if ($clean) {
-            Remove-Path $buildFolder
-        }
-        New-Directory $buildFolder
-
-        # delete CMake cache and reconfigure
-        if ($reconfigure -or $configureOnly) {
-            Remove-Path "$buildFolder\CMakeCache.txt"
-            Remove-Path "$buildFolder\CMakeFiles"
-        }
-
-        if ($build) {
-            if ($buildType -eq "") {
-                Write-Output "Building target '$target' with build kit '$buildKit' for variant '$variant' ..."
-            }
-            else {
-                Write-Output "Building target '$target' with build kit '$buildKit' and build type '$buildType' for variant '$variant' ..."
-            }
-
-            # CMake configure
-            $additionalConfig = "-DBUILD_KIT='$buildKit'"
-            if ($buildType -ne "") {
-                $additionalConfig += " -DBUILD_TYPE='$buildType'"
-                $additionalConfig += " -DCMAKE_BUILD_TYPE='$buildType'"
-            }
-            if ($buildKit -eq "test") {
-                $additionalConfig += " -DCMAKE_TOOLCHAIN_FILE='tools/toolchains/gcc/toolchain.cmake'"
-            }
-
-            Invoke-CommandLine -CommandLine "cmake -B '$buildFolder' -G Ninja -DVARIANT='$variant' $additionalConfig"
-
-            if (-Not $configureOnly) {
-                if ($buildType -eq "") {
-                    $cmd = "cmake --build '$buildFolder' --target $target"
-                }
-                else {
-                    $cmd = "cmake --build '$buildFolder' --config '$buildType' --target $target"
-                }
-
-                # CMake clean all dead artifacts. Required when running incremented builds to delete obsolete artifacts.
-                Invoke-CommandLine -CommandLine "$cmd -- -t cleandead"
-                # CMake build
-                Invoke-CommandLine -CommandLine "$cmd -- $ninjaArgs"
-            }
-        }
-    }
-}
-
-function Invoke-Self-Tests {
-    param (
-        [Parameter(Mandatory = $false)]
-        [string]$filter = "",
-        [Parameter(Mandatory = $false)]
-        [string]$marker = ""
-    )
-
-    # Run python tests to test all relevant variants and platforms (build kits)
-    # (normally run in CI environment/Jenkins)
-    Write-Output "Running all self tests ..."
-
-    # Test result of pytest
-    $pytestJunitXml = "test/output/test-report.xml"
-
-    # Delete any old pytest result
-    Remove-Path $pytestJunitXml
-
-    $pytestArgs = @(
-        "--junitxml=$pytestJunitXml"
-    )
-
-    # Filter pytest test cases
-    $releaseBranchFilter = Get-ReleaseBranchPytestFilter
-    if ($releaseBranchFilter) {
-        $pytestArgs += "-k '$releaseBranchFilter'"
-    }
-    # otherwise consider command line option '-filter' if given
-    elseif ($filter) {
-        $pytestArgs += "-k '$filter'"
-    }
-
-    # Execute marker tests
-    if ($marker) {
-        $pytestArgs += "-m '$marker'"
-    }
-
-    # Add any extra pytest arguments given via command line
-    if ($pytestExtraArgs -and $pytestExtraArgs -ne "") {
-        $pytestArgs += $pytestExtraArgs
-    }
-
-    # Finally run pytest and ignore return value. Content of test-report.xml will be evaluated by CI system.
-    $commandLine = "pytest " + ($pytestArgs -join " ")
-    Invoke-CommandLine -CommandLine $commandLine -StopAtError $false
-}
-
-function Remove-Path {
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$path
-    )
-    if (Test-Path -Path $path -PathType Container) {
-        Write-Output "Deleting directory '$path' ..."
-        Remove-Item $path -Force -Recurse
-    }
-    elseif (Test-Path -Path $path -PathType Leaf) {
-        Write-Output "Deleting file '$path' ..."
-        Remove-Item $path -Force
-    }
-}
-
-function New-Directory {
-    param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$dir
-    )
-    if (-Not (Test-Path -Path $dir)) {
-        Write-Output "Creating directory '$dir' ..."
-        New-Item -ItemType Directory $dir
-    }
-}
-
-function Get-User-Menu-Selection {
-    Clear-Host
-    Write-Information -Tags "Info:" -MessageData "None of the following command line options was given:"
-    Write-Information -Tags "Info:" -MessageData ("(1) -install: installation of mandatory dependencies")
-    Write-Information -Tags "Info:" -MessageData ("(2) -installOptional: installation of optional dependencies")
-    Write-Information -Tags "Info:" -MessageData ("(3) -installVSCode: installation of Visual Studio Code")
-    Write-Information -Tags "Info:" -MessageData ("(4) -build: execute CMake build")
-    Write-Information -Tags "Info:" -MessageData ("(5) -startVSCode: start Visual Studio Code")
-    Write-Information -Tags "Info:" -MessageData ("(6) quit: exit script")
-    return(Read-Host "Please make a selection")
-}
-
-function Invoke-Bootstrap {
-    # Download bootstrap scripts from external repository
-    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.19.1/install.ps1 | Invoke-Expression
-    # Execute bootstrap script
-    . .\.bootstrap\bootstrap.ps1
-}
-
-function Invoke-Clean-Workspace {
-    param (
-        [Parameter(Mandatory = $false)]
-        [bool]$install = $false,
-        [Parameter(Mandatory = $false)]
-        [bool]$selftests = $false
-    )
-
-    if ($install) {
-        Remove-Path ".venv"
-    }
-    if ($selftests) {
-        # Remove all build outputs in one step, this will remove obsolete variants, too.
-        Remove-Path "build"
-    }
-}
-
-## start of script
-# Always set the $InformationPreference variable to "Continue" globally,
-# this way it gets printed on execution and continues execution afterwards.
-$InformationPreference = "Continue"
-
-# Stop on first error
 $ErrorActionPreference = "Stop"
 
+$usage = @"
+Usage: .\build.ps1 -install | -build | -startVSCode | -selftests
+  -build accepts -variants <name|a,b|all>, -buildKit <prod|test>, -buildType <name>, -target <name>,
+         -reconfigure, -configureOnly and -ninjaArgs <args>;
+  -selftests accepts -filter <expr>, -marker <expr> and -pytestExtraArgs <args>.
+"@
+
+if ($rest) {
+    Write-Error "Unknown argument(s): $($rest -join ' ')`nOptions take a single dash: -marker, not --marker.`n$usage" -Category InvalidArgument -ErrorAction Continue
+    exit 1
+}
+
+if (-not ($install -or $build -or $startVSCode -or $selftests)) {
+    Write-Output $usage
+    exit
+}
+
+# Quoted, so a value containing a space stays one argument.
+function Add-Arg([string]$name, [string]$value) { if ($value) { " $name `"$value`"" } }
+function Add-Input([string]$name, [string]$value) { if ($value) { " -i `"$name=$value`"" } }
+
+function Invoke-CommandLine([string]$commandLine, [bool]$stopAtError = $true) {
+    Write-Output "Executing: $commandLine"
+    $global:LASTEXITCODE = 0
+    Invoke-Expression $commandLine
+    if ($global:LASTEXITCODE -eq 0) { return }
+    if ($stopAtError) { throw "Command line call `"$commandLine`" failed with exit code $global:LASTEXITCODE" }
+    Write-Output "Command line call `"$commandLine`" failed with exit code $global:LASTEXITCODE, continuing ..."
+}
+
+$variantList = $variants -join ","
+# The leading '.\' is required: PowerShell reads '.venv\Scripts\pypeline' as module-qualified syntax.
+$pypeline = ".\.venv\Scripts\pypeline run --config-file"
+
 Push-Location $PSScriptRoot
-Write-Output "Running in ${pwd}"
-
 try {
-    if ((-Not $install) -and (-Not $installOptional) -and (-Not $installVSCode) -and (-Not $build) -and (-Not $startVSCode) -and (-Not $command) -and (-Not $selftests)) {
-        $selectedOption = Get-User-Menu-Selection
-
-        switch ($selectedOption) {
-            '1' {
-                Write-Information -Tags "Info:" -MessageData "Installing mandatory dependencies ..."
-                $install = $true
-            }
-            '2' {
-                Write-Information -Tags "Info:" -MessageData "Installing optional dependencies ..."
-                $installOptional = $true
-            }
-            '3' {
-                Write-Information -Tags "Info:" -MessageData "Installing Visual Studio Code ..."
-                $installVSCode = $true
-            }
-            '4' {
-                Write-Information -Tags "Info:" -MessageData "Building ..."
-                $build = $true
-            }
-            '5' {
-                Write-Information -Tags "Info:" -MessageData "Starting VS Code ..."
-                $startVSCode = $true
-            }
-            default {
-                Write-Information -Tags "Info:" -MessageData "Nothing selected."
-                exit
-            }
-        }
-    }
-
-    if ($clean) {
-        Invoke-Clean-Workspace -install $install -selftests $selftests
-    }
-
     if ($install) {
-        # bootstrap environment
-        Invoke-Bootstrap
-
-        Write-Host -ForegroundColor Black -BackgroundColor Blue "For installation changes to take effect, please close and re-open your current terminal."
+        # There is no pypeline before the virtual environment exists, so the bootstrap creates it first.
+        Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.19.1/install.ps1 | Invoke-Expression
+        . .\.bootstrap\bootstrap.ps1
+        Invoke-CommandLine "$pypeline pipeline/bootstrap.yaml"
     }
-
-    # Load bootstrap's utility functions
-    . .\.bootstrap\utils.ps1
-
-    Invoke-CommandLine ".venv\Scripts\pypeline run --step CollectPRChanges"
-
-    # Load environment setup script
-    . .\build\env_setup.ps1
-
-    if ($installOptional) {
-        Import-ScoopFile "scoopfile-optional.json"
-    }
-
-    if ($installVSCode) {
-        Invoke-CommandLine "scoop bucket add extras" -StopAtError $false
-        Invoke-CommandLine "scoop install vscode"
-        Invoke-CommandLine "scoop update vscode" -StopAtError $false
-    }
-
-    if ($startVSCode) {
-        Write-Output "Starting Visual Studio Code..."
-        Invoke-CommandLine "code ." -StopAtError $false
-    }
-
-    if ($build) {
-        # Call build system to build variant(s)
-        Invoke-Build-System `
-            -clean $clean `
-            -build $build `
-            -target $target `
-            -buildKit $buildKit `
-            -buildType $buildType `
-            -variants $variants `
-            -reconfigure $reconfigure `
-            -configureOnly $configureOnly `
-            -ninjaArgs $ninjaArgs
-    }
-
+    if ($startVSCode) { Invoke-CommandLine "$pypeline pipeline/bootstrap.yaml --application `"code .`"" }
     if ($selftests) {
-        Invoke-Self-Tests -filter $filter -marker $marker
+        # A release branch names the variant it releases, so test only that one. Empty on every other branch.
+        if (-not $filter) {
+            $filter = (& .\.venv\Scripts\python pipeline/variants.py --release-filter)
+            # A release branch naming no variant is a mistake; the error is already on screen.
+            if ($LASTEXITCODE -ne 0) { exit 1 }
+        }
+        # The report file is the verdict, so a failing gate must not stop the wrapper.
+        Invoke-CommandLine ".\.venv\Scripts\pytest$(Add-Arg '-m' $marker)$(Add-Arg '-k' $filter) $pytestExtraArgs" -stopAtError $false
     }
-
-    if ($command -ne '') {
-        Invoke-Expression "$command"
+    if ($build) {
+        $flags = "$(Add-Input 'reconfigure' $(if ($reconfigure) { 'true' }))$(Add-Input 'configure_only' $(if ($configureOnly) { 'true' }))"
+        Invoke-CommandLine "$pypeline pipeline/variant_build.yaml$(Add-Input 'variant' $variantList)$(Add-Input 'build_kit' $buildKit)$(Add-Input 'build_type' $buildType)$(Add-Input 'target' $target)$(Add-Input 'ninja_args' $ninjaArgs)$flags"
     }
 }
 finally {
-    # Load bootstrap's utility functions
-    . .\.bootstrap\utils.ps1
-
     Pop-Location
-    if (-Not (Test-RunningInCIorTestEnvironment) -and $waitForKey) {
-        Read-Host -Prompt "Press Enter to continue ..."
-    }
 }
-## end of script

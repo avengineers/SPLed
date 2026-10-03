@@ -22,16 +22,7 @@ Each variant (Disco, Sleep, Spa, etc.) compiles into separate binaries using sha
 - Switching branches (dependencies may have changed)
 - After pulling updates
 
-On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --install`. `build.sh` performs the same steps as `build.ps1`, so every build/test workflow below has a `build.sh` equivalent. The flag *vocabulary* is close but not identical (Bash uses `--flag`, PowerShell uses `-flag`):
-
-| `build.ps1` | `build.sh` |
-| --- | --- |
-| `-install`, `-build`, `-clean`, `-selftests`, `-marker`, `-filter`, `-target`, `-command`, `-reconfigure` | same names, `--` prefixed |
-| `-variants <v>` | `--variant <v>` (single variant; default `Disco`) |
-| `-buildKit <k>` / `-buildType <t>` | `--build-kit <k>` / `--build-type <t>` |
-| `-startVSCode`, `-installVSCode`, `-installOptional`, `-configureOnly`, `-pytestExtraArgs`, `-ninjaArgs`, `-waitForKey` | *no equivalent* |
-
-`./build.sh --help` is authoritative for the Bash side.
+On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --install`. Both scripts are thin wrappers: every option prints and runs one command. `-install` and `-build` run `pipeline/bootstrap.yaml` and `pipeline/variant_build.yaml` (its `CMakeBuild` step is in `pipeline/steps.py`); `-selftests` runs plain pytest against `pytest.ini`. They take the same options; Bash spells them `--build-kit`, PowerShell `-buildKit`. `-startVSCode` is Windows only. `./build.sh --help` lists them.
 
 On a **bare Linux host (e.g. WSL Ubuntu) that is not a devcontainer**, `build.sh --install` assumes some OS-level prerequisites already exist. Provision them once per machine with the two bootstrap scripts — the devcontainer image runs the same scripts, so this is a single source of truth (see [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md)):
 
@@ -58,14 +49,12 @@ VS Code users can build directly using the CMake extension via `.vscode` configu
 ### Building Variants
 
 ```powershell
-# Interactive variant selection
-.\build.ps1 -build
-
-# Specific variant
+# Specific variant, a list, or all
 .\build.ps1 -build -variants Disco
+.\build.ps1 -build -variants all
 
-# Clean build
-.\build.ps1 -build -variants Spa -clean
+# Start from an empty CMake cache
+.\build.ps1 -build -variants Spa -reconfigure
 
 # Test build (includes unit tests)
 .\build.ps1 -build -buildKit test -buildType Debug
@@ -81,8 +70,8 @@ Tests are **Python-based** using pytest for build validation and report checks:
 # Run all tests
 .\build.ps1 -selftests
 
-# Filtered tests
-.\build.ps1 -selftests -filter "Disco"
+# One variant (IDEA/Sloemada is spelled IDEA__Sloemada, as its test class)
+.\build.ps1 -selftests -filter Disco
 
 # Specific markers (see pytest.ini)
 .\build.ps1 -selftests -marker "build_debug"
@@ -99,11 +88,12 @@ CI runs on **GitHub Actions** (`.github/workflows/ci.yml`) for every push/PR to 
 Jobs:
 
 - `determine-gate` — computes the `gate_*` quality-gate marker once (by event/branch) and shares it with all three build jobs via `needs`.
-- `test-on-windows` (`windows-2025`) — `build.ps1 -install` then `-selftests -marker <gate>`.
-- `test-on-linux` (`ubuntu-24.04`) — bare-runner path: `bootstrap_ubuntu.sh` + `bootstrap_python.sh`, then `build.sh --install` and `--selftests --marker <gate>`.
-- `test-devcontainer` (`ubuntu-24.04`) — builds `.devcontainer/` via `devcontainers/ci` (which runs `onCreateCommand`, i.e. `build.sh --install`) and runs `build.sh --selftests --marker <gate>` inside the container.
+- `discover` — `python3 pipeline/variants.py` prints the variants as a JSON list. The three build jobs fan out over it with `strategy.matrix`, one job per variant. A `release/<Variant>/...` branch lists only that variant; a release branch that names no variant fails.
+- `test-on-windows` (`windows-2025`) — `build.ps1 -install`.
+- `test-on-linux` (`ubuntu-24.04`) — bare-runner path: `bootstrap_ubuntu.sh` + `bootstrap_python.sh`, then `build.sh --install`.
+- `test-devcontainer` (`ubuntu-24.04`) — builds `.devcontainer/` via `devcontainers/ci` (which runs `onCreateCommand`, i.e. `build.sh --install`).
 
-CI is a **thin wrapper**: it only sets up the OS and calls the build scripts, so "green in CI" ⇔ "works locally". Runners are pinned to explicit images (never `*-latest`), so an OS/toolchain bump is always a reviewable change rather than a surprise.
+Each build job then runs the same line from `.venv`: `pytest -k <variant> -m <gate>`, with `/` in the variant written as `__`. CI only sets up the OS and calls pytest, so "green in CI" ⇔ "works locally". Runners are pinned to explicit images (never `*-latest`), so an OS/toolchain bump is always a reviewable change rather than a surprise.
 
 ## SPL-Specific CMake Patterns
 
@@ -140,7 +130,7 @@ Features defined in `KConfig` (menuconfig syntax) generate CMake variables via `
 - `CONFIG_BLINKING=y` → CMake variable `BLINKING="True"`
 - `# CONFIG_AUTO_OFF is not set` → CMake variable `AUTO_OFF="False"`
 
-Edit feature config: `.\build.ps1 -command ".venv\Scripts\poetry run guiconfig"` (requires KCONFIG_CONFIG env var set to variant's config.txt).
+Edit feature config: VS Code task "Configure variant" (runs `guiconfig` with `KCONFIG_CONFIG` set to the variant's config.txt).
 
 Check feature values in source code via generated `autoconf.h` header.
 
@@ -162,9 +152,10 @@ Components communicate via RTE signals/runnable interfaces (see `rte.h` for patt
 
 ## Key Files for Understanding
 
-- [build.ps1](build.ps1) - Entry point for all build/test operations (Windows)
+- [build.ps1](build.ps1) - Entry point for all build/test operations (Windows), a thin wrapper over pypeline
 - [build.sh](build.sh) - Peer entry point for Linux/macOS/devcontainer
-- [.github/workflows/ci.yml](.github/workflows/ci.yml) - Windows + Linux CI, thin wrapper over the build scripts
+- [pipeline/](pipeline/) - The pypeline files and steps that do the work
+- [.github/workflows/ci.yml](.github/workflows/ci.yml) - Windows + Linux CI, one job per variant
 - [CMakeLists.txt](CMakeLists.txt#L8) - Includes variant config and spl-core framework
 - [KConfig](KConfig) - Feature model definition
 - [variants/Disco/parts.cmake](variants/Disco/parts.cmake) - Example component selection

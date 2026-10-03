@@ -1,3 +1,8 @@
+# The environment: virtual environment, toolchain and the env setup script.
+#
+#   pypeline run --config-file pipeline/bootstrap.yaml
+#
+# Included by variant_build.yaml, so every build, a test build too, sets it up the same way.
 pipeline:
   - step: CreateVEnv
     module: pypeline.steps.create_venv
@@ -11,7 +16,3 @@ pipeline:
     module: pypeline.steps.scoop_install
   - step: GenerateEnvSetupScript
     module: pypeline.steps.env_setup_script
-  - step: CheckCIContext
-    module: pypeline_semantic_release.check_ci_context
-  - step: CollectPRChanges
-    module: spl_core.steps.collect_pr_changes
