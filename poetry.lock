@@ -691,8 +691,8 @@ typer = ">=0,<1"
 [package.source]
 type = "git"
 url = "https://github.com/avengineers/clanguru.git"
-reference = "cb076efdccdb87c9d87ebc9d2847f32a1a2db8dc"
-resolved_reference = "cb076efdccdb87c9d87ebc9d2847f32a1a2db8dc"
+reference = "f2efa65363c964784d50fb4ff45ea4d53dc68fd4"
+resolved_reference = "f2efa65363c964784d50fb4ff45ea4d53dc68fd4"
 
 [[package]]
 name = "click"
@@ -4147,4 +4147,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.12,>=3.11"
-content-hash = "b616871ee04150778ba2c2f07f496dd6fd846f60bf5f9aa84428d5d9f645175e"
+content-hash = "9a635f8971536ef216c922ccf853676cfd61e1d0cf1af109159079ad8cdcb55d"
