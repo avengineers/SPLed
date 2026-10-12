@@ -671,13 +671,15 @@ files = [
 
 [[package]]
 name = "clanguru"
-version = "0.21.0"
+version = "0.21.2"
 description = "C language utils and tools based on the clang and binutils modules."
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "clanguru-0.21.2-py3-none-any.whl", hash = "sha256:a80b6dfdf6edcf70cfa0642f6c2763f09b3e5bf160b80e50c411e44a29f0f714"},
+    {file = "clanguru-0.21.2.tar.gz", hash = "sha256:7955ca2c8818c6de1563fa067b73f6c96ed84d319b0c2809d31ff67048b53108"},
+]
 
 [package.dependencies]
 jinja2 = ">=3.1,<4"
@@ -687,12 +689,6 @@ openpyxl = ">=3.1,<4"
 py-app-dev = ">=2.1,<3"
 pyyaml = ">=6,<7"
 typer = ">=0,<1"
-
-[package.source]
-type = "git"
-url = "https://github.com/avengineers/clanguru.git"
-reference = "f2efa65363c964784d50fb4ff45ea4d53dc68fd4"
-resolved_reference = "f2efa65363c964784d50fb4ff45ea4d53dc68fd4"
 
 [[package]]
 name = "click"
@@ -4147,4 +4143,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.12,>=3.11"
-content-hash = "9a635f8971536ef216c922ccf853676cfd61e1d0cf1af109159079ad8cdcb55d"
+content-hash = "1136c5e23c4eb911043e2d38e184f92c9e3f9c0f7e0e23666dcfe12c93ae085f"
