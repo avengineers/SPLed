@@ -15,6 +15,9 @@
 {{ build_config.component_info.reports_output_dir }}/unit_test_results
 {{ build_config.component_info.reports_output_dir }}/coverage
 {% endif %}
+{% if build_config.component_info.source_docs_dir %}
+{{ build_config.component_info.source_docs_dir }}/index
+{% endif %}
 ```
 
 {% else %}
