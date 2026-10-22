@@ -180,7 +180,7 @@ build_variant() {
         cmake_args+=("-DBUILD_TYPE=$BUILD_TYPE" "-DCMAKE_BUILD_TYPE=$BUILD_TYPE")
     fi
     if [ "$BUILD_KIT" = "test" ]; then
-        cmake_args+=("-DCMAKE_TOOLCHAIN_FILE=tools/toolchains/gcc/toolchain_linux.cmake")
+        cmake_args+=("-DCMAKE_TOOLCHAIN_FILE=tools/toolchains/gcc/toolchain.cmake")
     fi
 
     echo "Configuring with CMake ..."
