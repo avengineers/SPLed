@@ -13,11 +13,14 @@ set -euo pipefail
 # float means an upstream release can turn CI red without any commit changing, and the
 # nightly build then reports a regression that is not one. Poetry especially: its 2.x
 # line is what introduced the bare-`python` PATH probe worked around below.
-UV_VERSION="0.13.4"
+UV_VERSION="0.13.5"
 POETRY_VERSION="2.4.1"
 # Minor only: the 3.13 patch level deliberately floats so CPython security fixes are
 # picked up. pyproject requires >=3.13,<3.14, so any 3.13.x satisfies the project.
 PYTHON_VERSION="3.13"
+# Floor for the floating patch: 3.13.17 is the first 3.13 whose bundled pip (26.2.2)
+# no longer trusts the compromised emSign CAs. uv serves it from 0.13.5 on.
+PYTHON_MIN_VERSION="3.13.17"
 
 # pipx (from bootstrap_ubuntu.sh) installs isolated CLI tools into ~/.local/bin.
 # --force on both installs below: pipx keys on the package NAME, not the version spec,
@@ -31,6 +34,11 @@ export PATH="$HOME/.local/bin:$PATH"   # ...and for the rest of this script
 # matches pyproject requires-python <3.14,>=3.13).
 uv python install "$PYTHON_VERSION"
 uv_py="$(uv python find "$PYTHON_VERSION")"
+# uv keeps an already installed older patch, so check the floor explicitly.
+if ! "$uv_py" -c "import sys; sys.exit(sys.version_info < tuple(map(int, '$PYTHON_MIN_VERSION'.split('.'))))"; then
+    echo "ERROR: $uv_py is older than Python $PYTHON_MIN_VERSION. Run: uv python upgrade $PYTHON_VERSION" >&2
+    exit 1
+fi
 
 # Poetry 2.x ALWAYS probes PATH for a bare `python` when it resolves the venv
 # interpreter — verified that `virtualenvs.use-poetry-python = true` does NOT suppress

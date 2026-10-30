@@ -297,7 +297,24 @@ function Get-User-Menu-Selection {
     return(Read-Host "Please make a selection")
 }
 
+# bootstrap.ps1 uses an already installed python3XX without checking its patch version.
+# Python 3.13.17 is the first 3.13 whose bundled pip (26.2.2) no longer trusts the
+# compromised emSign CAs, so refuse an older one before it installs anything from PyPI.
+function Assert-Python-Min-Version {
+    $minVersion = [version]"3.13.17"
+    $python = "python" + (Get-Content "bootstrap.json" -Raw | ConvertFrom-Json).python_version.Replace(".", "")
+    if (-Not (Get-Command $python -ErrorAction SilentlyContinue)) {
+        # bootstrap.ps1 installs the current scoop version
+        return
+    }
+    $version = [version](& $python -c "import platform; print(platform.python_version())")
+    if ($version -lt $minVersion) {
+        throw "$python is version $version, but at least $minVersion is required. Update it with 'scoop update $python'."
+    }
+}
+
 function Invoke-Bootstrap {
+    Assert-Python-Min-Version
     # Download bootstrap scripts from external repository
     Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.19.1/install.ps1 | Invoke-Expression
     # Execute bootstrap script
