@@ -41,7 +41,7 @@ Provision the OS-level prerequisites once per machine, then install as usual:
 
 ```bash
 sudo ./bootstrap_ubuntu.sh    # apt packages
-./bootstrap_python.sh         # uv, CPython 3.11, Poetry (into ~/.local)
+./bootstrap_python.sh         # uv, CPython 3.13, Poetry (into ~/.local)
 # open a fresh shell (or `source ~/.bashrc`) so ~/.local/bin is on PATH
 ./build.sh --install
 ```

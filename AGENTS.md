@@ -37,7 +37,7 @@ On a **bare Linux host (e.g. WSL Ubuntu) that is not a devcontainer**, `build.sh
 
 ```bash
 sudo ./bootstrap_ubuntu.sh    # root: apt packages (libc6-dev, build-essential, 7zip, pipx)
-./bootstrap_python.sh         # user: uv, CPython 3.11, Poetry (into ~/.local)
+./bootstrap_python.sh         # user: uv, CPython 3.13, Poetry (into ~/.local)
 # then open a fresh shell (see note below) so ~/.local/bin is on PATH:
 ./build.sh --install          # user: poetry install + poks toolchain
 ```
