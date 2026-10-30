@@ -225,8 +225,8 @@ regression that is not one, on a day nobody touched the repo.
 Poetry is the concrete case, not a hypothetical: the 2.x line is what introduced the bare-`python`
 PATH probe that D5 works around. A pin makes the next such change arrive as a reviewable commit.
 
-The pinned values are the ones validated end-to-end (uv `0.11.32`, Poetry `2.4.1`, installed against
-uv's CPython 3.11.15) — read off the green `test-on-linux` run, not chosen freshly.
+The pinned values are the ones validated end-to-end (uv `0.13.4`, Poetry `2.4.1`, installed against
+uv's CPython 3.13.16) — read off the green `test-on-linux` run, not chosen freshly.
 
 Two deliberate non-pins:
 
