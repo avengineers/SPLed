@@ -33,7 +33,7 @@ unprivileged and installs into `~/.local`.
 |---|---|---|---|
 | `.devcontainer/Dockerfile` | base image, CA certs, apt-mirror swap, `ENV SSL_*`, PATH wiring | root | image build |
 | `bootstrap_ubuntu.sh` | apt: `libc6-dev`, `build-essential`, `7zip`, `pipx` | root | image build (`RUN`) / `sudo` on a bare host |
-| `bootstrap_python.sh` | `uv` → CPython 3.11 → Poetry, into `~/.local` | unprivileged | image build (as `vscode`) / directly on a bare host |
+| `bootstrap_python.sh` | `uv` → CPython 3.13 → Poetry, into `~/.local` | unprivileged | image build (as `vscode`) / directly on a bare host |
 | `build.sh --install` (unchanged) | `poetry install` + the pypeline/poks toolchain | unprivileged | `onCreateCommand` / directly on a bare host |
 
 **Flows**
@@ -100,7 +100,7 @@ Poetry 2.x **always** probes PATH for a bare `python` when resolving the venv in
 that `virtualenvs.use-poetry-python = true` does *not* suppress this. The base image ships no bare
 `python`, so `poetry install` fails with `[Errno 2] No such file or directory: 'python'`.
 
-`bootstrap_python.sh` therefore symlinks `~/.local/bin/python` → the uv-managed 3.11. Deliberately
+`bootstrap_python.sh` therefore symlinks `~/.local/bin/python` → the uv-managed 3.13. Deliberately
 **only `python`, never `python3`**: every host this runs on already has a system `python3`, and
 `~/.profile` prepends `~/.local/bin`, so a `python3` symlink would silently shadow the OS interpreter
 for all of a bare-WSL user's unrelated work.
@@ -230,8 +230,8 @@ uv's CPython 3.11.15) — read off the green `test-on-linux` run, not chosen fre
 
 Two deliberate non-pins:
 
-- **The CPython patch level** stays at minor granularity (`3.11`), so security fixes are picked up.
-  `pyproject`'s `requires-python >=3.11,<3.12` is the actual contract, and any 3.11.x satisfies it.
+- **The CPython patch level** stays at minor granularity (`3.13`), so security fixes are picked up.
+  `pyproject`'s `requires-python >=3.13,<3.14` is the actual contract, and any 3.13.x satisfies it.
 - **The apt packages** in `bootstrap_ubuntu.sh` are unpinned. Within an Ubuntu release the archive is
   already version-stable, and pinning apt versions would break the moment a security update lands.
 

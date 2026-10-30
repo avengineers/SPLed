@@ -23,7 +23,7 @@ ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 ENV PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 
-# Python toolchain (uv/CPython 3.11/Poetry) baked as the vscode user, so it lands
+# Python toolchain (uv/CPython 3.13/Poetry) baked as the vscode user, so it lands
 # in /home/vscode/.local (owned by the runtime user) and is on PATH the instant the
 # container starts. Same script bare WSL and CI run at runtime — one source of truth.
 COPY bootstrap_python.sh /tmp/bootstrap_python.sh

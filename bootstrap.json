@@ -1,5 +1,5 @@
 {
-    "python_version": "3.11",
+    "python_version": "3.13",
     "python_package_manager": "poetry>=2.1.0",
     "bootstrap_packages": [
         "pip-system-certs>=4.0,<5.0"
