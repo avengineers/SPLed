@@ -47,8 +47,9 @@ INSTANTIATE_TEST_SUITE_P(
 
 /**
  * @rst
- * .. test:: CheckAbortParamTests/CheckAbortTest.ReturnsExpectedResult/*
+ * .. test:: CheckAbortParamTests/CheckAbortTest.ReturnsExpectedResult
  *    :id: TS_FC-100
+ *    :results: [[links_from_filter("type == 'testcase' and search('^CheckAbortParamTests/CheckAbortTest.ReturnsExpectedResult/', case)")]]
  *    :tests: SWDD_FC-100, SWDD_FC-101, SWDD_FC-102
  * @endrst
  */
@@ -76,8 +77,9 @@ INSTANTIATE_TEST_SUITE_P(
 
 /**
  * @rst
- * .. test:: FlightControllerParamTests/FlightControllerTest.SetsExpectedSelfDestructState/*
+ * .. test:: FlightControllerParamTests/FlightControllerTest.SetsExpectedSelfDestructState
  *    :id: TS_FC-001
+ *    :results: [[links_from_filter("type == 'testcase' and search('^FlightControllerParamTests/FlightControllerTest.SetsExpectedSelfDestructState/', case)")]]
  *    :tests: SWDD_FC-100, SWDD_FC-101, SWDD_FC-102, SWDD_FC-103,
  *            SWDD_FC-200, SWDD_FC-201, SWDD_FC-202, SWDD_FC-203, SWDD_FC-204
  * @endrst

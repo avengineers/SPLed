@@ -313,6 +313,7 @@
         },
         "REQ_37": {
           "id": "REQ_37",
+          "title": "",
           "reqif_uuid": "_37_3c506a8f-a512-48f9-be68-d87647bfe2bc",
           "sections": [
             "Power Management",
@@ -616,6 +617,7 @@
         },
         "REQ_58": {
           "id": "REQ_58",
+          "title": "",
           "reqif_uuid": "_58_89108347-08fd-4f48-ba7d-313988fefedc",
           "sections": [
             "Main Knob Value Interface",
