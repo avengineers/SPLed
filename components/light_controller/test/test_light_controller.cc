@@ -253,8 +253,9 @@ TEST(light_controller, test_correct_blink_period)
 /**
  * @rst
  *
- * .. test:: BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod/*
+ * .. test:: BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod
  *    :id: TS_LC-003
+ *    :results: [[links_from_filter("type == 'testcase' and search('^BlinkPeriodTests/BlinkPeriodTest.CalculatesCorrectBlinkPeriod/', case)")]]
  *    :tests: SWDD_LC-101
  *
  * @endrst

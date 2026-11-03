@@ -3449,18 +3449,19 @@ theme-sbt = ["sphinx-book-theme (>=1.1,<2.0)"]
 
 [[package]]
 name = "sphinx-needs"
-version = "8.5.0"
+version = "9.1.0"
 description = "Sphinx needs extension for managing needs/requirements and specifications"
 optional = false
-python-versions = "<4,>=3.10"
+python-versions = "<4,>=3.11"
 groups = ["main"]
 files = [
-    {file = "sphinx_needs-8.5.0-py3-none-any.whl", hash = "sha256:aa7548d1ec33cd66cd0223cf8d5c0a934dc4c67d67ad471b5351b817d5f02750"},
-    {file = "sphinx_needs-8.5.0.tar.gz", hash = "sha256:42d327baaf39f5041f692cb85609ef7023c0a73b688cde5803db444e577bb63d"},
+    {file = "sphinx_needs-9.1.0-py3-none-any.whl", hash = "sha256:888fbe9e0b2b6121ef32e254364dbf8d869c7120e9dc4128311cec494c54e106"},
+    {file = "sphinx_needs-9.1.0.tar.gz", hash = "sha256:fa12cb45a585ce47cc4a633cb97d0df44fb3107f82ed01eebd729e9e4be518dc"},
 ]
 
 [package.dependencies]
-jsonschema-rs = ">=0.37.1,<0.53.0"
+docutils = ">=0.21"
+jsonschema-rs = ">=0.37.1,<0.59"
 minijinja = ">=2.15,<3.0"
 requests = ">=2.32,<3.0"
 requests-file = ">=2.1,<4.0"
@@ -3468,9 +3469,11 @@ sphinx = ">=7.4,<10"
 sphinx-data-viewer = ">=0.1.5,<0.2.0"
 sphinxcontrib-jquery = ">=4.0,<5.0"
 typing-extensions = ">=4.14.0"
+ub-needs-exchange = ">=1.1.0,<2"
+ub-project = ">=1.1.0,<2"
 
 [package.extras]
-docs = ["matplotlib (>=3.3.0)", "sphinx-ai-index (>=0.1.0,<0.2.0)", "sphinx-copybutton (>=0.5,<1.0)", "sphinx-design (>=0.6,<1.0)", "sphinx-syntax-example (>=0.2.0,<0.3.0) ; python_version >= \"3.11\"", "sphinxcontrib-plantuml (>=0.0,<1.0)", "sphinxcontrib-programoutput (>=0.17,<1.0)"]
+docs = ["matplotlib (>=3.3.0)", "sphinx-ai-index (>=1.0.0,<2)", "sphinx-copybutton (>=0.5,<1.0)", "sphinx-design (>=0.6,<1.0)", "sphinx-syntax-example (>=0.2.0,<0.3.0)", "sphinxcontrib-mermaid (>=1.0.0,<3)", "sphinxcontrib-plantuml (>=0.0,<1.0)", "sphinxcontrib-programoutput (>=0.17,<1.0)"]
 plotting = ["matplotlib (>=3.3.0)"]
 theme-furo = ["furo (>=2025.12.19)"]
 theme-im = ["sphinx-immaterial (>=0.11.11,<0.14.0)"]
@@ -3501,25 +3504,25 @@ typecheck = ["mypy", "types-beautifulsoup4", "types-docutils"]
 
 [[package]]
 name = "sphinx-test-reports"
-version = "1.4.0"
+version = "3.0.1"
 description = "Sphinx extension for showing test results and test environment information inside sphinx documentations"
 optional = false
-python-versions = ">=3.10"
+python-versions = "<4,>=3.11"
 groups = ["main"]
 files = [
-    {file = "sphinx_test_reports-1.4.0-py3-none-any.whl", hash = "sha256:1ac7af2bc437a4ff3da580d8f7b49eef8f534d4973b8880880833751fa96a794"},
-    {file = "sphinx_test_reports-1.4.0.tar.gz", hash = "sha256:8a7918946453802380a352b4685f3bdb59efd98cb026921145381c5f558c0a4b"},
+    {file = "sphinx_test_reports-3.0.1-py3-none-any.whl", hash = "sha256:bb9100fac35d2e50afb264b58374324c2cb63567c768037f198a3531e2d58b80"},
+    {file = "sphinx_test_reports-3.0.1.tar.gz", hash = "sha256:3f63d2cac6414cb076b4577cc12e0b7288c123e4cda51e3147732ea12c3641d8"},
 ]
 
 [package.dependencies]
-lxml = "*"
-packaging = ">=20.0"
-sphinx = ">4.0"
-sphinx-needs = ">=1.0.1"
+docutils = ">=0.21"
+sphinx = ">=7.4"
+sphinx-needs = ">=9.1.0,<10"
+ub-test-reports = ">=1.1.0,<2"
 
 [package.extras]
-docs = ["pillow", "sphinx", "sphinx-design", "sphinx-immaterial", "sphinx-needs (>=6)", "sphinxcontrib-plantuml"]
-test = ["beautifulsoup4", "nox (>=2025.2.9)", "pytest (>=7.0)", "pytest-cov", "pytest-xdist", "sphinx_design", "sphinxcontrib-plantuml"]
+docs = ["furo (>=2025.12.19)", "packaging", "pillow", "sphinx", "sphinx-ai-index (>=1.0.0,<2)", "sphinx-design", "sphinx-needs (>=9.1.0,<10)", "sphinxcontrib-plantuml"]
+pytest = ["ub-test-reports[pytest] (>=1.1.0,<2)"]
 
 [[package]]
 name = "sphinxcontrib-applehelp"
@@ -3734,14 +3737,14 @@ test = ["pytest"]
 
 [[package]]
 name = "spl-core"
-version = "8.10.1"
+version = "9.1.2"
 description = "Software Product Line Support for CMake"
 optional = false
-python-versions = "<3.14,>=3.10"
+python-versions = "<3.14,>=3.11"
 groups = ["main"]
 files = [
-    {file = "spl_core-8.10.1-py3-none-any.whl", hash = "sha256:7e8a2cc73dc8036c2b7d710630837aad936fef16591b7b03b96d6c19428408b9"},
-    {file = "spl_core-8.10.1.tar.gz", hash = "sha256:7e5ec57e4d6bb63af621096e4ffb89daadd2c400db65ea897be77f3968cf078c"},
+    {file = "spl_core-9.1.2-py3-none-any.whl", hash = "sha256:82502d67be21e29102daa41eb2528e4c5e5a67157b8cb716d9c630966bc7cf4c"},
+    {file = "spl_core-9.1.2.tar.gz", hash = "sha256:824d7d60b48467feeb0653e3a31b1e4171f5e0bb160af1e43d531f450b852dc3"},
 ]
 
 [package.dependencies]
@@ -3761,9 +3764,9 @@ sphinx = ">=8.1,<9.0"
 sphinx-book-theme = ">=1.1,<2.0"
 sphinx-copybutton = ">=0.5,<0.6"
 sphinx-design = ">=0.5,<0.7"
-sphinx-needs = ">=7,<9"
+sphinx-needs = ">=9.1,<10"
 sphinx-new-tab-link = ">=0.4,<0.9"
-sphinx-test-reports = ">=1.0,<2.0"
+sphinx-test-reports = ">=3.0.1,<4"
 sphinxcontrib-datatemplates = ">=0.11,<0.12"
 sphinxcontrib-mermaid = ">=0.9,<2.2"
 sphinxcontrib-plantuml = ">=0.29,<0.32"
@@ -3861,6 +3864,49 @@ files = [
     {file = "tzdata-2026.4-py2.py3-none-any.whl", hash = "sha256:c2169a8b0a7a5e9674da5a135ccdfb2b3e671b333ed9fed17b41f73c34476e81"},
     {file = "tzdata-2026.4.tar.gz", hash = "sha256:f1b8bd365d8d210c55353f4d7f8d6d8561c0ba50d704b700d195a9424bba0d79"},
 ]
+
+[[package]]
+name = "ub-needs-exchange"
+version = "1.1.0"
+description = "The record of the needs.json exchange format, and its reader, for the sphinx-needs family and ubCode"
+optional = false
+python-versions = "<4,>=3.11"
+groups = ["main"]
+files = [
+    {file = "ub_needs_exchange-1.1.0-py3-none-any.whl", hash = "sha256:7e62dacbca79269f3932a58cdbeb8ce9796e0bf1b0a2bc0d7b7f100c7e38773f"},
+    {file = "ub_needs_exchange-1.1.0.tar.gz", hash = "sha256:febf13174d3a562294155e22a890d4682c8d641ee1f0672bb281e7247f28c4d6"},
+]
+
+[[package]]
+name = "ub-project"
+version = "1.1.0"
+description = "The shared reader for ubproject.toml and its variant data, for the sphinx-needs family and ubCode"
+optional = false
+python-versions = "<4,>=3.11"
+groups = ["main"]
+files = [
+    {file = "ub_project-1.1.0-py3-none-any.whl", hash = "sha256:eff02771b7f79b7109f26e17accc8b924a027c5d9ad0b799ec74720eaa20970e"},
+    {file = "ub_project-1.1.0.tar.gz", hash = "sha256:97774c8ee68e3fe4650b18e2a6b54e4e4b1469c91bde3432ac474394ecca4b67"},
+]
+
+[[package]]
+name = "ub-test-reports"
+version = "1.1.0"
+description = "Test results as needs without Sphinx: report parsers, the needs.json converter and the pytest plugin"
+optional = false
+python-versions = "<4,>=3.11"
+groups = ["main"]
+files = [
+    {file = "ub_test_reports-1.1.0-py3-none-any.whl", hash = "sha256:292c39ba01b0ac2947a02faff47b8d6e6a8140df8dc3867158f1257b123a1301"},
+    {file = "ub_test_reports-1.1.0.tar.gz", hash = "sha256:1e028b9089693c7782ef2063f1336e8f8f249632f21345698c01327466914b81"},
+]
+
+[package.dependencies]
+lxml = "*"
+ub-project = ">=1.1.0,<2"
+
+[package.extras]
+pytest = ["pytest (>=7.0)"]
 
 [[package]]
 name = "urllib3"
@@ -4143,4 +4189,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.12,>=3.11"
-content-hash = "7451e2ad796ef6167b9bf9da8f3bd68bfd3542d71c8944e5973b3a1f6b13b57b"
+content-hash = "754859eaae65d00ee07fc0e0df9b53e16f198ae9829bbd43b7e361aa53f791c4"
