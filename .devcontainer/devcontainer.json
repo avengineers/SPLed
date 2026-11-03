@@ -3,10 +3,16 @@
     "build": {
         "context": "..",
         "dockerfile": "Dockerfile",
-        "options": ["--network=host"],
-        "args": { "UBUNTU_ARCHIVE_MIRROR": "https://ftp.uni-stuttgart.de/ubuntu" }
+        "options": [
+            "--network=host"
+        ],
+        "args": {
+            "UBUNTU_ARCHIVE_MIRROR": "https://ftp.uni-stuttgart.de/ubuntu"
+        }
     },
-    "runArgs": ["--network=host"],
+    "runArgs": [
+        "--network=host"
+    ],
     "initializeCommand": "mkdir -p .devcontainer/certs && cp /usr/local/share/ca-certificates/*.crt .devcontainer/certs/ 2>/dev/null; true",
     "userEnvProbe": "loginInteractiveShell",
     "features": {
@@ -24,7 +30,9 @@
                 "ms-vscode.test-adapter-converter",
                 "matepek.vscode-catch2-test-adapter",
                 "ms-python.pytest",
-                "ms-vscode.powershell"
+                "ms-vscode.powershell",
+                "useblocks.ubcode",
+                "ms-vscode.cpptools-extension-pack"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",

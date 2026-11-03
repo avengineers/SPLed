@@ -1,10 +1,8 @@
 {
     "recommendations": [
-        "mhutchie.git-graph",
         "ms-vscode.cmake-tools",
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-themes",
-        "haugerbr.project-tasks",
         "ms-python.vscode-pylance",
         "ms-python.python",
         "ms-vscode.powershell",
@@ -12,7 +10,9 @@
         "sandcastle.vscode-open",
         "josetr.cmake-language-support-vscode",
         "ibm.output-colorizer",
-        "github.copilot-chat",
-        "shd101wyy.markdown-preview-enhanced"
+        "shd101wyy.markdown-preview-enhanced",
+        "the0807.git-graph-plus",
+        "useblocks.ubcode",
+        "ms-vscode.cpptools-extension-pack"
     ]
 }
