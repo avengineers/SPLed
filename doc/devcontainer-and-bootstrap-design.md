@@ -273,6 +273,22 @@ CI never caught these because the `ubuntu-24.04` runner preinstalls all three â€
 `test-on-linux` now provisions via these scripts instead of `actions/setup-python`, and why the
 `test-devcontainer` job exists.
 
+## Python 3.13 behind a TLS-inspecting proxy
+
+Python 3.13 sets `ssl.VERIFY_X509_STRICT` in `ssl.create_default_context()`, and urllib3 sets it in
+its own contexts. A TLS-inspecting proxy whose CA does not mark Basic Constraints critical then fails
+every HTTPS download of the pipeline (poks) with `Basic Constraints of CA cert not marked critical`.
+Python 3.12 and older accept such a CA. pip and Poetry are not affected.
+
+The proper fix is a proxy CA that marks Basic Constraints critical. Until then,
+`SPLED_RELAX_X509_STRICT=1` turns on the first pipeline step, `RelaxX509Strict`
+(`tools/steps/relax_x509_strict.py`). It drops only that flag from the SSL contexts of the
+`pypeline run` process. Chain, expiry and host name are still checked. Without the variable the step
+does nothing, so CI keeps the strict checks. The devcontainer takes the variable from the host
+(`containerEnv` with `${localEnv:â€¦}`).
+
+Remove the step, its test and the `containerEnv` entry once the proxy CA is fixed.
+
 ## Validation
 
 Executed for real with `devpod up . --recreate --ide=none` (podman-as-docker provider), and
