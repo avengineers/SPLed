@@ -44,6 +44,8 @@ sudo ./bootstrap_ubuntu.sh    # root: apt packages (libc6-dev, build-essential, 
 
 If `poetry` is not found after `bootstrap_python.sh`, open a new shell (or `source ~/.bashrc`) so `~/.local/bin` is on `PATH`, then run `./build.sh --install`. Inside the devcontainer this is automatic: the Dockerfile bakes both `bootstrap_ubuntu.sh` and `bootstrap_python.sh` into the image at build time, and `onCreateCommand` runs `build.sh --install`.
 
+If `build.sh --install` or `build.ps1 -install` fails behind a TLS-inspecting proxy with `Basic Constraints of CA cert not marked critical`, set `SPLED_RELAX_X509_STRICT=1` and run it again. For the devcontainer, set the variable on the host before it is created. See [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md) → *Python 3.13 behind a TLS-inspecting proxy*.
+
 **Always** start VS Code with: `.\build.ps1 -startVSCode` to ensure proper environment variables and Python virtual environment activation (`.venv` with Poetry dependencies).
 
 ### VS Code CMake Extension Configuration
