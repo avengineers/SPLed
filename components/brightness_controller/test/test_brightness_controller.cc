@@ -24,7 +24,7 @@ extern "C"
  * @rst
  * .. test:: brightness_controller.test_brightness_ramp
  *    :id: TS_BC-002
- *   :tests: SWDD_BC-100, SWDD_BC-102, SWDD_BC-203
+ *    :tests: SWDD_BC-100, SWDD_BC-102
  * @endrst
  */
 TEST(brightness_controller, test_brightness_ramp)
