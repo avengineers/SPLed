@@ -31,11 +31,15 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 apt-get update
+# ca-certificates is already installed everywhere; naming it upgrades it, so a root CA that
+# Ubuntu distrusts (e.g. the compromised emSign ECC Root CA - G3) leaves the system trust store,
+# which pip, requests and uv read in the devcontainer.
 apt-get install -y --no-install-recommends \
     libc6-dev \
     build-essential \
     7zip \
-    pipx
+    pipx \
+    ca-certificates
 
 if [ "$clean_apt_cache" = true ]; then
     apt-get clean

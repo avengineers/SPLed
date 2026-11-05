@@ -32,7 +32,7 @@ unprivileged and installs into `~/.local`.
 | Layer | Provides | Runs as | When |
 |---|---|---|---|
 | `.devcontainer/Dockerfile` | base image, CA certs, apt-mirror swap, `ENV SSL_*`, PATH wiring | root | image build |
-| `bootstrap_ubuntu.sh` | apt: `libc6-dev`, `build-essential`, `7zip`, `pipx` | root | image build (`RUN`) / `sudo` on a bare host |
+| `bootstrap_ubuntu.sh` | apt: `libc6-dev`, `build-essential`, `7zip`, `pipx`, `ca-certificates` | root | image build (`RUN`) / `sudo` on a bare host |
 | `bootstrap_python.sh` | `uv` → CPython 3.13 → Poetry, into `~/.local` | unprivileged | image build (as `vscode`) / directly on a bare host |
 | `build.sh --install` (unchanged) | `poetry install` + the pypeline/poks toolchain | unprivileged | `onCreateCommand` / directly on a bare host |
 
@@ -241,7 +241,7 @@ comparing versions. Without `--force`, bumping a pin above would be silently ign
 had run the script before — the worst kind of pin, one that looks enforced and isn't. `--force` also
 makes re-running the script idempotent.
 
-## Why `bootstrap_ubuntu.sh` installs those four packages
+## Why `bootstrap_ubuntu.sh` installs those five packages
 
 Hand-validating the Phase 1 Linux build on a bare WSL/Ubuntu host failed *after* `build.sh --install`
 had successfully provisioned the poks toolchain. Three system-level packages that neither poks nor
@@ -260,6 +260,14 @@ Poetry install were absent:
    producing 5 errors (`FileNotFoundError: '7z'`) in `--selftests`.
 
 `pipx` is the fourth, needed by `bootstrap_python.sh`.
+
+`ca-certificates` is the fifth. Every base image already has it, so naming it does not install it:
+`apt-get install` upgrades an installed package to the newest version in the archive. The image's
+`SSL_CERT_FILE`, `REQUESTS_CA_BUNDLE` and `PIP_CERT` point pip, requests and uv at this package's
+bundle, not at certifi, so a distrusted root leaves the trust store only through this package. The
+`ubuntu-24.04` base image ships `20240203`, which still trusts the compromised "emSign ECC Root CA -
+G3" (GHSA-6q48-6c7w-9gw2); `20260816ubuntu0.24.04.1` removes it.
+`test/test_python_environment.py` checks the bundles for that root.
 
 CI never caught these because the `ubuntu-24.04` runner preinstalls all three — which is exactly why
 `test-on-linux` now provisions via these scripts instead of `actions/setup-python`, and why the
