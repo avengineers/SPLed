@@ -36,13 +36,15 @@ On **Linux/macOS or inside a devcontainer**, use the peer script `./build.sh --i
 On a **bare Linux host (e.g. WSL Ubuntu) that is not a devcontainer**, `build.sh --install` assumes some OS-level prerequisites already exist. Provision them once per machine with the two bootstrap scripts — the devcontainer image runs the same scripts, so this is a single source of truth (see [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md)):
 
 ```bash
-sudo ./bootstrap_ubuntu.sh    # root: apt packages (libc6-dev, build-essential, 7zip, pipx)
-./bootstrap_python.sh         # user: uv, CPython 3.11, Poetry (into ~/.local)
+sudo ./bootstrap_ubuntu.sh    # root: apt packages (libc6-dev, build-essential, 7zip, pipx, ca-certificates)
+./bootstrap_python.sh         # user: uv, CPython 3.13, Poetry (into ~/.local)
 # then open a fresh shell (see note below) so ~/.local/bin is on PATH:
 ./build.sh --install          # user: poetry install + poks toolchain
 ```
 
 If `poetry` is not found after `bootstrap_python.sh`, open a new shell (or `source ~/.bashrc`) so `~/.local/bin` is on `PATH`, then run `./build.sh --install`. Inside the devcontainer this is automatic: the Dockerfile bakes both `bootstrap_ubuntu.sh` and `bootstrap_python.sh` into the image at build time, and `onCreateCommand` runs `build.sh --install`.
+
+If `build.sh --install` or `build.ps1 -install` fails behind a TLS-inspecting proxy with `Basic Constraints of CA cert not marked critical`, set `SPLED_RELAX_X509_STRICT=1` and run it again. For the devcontainer, set the variable on the host before it is created. See [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md) → *Python 3.13 behind a TLS-inspecting proxy*.
 
 **Always** start VS Code with: `.\build.ps1 -startVSCode` to ensure proper environment variables and Python virtual environment activation (`.venv` with Poetry dependencies).
 

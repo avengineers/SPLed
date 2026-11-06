@@ -299,7 +299,7 @@ function Get-User-Menu-Selection {
 
 function Invoke-Bootstrap {
     # Download bootstrap scripts from external repository
-    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.19.1/install.ps1 | Invoke-Expression
+    Invoke-RestMethod -Uri https://raw.githubusercontent.com/avengineers/bootstrap-installer/v1.20.0/install.ps1 | Invoke-Expression
     # Execute bootstrap script
     . .\.bootstrap\bootstrap.ps1
 }

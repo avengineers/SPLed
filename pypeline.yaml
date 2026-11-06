@@ -1,9 +1,12 @@
 pipeline:
+  # Opt-in (SPLED_RELAX_X509_STRICT=1) workaround for proxy CAs that fail Python 3.13's strict X.509 checks
+  - step: RelaxX509Strict
+    file: tools/steps/relax_x509_strict.py
   - step: CreateVEnv
     module: pypeline.steps.create_venv
     config:
       bootstrap_script: .bootstrap/bootstrap.py
-      python_version: "3.11"
+      python_version: "3.13.17"
       python_package_manager: poetry>=2.2
   - step: PoksInstall
     module: pypeline.steps.poks_install
