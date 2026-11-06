@@ -8,6 +8,7 @@ Each variant (Disco, Sleep, Spa, etc.) compiles into separate binaries using sha
 **Key architectural concepts:**
 
 - **Variants**: Product configurations in `variants/<VariantName>/` containing `config.txt` (KConfig features), `parts.cmake` (component selection), and `config.cmake` (CMake settings)
+  - Give a new variant a header block `{if} var.build_config.variant == "<name>"` in `index.md`; a selftest checks that every variant has one.
 - **Components**: Modular C code in `components/<name>/` with CMakeLists.txt using SPL-specific macros
 - **Build Kits**: `prod` (production C code) vs `test` (C++ with GoogleTest for unit testing)
 - **Feature Configuration**: KConfig system (`KConfig` file) drives conditional compilation via CMake variables
@@ -197,11 +198,12 @@ that is compiled in every variant claims the requirement for every variant.
 ### Design documents are built, not just written
 
 `components/<name>/doc/index.md` is rendered into the report by Sphinx, so the build checks it.
-A spec that a variant does not select is guarded with Jinja, with the same KConfig name as the
-code:
+A spec that a variant does not select is guarded with a sphinx-needs `{if}` block on
+`var.features`, with the same KConfig name as the code. Sphinx and ubCode both read it; the
+documents hold no Jinja:
 
 ````markdown
-{% if config.BLINKING %}
+:::{if} var.features.BLINKING
 
 ```{spec} Blinking Behavior
 :id: SWDD_LC-101
@@ -210,8 +212,15 @@ code:
 When the light is ON, it may exhibit a blinking behavior.
 ```
 
-{% endif %}
+:::
 ````
+
+`{if}` switches whole blocks. Content that differs inside one element, such as a Mermaid
+diagram, is written out twice: once under `{if} var.features.X`, once under
+`{if} not var.features.X`.
+
+Configure the variant with the test kit to see it in ubCode: ubCode shows the build last configured
+with the test kit, through the git-ignored `ubproject.variants.toml`. A prod configure leaves it alone.
 
 ## Project-Specific Conventions
 

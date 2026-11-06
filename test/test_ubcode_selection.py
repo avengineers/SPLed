@@ -1,3 +1,4 @@
+import re
 import subprocess
 import tomllib
 from pathlib import Path
@@ -68,3 +69,37 @@ def test_selection_file_is_ignored():
 
     # Assert
     assert result.returncode == 0, "ubproject.variants.toml is not git-ignored"
+
+
+@with_gate_markers
+def test_documents_use_no_eval_rst():
+    # Arrange
+    # ubCode does not know the eval-rst directive and skips what it wraps: a needimport
+    # inside it imports no requirements. A MyST directive reaches both Sphinx and ubCode.
+    documents = [
+        path
+        for pattern in ("index.md", "doc/**/*.md", "components/**/doc/**/*.md", "test/**/doc/**/*.md")
+        for path in REPO_ROOT.glob(pattern)
+    ]
+
+    # Act
+    wrapped = [path.relative_to(REPO_ROOT).as_posix() for path in documents if "{eval-rst}" in path.read_text(encoding="utf-8")]
+
+    # Assert
+    assert documents, "no documents found"
+    assert not wrapped, f"documents wrap directives in eval-rst: {wrapped}"
+
+
+@with_gate_markers
+def test_documents_have_no_empty_toctree():
+    # Arrange
+    # An empty toctree lists nothing; Sphinx accepts it, ubCode reports directive.no_content.
+    empty_toctree = re.compile(r"^```\{toctree\}\n(?::[^\n]*\n)*```$", re.MULTILINE)
+    documents = [path for pattern in ("index.md", "doc/**/*.md", "components/**/doc/**/*.md", "test/**/doc/**/*.md") for path in REPO_ROOT.glob(pattern)]
+
+    # Act
+    found = [path.relative_to(REPO_ROOT).as_posix() for path in documents if empty_toctree.search(path.read_text(encoding="utf-8"))]
+
+    # Assert
+    assert documents, "no documents found"
+    assert not found, f"documents with an empty toctree: {found}"

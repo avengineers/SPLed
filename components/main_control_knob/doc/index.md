@@ -1,10 +1,5 @@
 # Software Detailed Design
 
-```{toctree}
-:maxdepth: 2
-:caption: Table of Contents
-```
-
 ## Introduction
 
 The main control knob component is responsible for calculating a value between 0 and 100 percent depending on the user's input.

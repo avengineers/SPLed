@@ -29,8 +29,6 @@ exclude_patterns = [
     "**/test_results.rst",  # We renamed this file, but nobody deletes it.
 ]
 
-include_patterns = ["index.md", "doc/**"]
-
 # configuration of built-in stuff ###########################################
 # @see https://www.sphinx-doc.org/en/master/usage/configuration.html
 
@@ -56,22 +54,6 @@ source_suffix = extension_configs["source_suffix"]
 # Import default SPL sphinx-needs configuration, which also links test cases to their results
 needs_from_toml = str(files("spl_core.report_generation").joinpath("ubproject.toml"))
 
-# Provide all config values to jinja
-html_context = SplSphinx.get_default_html_context()
-include_patterns.extend(html_context["build_config"].get("include_patterns", []))
-
-
-def rstjinja(app, docname, source):
-    """
-    Render our pages as a jinja template for fancy templating goodness.
-    """
-    # Make sure we're outputting HTML
-    if app.builder.format != "html":
-        return
-    src = source[0]
-    rendered = app.builder.templates.render_string(src, app.config.html_context)
-    source[0] = rendered
-
-
-def setup(app):
-    app.connect("source-read", rstjinja)
+# The document set of this run comes from CMake (SPL_PROJECT_DOCS_INCLUDE_PATTERNS and the
+# variant's components, spl-core ADR 0005), the same list ubCode reads.
+include_patterns = SplSphinx.get_default_html_context()["build_config"].get("include_patterns", [])

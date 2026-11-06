@@ -1,11 +1,5 @@
 # Software Detailed Design
 
-```{toctree}
-:maxdepth: 2
-:caption: Contents
-:class: toc
-```
-
 ## Introduction
 
 The Flight Controller module is responsible for evaluating mission abort conditions and triggering the SelfDestruct system if necessary. It demonstrates a clear MC/DC coverage example.
