@@ -1,5 +1,4 @@
 # Software Requirements
 
-```{eval-rst}
-.. needimport:: ../ubconnect/sw_requirements.json
+```{needimport} ../ubconnect/sw_requirements.json
 ```

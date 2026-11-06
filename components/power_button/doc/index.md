@@ -1,10 +1,5 @@
 # Software Detailed Design
 
-```{toctree}
-:maxdepth: 2
-:caption: Table of Contents
-```
-
 ## Introduction
 
 This module interfaces with the keyboard and debounces the `POWER_BUTTON_KEY` to provide a stable key press event.
