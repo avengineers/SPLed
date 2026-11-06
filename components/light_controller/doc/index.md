@@ -18,7 +18,7 @@ The Light Controller is responsible for managing the behavior of the LED based o
 The light can be in one of two states: ON or OFF. The state transitions are triggered by changes in the system's power state.
 ```
 
-{% if config.BLINKING %}
+:::{if} var.features.BLINKING
 
 ```{spec} Blinking Behavior
 :id: SWDD_LC-101
@@ -27,7 +27,7 @@ The light can be in one of two states: ON or OFF. The state transitions are trig
 When the light is ON, it may exhibit a blinking behavior. The blinking rate is configurable and is determined based on an external input (main knob value).
 ```
 
-{% endif %}
+:::
 
 ```{spec} Color Management
 :id: SWDD_LC-102
@@ -67,7 +67,7 @@ The Light Controller uses the RTE interface `RteGetPowerState()` to get the curr
 The Light Controller uses the RTE interface `RteSetLightValue()` to set the light color.
 ```
 
-{% if config.BLINKING %}
+:::{if} var.features.BLINKING
 
 ```{spec} Main Knob Input
 :id: SWDD_LC-203
@@ -76,9 +76,9 @@ The Light Controller uses the RTE interface `RteSetLightValue()` to set the ligh
 The Light Controller uses the RTE interface `RteGetMainKnobValue()` to get the main knob value for controlling the blinking rate.
 ```
 
-{% endif %}
+:::
 
-{% if config.BRIGHTNESS_ADJUSTMENT_ENABLED %}
+:::{if} var.features.BRIGHTNESS_ADJUSTMENT_ENABLED
 
 ```{spec} Brightness Adjustment
 :id: SWDD_LC-204
@@ -87,7 +87,7 @@ The Light Controller uses the RTE interface `RteGetMainKnobValue()` to get the m
 The Light Controller uses the RTE interface `RteGetBrightnessValue()` to get the required brightness value for the light.
 ```
 
-{% endif %}
+:::
 
 ## Internal Behavior
 
@@ -98,15 +98,24 @@ The Light Controller uses the RTE interface `RteGetBrightnessValue()` to get the
 The Light Controller is implemented as a state machine. The state machine is shown below.
 ```
 
+:::{if} var.features.BLINKING
 ```{mermaid}
 stateDiagram-v2
     [*] --> LIGHT_OFF: Initial State
     LIGHT_OFF --> LIGHT_ON : Power State != OFF
     LIGHT_ON --> LIGHT_OFF : Power State == OFF
-{% if config.BLINKING %}
     state LIGHT_ON {
         BlinkON --> BlinkOFF : Blink half-period elapsed
         BlinkOFF --> BlinkON : Blink half-period elapsed
     }
-{% endif %}
 ```
+:::
+
+:::{if} not var.features.BLINKING
+```{mermaid}
+stateDiagram-v2
+    [*] --> LIGHT_OFF: Initial State
+    LIGHT_OFF --> LIGHT_ON : Power State != OFF
+    LIGHT_ON --> LIGHT_OFF : Power State == OFF
+```
+:::

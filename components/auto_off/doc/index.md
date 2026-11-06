@@ -30,7 +30,7 @@ The Auto Off Controller monitors three types of user input to determine system a
 Any of these inputs will reset the inactivity timer.
 ```
 
-{% if config.AUTO_OFF %}
+:::{if} var.features.AUTO_OFF
 
 ```{spec} Configurable Timeout Period
 :id: SWDD_AO-102
@@ -39,7 +39,7 @@ Any of these inputs will reset the inactivity timer.
 The auto off timeout period is configurable through CONFIG_AUTO_OFF_PERIOD_SECONDS, with a valid range of 5 to 7200 seconds (5 seconds to 2 hours).
 ```
 
-{% endif %}
+:::
 
 ```{spec} Timer Countdown Behavior
 :id: SWDD_AO-103
@@ -92,7 +92,7 @@ The Auto Off Controller shall use the RTE interface `RteIsKeyPressed()` to monit
 Any activity detected from these monitored keys will reset the inactivity timer.
 ```
 
-{% if config.AUTO_OFF %}
+:::{if} var.features.AUTO_OFF
 
 ```{spec} Auto Off State Output
 :id: SWDD_AO-205
@@ -101,7 +101,7 @@ Any activity detected from these monitored keys will reset the inactivity timer.
 The Auto Off Controller shall use the RTE interface `RteSetAutoOffState()` to communicate the current auto off state to other system components. The state is set to FALSE when the system is active and TRUE when the timeout period has elapsed.
 ```
 
-{% endif %}
+:::
 
 ## Timing Behavior
 

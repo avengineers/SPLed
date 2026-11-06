@@ -5,10 +5,30 @@ import pytest
 from spl_core.test_utils.spl_build import SplBuild
 from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
+from report_checks import check_variant_report
+
 
 class Test_Sleep:
     variant: str = "Sleep"
     components: list[str] = [
+        "components/brightness_controller",
+        "components/light_controller",
+        "components/main_control_knob",
+        "components/power_button",
+        "components/power_signal_processing",
+    ]
+
+    # Features that guard document content, from variants/Sleep/config.txt.
+    features: dict[str, bool] = {
+        "BLINKING": False,
+        "BRIGHTNESS_ADJUSTMENT_ENABLED": True,
+        "BRIGHTNESS_ADJUSTMENT_MANUAL": True,
+        "BRIGHTNESS_ADJUSTMENT_AUTOMATIC": False,
+        "AUTO_OFF": True,
+    }
+    # Components in variants/Sleep/parts.cmake that have doc/index.md.
+    documented_components: list[str] = [
+        "components/auto_off",
         "components/brightness_controller",
         "components/light_controller",
         "components/main_control_knob",
@@ -113,3 +133,9 @@ class Test_Sleep:
         expected_artifacts = spl_build.get_components_artifacts(self.components) + artifacts_to_be_archived
         for artifact in expected_artifacts:
             assert artifact.exists(), f"Artifact {artifact} does not exist"
+        check_variant_report(
+            spl_build.build_dir,
+            variant=self.variant,
+            features=self.features,
+            documented_components=self.documented_components,
+        )

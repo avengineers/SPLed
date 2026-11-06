@@ -67,6 +67,7 @@ endif()
 # Opt in to the ubCode selection (spl-core ADR 0005). Set before parts.cmake is included.
 set(SPL_UBCODE_SELECTION_FILE ubproject.variants.toml)
 set(SPL_PROJECT_DOCS_INCLUDE_PATTERNS index.md "doc/**")
+set(SPL_SOURCE_DOCS_JINJA_RAW_TAGS OFF)
 
 # Include variant specific parts/components definitions
 include(${PROJECT_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
