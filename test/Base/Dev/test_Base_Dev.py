@@ -5,12 +5,28 @@ import pytest
 from spl_core.test_utils.spl_build import SplBuild
 from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
+from report_checks import check_variant_report
+
 
 class Test_Base__Dev:
     variant: str = "Base/Dev"
     components: list[str] = [
         "components/examples/hello_gmock",
         "components/examples/flight_controller",
+    ]
+
+    # Features that guard document content: Base/Dev has no config.txt, so every feature is off.
+    features: dict[str, bool] = {
+        "BLINKING": False,
+        "BRIGHTNESS_ADJUSTMENT_ENABLED": False,
+        "BRIGHTNESS_ADJUSTMENT_MANUAL": False,
+        "BRIGHTNESS_ADJUSTMENT_AUTOMATIC": False,
+        "AUTO_OFF": False,
+    }
+    # Components in variants/Base/Dev/parts.cmake that have doc/index.md.
+    documented_components: list[str] = [
+        "components/examples/flight_controller",
+        "components/examples/hello_gmock",
     ]
 
     @pytest.fixture(scope="class")
@@ -77,3 +93,9 @@ class Test_Base__Dev:
         expected_artifacts = spl_build.get_components_artifacts(self.components) + artifacts_to_be_archived
         for artifact in expected_artifacts:
             assert artifact.exists(), f"Artifact {artifact} does not exist"
+        check_variant_report(
+            spl_build.build_dir,
+            variant=self.variant,
+            features=self.features,
+            documented_components=self.documented_components,
+        )

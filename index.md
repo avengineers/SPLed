@@ -1,32 +1,40 @@
-{% if build_config.component_info %}
-
-# Software Component Report
-
-**Variant:** {{ build_config.variant }}<br/>
-**Component:** {{ build_config.component_info.long_name }}<br/>
-**Timestamp:** {{ timestamp }}
-
-```{toctree}
-:maxdepth: 2
-
-{{ build_config.component_info.path }}/doc/index
-{% if build_config.component_info.has_reports %}
-{{ build_config.component_info.reports_output_dir }}/unit_test_spec
-{{ build_config.component_info.reports_output_dir }}/unit_test_results
-{{ build_config.component_info.reports_output_dir }}/coverage
-{% endif %}
-{% if build_config.component_info.source_docs_dir %}
-{{ build_config.component_info.source_docs_dir }}/index
-{% endif %}
-```
-
-{% else %}
-
 # Variant Report
 
-**Variant:** {{ build_config.variant }}<br/>
-**Timestamp:** {{ timestamp }}
+:::{if} var.build_config.variant == "Disco"
+**Variant:** Disco
+:::
 
+:::{if} var.build_config.variant == "Sleep"
+**Variant:** Sleep
+:::
+
+:::{if} var.build_config.variant == "Spa"
+**Variant:** Spa
+:::
+
+:::{if} var.build_config.variant == "Base/Dev"
+**Variant:** Base/Dev
+:::
+
+:::{if} var.build_config.variant == "IDEA/Sloemada"
+**Variant:** IDEA/Sloemada
+:::
+
+::::{if} var.build_config.target == "reports"
+```{toctree}
+:maxdepth: 1
+:caption: Contents
+:glob:
+
+doc/software_architecture/index
+doc/sw_requirements/index
+doc/components/index
+doc/results/index
+/build/**/test/Debug/reports/coverage
+```
+::::
+
+::::{if} var.build_config.target != "reports"
 ```{toctree}
 :maxdepth: 1
 :caption: Contents
@@ -35,9 +43,5 @@ doc/software_architecture/index
 doc/sw_requirements/index
 doc/components/index
 doc/results/index
-{% if build_config.target == 'reports' %}
-{{ build_config.reports_output_dir }}/coverage
-{% endif %}
 ```
-
-{% endif %}
+::::

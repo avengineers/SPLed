@@ -1,0 +1,2 @@
+"$schema" = "https://ubcode.useblocks.com/ubproject.schema.json"
+extend = "ubproject.variants.toml"

@@ -3740,37 +3740,41 @@ name = "spl-core"
 version = "9.1.2"
 description = "Software Product Line Support for CMake"
 optional = false
-python-versions = "<3.14,>=3.11"
+python-versions = ">=3.11,<3.14"
 groups = ["main"]
-files = [
-    {file = "spl_core-9.1.2-py3-none-any.whl", hash = "sha256:82502d67be21e29102daa41eb2528e4c5e5a67157b8cb716d9c630966bc7cf4c"},
-    {file = "spl_core-9.1.2.tar.gz", hash = "sha256:824d7d60b48467feeb0653e3a31b1e4171f5e0bb160af1e43d531f450b852dc3"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 clanguru = ">=0,<1"
-cookiecutter = "2.7.1"
-gcovr = ">=8.6,<9.0"
-hammocking = ">=1.0,<2.0"
+cookiecutter = "==2.7.1"
+gcovr = "^8.6"
+hammocking = "^1.0"
 junitparser = "*"
-kconfiglib = ">=14.1,<15.0"
+kconfiglib = "^14.1"
 mlx-traceability = ">=10,<12"
 myst-parser = ">=0.16"
-py-app-dev = ">=2.23,<3.0"
+py-app-dev = "^2.23"
 pydata-sphinx-theme = ">=0.18,<0.20"
 pypeline-runner = ">=1,<=2"
 pypeline-semantic-release = ">=0.5,<1.0"
 sphinx = ">=8.1,<9.0"
-sphinx-book-theme = ">=1.1,<2.0"
-sphinx-copybutton = ">=0.5,<0.6"
+sphinx-book-theme = "^1.1"
+sphinx-copybutton = "^0.5"
 sphinx-design = ">=0.5,<0.7"
 sphinx-needs = ">=9.1,<10"
 sphinx-new-tab-link = ">=0.4,<0.9"
 sphinx-test-reports = ">=3.0.1,<4"
-sphinxcontrib-datatemplates = ">=0.11,<0.12"
+sphinxcontrib-datatemplates = "^0.11"
 sphinxcontrib-mermaid = ">=0.9,<2.2"
 sphinxcontrib-plantuml = ">=0.29,<0.32"
 typer = ">=0,<1"
+
+[package.source]
+type = "git"
+url = "https://github.com/avengineers/spl-core.git"
+reference = "47ec8210790baf0dc361eb83bb98259d425e562b"
+resolved_reference = "47ec8210790baf0dc361eb83bb98259d425e562b"
 
 [[package]]
 name = "text-unidecode"
@@ -4189,4 +4193,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.12,>=3.11"
-content-hash = "754859eaae65d00ee07fc0e0df9b53e16f198ae9829bbd43b7e361aa53f791c4"
+content-hash = "266edf6c123dde804af53dc04f3d771a78fd6c6df97f3d3f80069e17342ac7e6"
