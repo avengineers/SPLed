@@ -24,7 +24,14 @@ FEATURE_GUARDED_SPECS: dict[str, dict[str, list[str]]] = {
     },
     "AUTO_OFF": {
         "components/power_signal_processing": ["SWDD_PSP-004", "SWDD_PSP-005"],
-        "components/auto_off": ["SWDD_AO-102", "SWDD_AO-205"],
+        "components/auto_off": ["SWDD_AO-110", "SWDD_AO-311"],
+    },
+}
+
+# Test specs that a feature guards, per component, read from the `.. test::` blocks of the tests.
+FEATURE_GUARDED_TESTS: dict[str, dict[str, list[str]]] = {
+    "AUTO_OFF": {
+        "components/auto_off": [f"TS_AO-{n:03d}" for n in range(1, 8)],
     },
 }
 
@@ -36,6 +43,7 @@ FEATURE_DIAGRAMS: dict[str, tuple[str, str]] = {
 }
 
 NEED_ID = re.compile(r'id="(SWDD_[A-Z]+-\d+)"')
+TEST_ID = re.compile(r'id="(TS_[A-Z]+-\d+)"')
 VARIANT_LINE = re.compile(r"<strong>Variant:</strong>\s*([^<]*?)\s*<")
 WRAPPER_LINK = re.compile(r'href="[^"#]*/reports/([^"/#]+)_index\.html')
 MERMAID_BLOCK = re.compile(r'<pre\s+class="mermaid">(.*?)</pre>', re.DOTALL)
@@ -120,6 +128,7 @@ def check_variant_report(
     # A feature-guarded spec is in the report exactly when its feature is on.
     pages = rendered_pages(html_dir)
     need_ids = {need_id for text in pages.values() for need_id in NEED_ID.findall(text)}
+    test_ids = {test_id for text in pages.values() for test_id in TEST_ID.findall(text)}
 
     # No page shows a Jinja raw tag: without a Jinja hook, spl-core must not write them.
     raw_tag_pages = sorted(page.as_posix() for page, text in pages.items() if RAW_TAG.search(text))
@@ -132,6 +141,13 @@ def check_variant_report(
                 if (spec_id in need_ids) != expected_present:
                     state = "missing" if expected_present else "present"
                     problems.append(f"{spec_id} is {state}, but {feature} is {features[feature]} and {component} documented is {component in documented}")
+    for feature, tests_per_component in FEATURE_GUARDED_TESTS.items():
+        for component, guarded_test_ids in tests_per_component.items():
+            expected_present = features[feature] and component in documented
+            for test_id in guarded_test_ids:
+                if (test_id in test_ids) != expected_present:
+                    state = "missing" if expected_present else "present"
+                    problems.append(f"{test_id} is {state}, but {feature} is {features[feature]} and {component} documented is {component in documented}")
 
     # A design page with a feature-dependent diagram holds exactly one, the matching one.
     for component, (feature, feature_node) in FEATURE_DIAGRAMS.items():

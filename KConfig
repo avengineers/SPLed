@@ -34,6 +34,8 @@ menu "Features"
     config AUTO_OFF
         bool "Auto Off Feature"
         default n
+        help
+            Switch the light off after a period of user inactivity.
 
     config AUTO_OFF_PERIOD_SECONDS
         int "Auto Off Period (in seconds)"

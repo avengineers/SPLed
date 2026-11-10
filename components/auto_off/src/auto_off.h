@@ -2,12 +2,9 @@
 #define AUTO_OFF_H
 
 /**
- * @brief Initialize auto off functionality
- */
-void autoOffInit(void);
-
-/**
- * @brief Auto off runnable function
+ * @brief Auto off runnable function.
+ *
+ * One call is one execution. The application calls it once per task period.
  */
 void autoOff(void);
 
