@@ -47,6 +47,8 @@ If `poetry` is not found after `bootstrap_python.sh`, open a new shell (or `sour
 
 If `build.sh --install` or `build.ps1 -install` fails behind a TLS-inspecting proxy with `Basic Constraints of CA cert not marked critical`, set `SPLED_RELAX_X509_STRICT=1` and run it again. For the devcontainer, set the variable on the host before it is created. See [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md) → *Python 3.13 behind a TLS-inspecting proxy*.
 
+Run the devcontainer on a WSL or Linux host, from a clone on that file system. Its `initializeCommand` is a shell command and does not run in cmd.exe. The workspace is a bind mount, so a checkout on the Windows side would share its `.venv` and `build/` with the container, and `build.sh --install` would rebuild them for Linux.
+
 **Always** start VS Code with: `.\build.ps1 -startVSCode` to ensure proper environment variables and Python virtual environment activation (`.venv` with Poetry dependencies).
 
 ### VS Code CMake Extension Configuration
