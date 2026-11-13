@@ -5,6 +5,8 @@ import pytest
 from spl_core.test_utils.spl_build import SplBuild
 from spl_core.test_utils.artifacts_archiver import ArtifactsArchiver
 
+from report_checks import built_component_pages, check_variant_report, linked_component_pages
+
 
 class Test_Disco:
     variant: str = "Disco"
@@ -13,6 +15,23 @@ class Test_Disco:
         "components/main_control_knob",
         "components/power_button",
         "components/power_signal_processing",
+    ]
+
+    # Features that guard document content, from variants/Disco/config.txt.
+    features: dict[str, bool] = {
+        "BLINKING": True,
+        "BRIGHTNESS_ADJUSTMENT_ENABLED": False,
+        "BRIGHTNESS_ADJUSTMENT_MANUAL": False,
+        "BRIGHTNESS_ADJUSTMENT_AUTOMATIC": False,
+        "AUTO_OFF": False,
+    }
+    # Components in variants/Disco/parts.cmake (test kit adds test/spled_integration) that have doc/index.md.
+    documented_components: list[str] = [
+        "components/light_controller",
+        "components/main_control_knob",
+        "components/power_button",
+        "components/power_signal_processing",
+        "test/spled_integration",
     ]
 
     @pytest.fixture(scope="class")
@@ -112,3 +131,34 @@ class Test_Disco:
         expected_artifacts = spl_build.get_components_artifacts(self.components) + artifacts_to_be_archived
         for artifact in expected_artifacts:
             assert artifact.exists(), f"Artifact {artifact} does not exist"
+        check_variant_report(
+            spl_build.build_dir,
+            variant=self.variant,
+            features=self.features,
+            documented_components=self.documented_components,
+        )
+
+    @pytest.mark.reports
+    @pytest.mark.gate_develop_pr
+    @pytest.mark.gate_develop_push
+    @pytest.mark.gate_develop_nightly
+    @pytest.mark.gate_release_pr
+    @pytest.mark.gate_release
+    def test_docs(self):
+        # Arrange
+        spl_build: SplBuild = SplBuild(
+            variant=self.variant,
+            build_kit="test",
+            build_type="Debug",
+            target="docs",
+        )
+        html_dir = spl_build.build_dir / "docs/html"
+
+        # Act
+        result = spl_build.execute()
+
+        # Assert
+        assert result == 0, "Building docs failed"
+        components_index = (html_dir / "doc/components/index.html").read_text(encoding="utf-8")
+        assert linked_component_pages(components_index) == set(self.documented_components)
+        assert built_component_pages(html_dir) == set(self.documented_components)

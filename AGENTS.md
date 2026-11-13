@@ -8,6 +8,7 @@ Each variant (Disco, Sleep, Spa, etc.) compiles into separate binaries using sha
 **Key architectural concepts:**
 
 - **Variants**: Product configurations in `variants/<VariantName>/` containing `config.txt` (KConfig features), `parts.cmake` (component selection), and `config.cmake` (CMake settings)
+  - Give a new variant a header block `{if} var.build_config.variant == "<name>"` in `index.md`; a selftest checks that every variant has one.
 - **Components**: Modular C code in `components/<name>/` with CMakeLists.txt using SPL-specific macros
 - **Build Kits**: `prod` (production C code) vs `test` (C++ with GoogleTest for unit testing)
 - **Feature Configuration**: KConfig system (`KConfig` file) drives conditional compilation via CMake variables
@@ -45,6 +46,8 @@ sudo ./bootstrap_ubuntu.sh    # root: apt packages (libc6-dev, build-essential, 
 If `poetry` is not found after `bootstrap_python.sh`, open a new shell (or `source ~/.bashrc`) so `~/.local/bin` is on `PATH`, then run `./build.sh --install`. Inside the devcontainer this is automatic: the Dockerfile bakes both `bootstrap_ubuntu.sh` and `bootstrap_python.sh` into the image at build time, and `onCreateCommand` runs `build.sh --install`.
 
 If `build.sh --install` or `build.ps1 -install` fails behind a TLS-inspecting proxy with `Basic Constraints of CA cert not marked critical`, set `SPLED_RELAX_X509_STRICT=1` and run it again. For the devcontainer, set the variable on the host before it is created. See [`doc/devcontainer-and-bootstrap-design.md`](doc/devcontainer-and-bootstrap-design.md) → *Python 3.13 behind a TLS-inspecting proxy*.
+
+Run the devcontainer on a WSL or Linux host, from a clone on that file system. Its `initializeCommand` is a shell command and does not run in cmd.exe. The workspace is a bind mount, so a checkout on the Windows side would share its `.venv` and `build/` with the container, and `build.sh --install` would rebuild them for Linux.
 
 **Always** start VS Code with: `.\build.ps1 -startVSCode` to ensure proper environment variables and Python virtual environment activation (`.venv` with Poetry dependencies).
 
@@ -197,11 +200,12 @@ that is compiled in every variant claims the requirement for every variant.
 ### Design documents are built, not just written
 
 `components/<name>/doc/index.md` is rendered into the report by Sphinx, so the build checks it.
-A spec that a variant does not select is guarded with Jinja, with the same KConfig name as the
-code:
+A spec that a variant does not select is guarded with a sphinx-needs `{if}` block on
+`var.features`, with the same KConfig name as the code. Sphinx and ubCode both read it; the
+documents hold no Jinja:
 
 ````markdown
-{% if config.BLINKING %}
+:::{if} var.features.BLINKING
 
 ```{spec} Blinking Behavior
 :id: SWDD_LC-101
@@ -210,8 +214,15 @@ code:
 When the light is ON, it may exhibit a blinking behavior.
 ```
 
-{% endif %}
+:::
 ````
+
+`{if}` switches whole blocks. Content that differs inside one element, such as a Mermaid
+diagram, is written out twice: once under `{if} var.features.X`, once under
+`{if} not var.features.X`.
+
+Configure the variant with the test kit to see it in ubCode: ubCode shows the build last configured
+with the test kit, through the git-ignored `ubproject.variants.toml`. A prod configure leaves it alone.
 
 ## Project-Specific Conventions
 

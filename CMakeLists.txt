@@ -21,7 +21,7 @@ set(FETCHCONTENT_QUIET FALSE)
 include(FetchContent)
 
 # Find spl-core location dynamically (works on both Windows and Linux)
-if(WIN32)
+if(CMAKE_HOST_WIN32)
     set(_VENV_PYTHON "${PROJECT_SOURCE_DIR}/.venv/Scripts/python.exe")
 else()
     set(_VENV_PYTHON "${PROJECT_SOURCE_DIR}/.venv/bin/python")
@@ -39,7 +39,7 @@ endif()
 set(ENV{SPL_CORE_DIR} "${SPL_CORE_DIR}")
 # Ensure venv python is found first (spl_core's kconfig.cmake invokes bare 'python')
 cmake_path(GET _VENV_PYTHON PARENT_PATH _VENV_BIN_DIR)
-if(WIN32)
+if(CMAKE_HOST_WIN32)
     set(ENV{PATH} "${_VENV_BIN_DIR};$ENV{PATH}")
 else()
     set(ENV{PATH} "${_VENV_BIN_DIR}:$ENV{PATH}")
@@ -51,7 +51,7 @@ include("${SPL_CORE_DIR}/spl.cmake")
 # Linux/macOS (the console script is "object_deps_report"). Guard the include to
 # Windows until the upstream .exe hardcoding is fixed (tracked upstream in the
 # object_deps_report package).
-if(BUILD_KIT STREQUAL prod AND WIN32)
+if(BUILD_KIT STREQUAL prod AND CMAKE_HOST_WIN32)
     execute_process(
         COMMAND "${_VENV_PYTHON}" -c "import object_deps_report, os; print(os.path.dirname(object_deps_report.__file__))"
         OUTPUT_VARIABLE OBJECT_DEPS_REPORT_DIR
@@ -63,6 +63,11 @@ if(BUILD_KIT STREQUAL prod AND WIN32)
     endif()
     include("${OBJECT_DEPS_REPORT_DIR}/index.cmake")
 endif()
+
+# Opt in to the ubCode selection (spl-core ADR 0005). Set before parts.cmake is included.
+set(SPL_UBCODE_SELECTION_FILE ubproject.variants.toml)
+set(SPL_PROJECT_DOCS_INCLUDE_PATTERNS index.md "doc/**")
+set(SPL_SOURCE_DOCS_JINJA_RAW_TAGS OFF)
 
 # Include variant specific parts/components definitions
 include(${PROJECT_SOURCE_DIR}/variants/${VARIANT}/parts.cmake)
