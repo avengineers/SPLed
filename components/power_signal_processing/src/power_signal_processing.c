@@ -30,14 +30,4 @@ void powerSignalProcessing(void)
             RteSetPowerState(POWER_STATE_OFF);
         }
     }
-#ifdef CONFIG_AUTO_OFF
-    else
-    {
-        if (RteGetAutoOffState() == TRUE)
-        {
-            // If auto off event occurred, turn off power
-            RteSetPowerState(POWER_STATE_OFF);
-        }
-    }
-#endif
 }

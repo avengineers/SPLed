@@ -12,16 +12,16 @@
 /**
  * @brief Key code definition for Arrow Up
  */
-#define CONTROL_KEY_UP 0x26 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob, auto_off); not unused at project level" */
+#define CONTROL_KEY_UP 0x26 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob); not unused at project level" */
 /**
  * @brief Key code definition for Arrow Down
  */
-#define CONTROL_KEY_DOWN 0x28 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob, auto_off); not unused at project level" */
+#define CONTROL_KEY_DOWN 0x28 /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (main_control_knob); not unused at project level" */
 
 /**
  * @brief Key code definition for Power Button 'P'
  */
-#define POWER_BUTTON_KEY (int32_t)'P' /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (power_button, auto_off); not unused at project level" */
+#define POWER_BUTTON_KEY (int32_t)'P' /* polyspace MISRA-C3:2.5 [Justified:Low] "Macro consumed by other components' translation units (power_button); not unused at project level" */
 
 /**
  * @brief Enumerated type for power states.
@@ -227,23 +227,5 @@ void RteSetSelfDestructState(bool_t selfDestructState);
  * @return TRUE if SelfDestruct is triggered, FALSE otherwise.
  */
 bool_t RteGetSelfDestructState(void);
-
-#ifdef CONFIG_AUTO_OFF
-/**
- * @brief Get the state of the auto off event.
- *
- * @return TRUE if the auto off event occurred, FALSE otherwise.
- */
-bool_t RteGetAutoOffState(void);
-#endif // CONFIG_AUTO_OFF
-
-#ifdef CONFIG_AUTO_OFF
-/**
- * @brief Set the state of the auto off event.
- *
- * @param value The state to set for the auto off event.
- */
-void RteSetAutoOffState(bool_t state);
-#endif // CONFIG_AUTO_OFF
 
 #endif // RTE_H

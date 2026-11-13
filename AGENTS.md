@@ -128,8 +128,8 @@ spl_create_component(LONG_NAME "My Component")
 **Conditional dependencies** use KConfig variables from `config.txt`:
 
 ```cmake
-if(AUTO_OFF STREQUAL "True")
-    spl_add_required_interface(components/auto_off)
+if(BRIGHTNESS_ADJUSTMENT_ENABLED STREQUAL "True")
+    spl_add_required_interface(components/brightness_controller)
 endif()
 ```
 
@@ -140,7 +140,7 @@ Variant's `parts.cmake` lists components with `spl_add_component(components/<nam
 Features defined in `KConfig` (menuconfig syntax) generate CMake variables via `config.txt`:
 
 - `CONFIG_BLINKING=y` → CMake variable `BLINKING="True"`
-- `# CONFIG_AUTO_OFF is not set` → CMake variable `AUTO_OFF="False"`
+- `# CONFIG_BLINKING is not set` → CMake variable `BLINKING="False"`
 
 Edit feature config: `.\build.ps1 -command ".venv\Scripts\poetry run guiconfig"` (requires KCONFIG_CONFIG env var set to variant's config.txt).
 

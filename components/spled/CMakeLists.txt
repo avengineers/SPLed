@@ -14,10 +14,6 @@ spl_add_required_interface(components/power_signal_processing)
 spl_add_required_interface(components/rte)
 spl_add_required_interface(components/platform_types)
 
-if(AUTO_OFF STREQUAL "True")
-    spl_add_required_interface(components/auto_off)
-endif()
-
 spl_create_component(LONG_NAME "SPLED")
 
 if(BUILD_TESTING)

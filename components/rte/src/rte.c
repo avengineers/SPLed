@@ -25,9 +25,6 @@ static void init_cleanup_handlers(void) {
 #endif
 
 static PowerState rteCurrentPowerState = POWER_STATE_OFF;
-#ifdef CONFIG_AUTO_OFF
-static bool_t autoOffState = TRUE;
-#endif
 static bool_t rtePowerKeyPressedEvent = FALSE;
 static RGBColor rteLightValue = {
     .rgbRedValue = 0,
@@ -159,17 +156,3 @@ bool_t RteGetSelfDestructState(void)
 {
     return rteSelfDestructState;
 }
-
-#ifdef CONFIG_AUTO_OFF
-bool_t RteGetAutoOffState(void)
-{
-    return autoOffState;
-}
-#endif // CONFIG_AUTO_OFF
-
-#ifdef CONFIG_AUTO_OFF
-void RteSetAutoOffState(bool_t state)
-{
-    autoOffState = state;
-}
-#endif // CONFIG_AUTO_OFF
