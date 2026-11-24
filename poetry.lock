@@ -3738,14 +3738,14 @@ test = ["pytest"]
 
 [[package]]
 name = "spl-core"
-version = "10.0.0"
+version = "10.0.1"
 description = "Software Product Line Support for CMake"
 optional = false
 python-versions = "<3.14,>=3.11"
 groups = ["main"]
 files = [
-    {file = "spl_core-10.0.0-py3-none-any.whl", hash = "sha256:c4d3f7795a14c829e1483571306a5eaf2afabec704efbd73858be83203b7d220"},
-    {file = "spl_core-10.0.0.tar.gz", hash = "sha256:cfd04916bee70b0a7064f4611da9ac9936171a50fdd778b4cbcee23c594b5550"},
+    {file = "spl_core-10.0.1-py3-none-any.whl", hash = "sha256:e9fbc082e20f73d28fa4b6bda4af6eed584555e19360c0159b59a649789dbcbe"},
+    {file = "spl_core-10.0.1.tar.gz", hash = "sha256:e0bd97d03feef04562680b3b6c1cd3a92f9e353dab3e046074c5a0e5e12ae3bc"},
 ]
 
 [package.dependencies]
@@ -4190,4 +4190,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "<3.14,>=3.13"
-content-hash = "04baec21cfe7aa2de150e69124c01b0fe184cacbc000d4179bf21b6ea26271ea"
+content-hash = "084ef78e0073001402a2a2f88355bfb4b611ec51610070faf767a47715ad8b63"
